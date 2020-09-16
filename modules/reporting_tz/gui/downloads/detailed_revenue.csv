@@ -1,0 +1,15 @@
+FROM:,"16.Sep.2020 00:00:00",TO:,"16.Sep.2020 23:59:59","ALL CUSTOMERS"
+"Billed Date","Admission date",Patient/ID,"Birth Date","File NR",Membership_NR,Form_NR,,Description,Category,"No.Of Items",Price,Deposit
+16.Sep.2020,16.Sep.2020,"Uncle Uncle",01.Jul.1988,312715,,,,"Specialist Consultation",SERVICE,1,10000,Null
+" "," "," "," "," "," "," "," "," "," "," "," "," "
+"PATIENTS WITH DEPOSITS"
+"PATIENTS WITH DEPOSIT BUT NO FINAL BILL YET"
+"PATIENTS WITH TOPUP"
+Lab,Drugs,Radio,Dental,Eye,Min.Proc,Major.proc,"Consult and services",Supplies.,"Laboratory Supplies",Other,"TOTAL WITH DEPOSIT ITEMS"
+0,0,0,0,0,0,0,"10,000",0,0,0,"10,000"
+"GRAND TOTAL:","10,000"
+"MAIN SUMMARY"
+"TOTAL DEPOSIT:",0
+"TOTAL TOPUP:",0
+"TOTAL REFUND:",0
+"NET DEPOSITS:",0
