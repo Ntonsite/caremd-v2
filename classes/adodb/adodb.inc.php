@@ -683,6 +683,13 @@ if (!defined('_ADODB_LAYER')) {
 	 * @return true or false
 	 */
 	function Connect($argHostname = "", $argUsername = "", $argPassword = "", $argDatabaseName = "", $forceNew = false) {
+		echo $argHostname.'<br>';
+		echo $argUsername.'<br>';
+		echo $argPassword.'<br>';
+		echo $argDatabaseName;
+
+		die;
+
 		if ($argHostname != "") {
 			$this->host = $argHostname;
 		}
