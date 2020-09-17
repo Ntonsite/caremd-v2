@@ -121,7 +121,7 @@ echo $dbname;
 $dblink_ok = $db->Connect($dbhost, $dbusername, $dbpassword, $dbname);
 
 
-if($dblink_ok) echo "db ok"; else echo "no link";
+//if($dblink_ok) echo "db ok"; else echo "no link";
 # Establish a link
 # Native mySQL connection
 # Temporary active for the transition phase from 1.0.03 to 1.0.04
