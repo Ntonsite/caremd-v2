@@ -695,7 +695,11 @@ if (!defined('_ADODB_LAYER')) {
 			$this->user = $argUsername;
 		}
 		if ($argPassword != "") {
-			$this->password = 'not stored'; // not stored for security reasons
+			//$this->password = 'not stored'; // not stored for security reasons
+
+			$this->password=$argPassword;
+
+
 		}
 		if ($argDatabaseName != "") {
 			$this->database = $argDatabaseName;
