@@ -65,8 +65,6 @@ class ADODB_ibase extends ADOConnection {
 	// returns true or false
 	function _connect($argHostname, $argUsername, $argPassword, $argDatabasename,$persist=false)
 	{
-
-		echo 'tupo hapa';die;
 		if (!function_exists('ibase_pconnect')) return null;
 		if ($argDatabasename) $argHostname .= ':'.$argDatabasename;
 		$fn = ($persist) ? 'ibase_pconnect':'ibase_connect';

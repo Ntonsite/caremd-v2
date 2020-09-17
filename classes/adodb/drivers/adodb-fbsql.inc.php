@@ -63,8 +63,6 @@ class ADODB_fbsql extends ADOConnection {
 	// returns true or false
 	function _connect($argHostname, $argUsername, $argPassword, $argDatabasename)
 	{
-
-		echo 'tupo hapa';die;
 		$this->_connectionID = fbsql_connect($argHostname,$argUsername,$argPassword);
 		if ($this->_connectionID === false) return false;
 		if ($argDatabasename) return $this->SelectDB($argDatabasename);

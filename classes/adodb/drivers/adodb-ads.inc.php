@@ -75,8 +75,6 @@ class ADODB_ads extends ADOConnection {
   // returns true or false
   function _connect($argDSN, $argUsername, $argPassword, $argDatabasename)
   {
-
-    echo 'tuko hapa';die;
     if (!function_exists('ads_connect')) return null;
 
     if ($this->debug && $argDatabasename && $this->databaseType != 'vfp') {

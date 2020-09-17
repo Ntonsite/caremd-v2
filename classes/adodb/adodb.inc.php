@@ -706,7 +706,7 @@ if (!defined('_ADODB_LAYER')) {
 				return true;
 			}
 		} else {
-			if ($rez=$this->_connect1($this->host, $this->user, $argPassword, $this->database)) {
+			if ($rez=$this->_connect($this->host, $this->user, $argPassword, $this->database)) {
 				return true;
 			}
 		}

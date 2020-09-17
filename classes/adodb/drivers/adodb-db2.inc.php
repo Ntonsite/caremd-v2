@@ -99,8 +99,6 @@ class ADODB_db2 extends ADOConnection {
 
 	public function _connect($argDSN, $argUsername, $argPassword, $argDatabasename)
 	{
-
-		echo 'tuko hapa';die;
 		return $this->doDB2Connect($argDSN, $argUsername, $argPassword, $argDatabasename);
 	}
 	
