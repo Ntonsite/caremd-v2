@@ -1,7 +1,7 @@
 <?php
 # This is the database name
 #$dbname = 'caredb_kibongoto';
-$dbname = 'caremd';
+$dbname = 'caredb_hlh_test';
 $weberp_db='weberp_hlh';
 # Database user name, default is root or httpd for mysql, or postgres for postgresql
 $dbusername = 'cmd';
