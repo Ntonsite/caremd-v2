@@ -683,8 +683,6 @@ if (!defined('_ADODB_LAYER')) {
 	 * @return true or false
 	 */
 	function Connect($argHostname = "", $argUsername = "", $argPassword = "", $argDatabaseName = "", $forceNew = false) {
-
-
 		if ($argHostname != "") {
 			$this->host = $argHostname;
 		}
@@ -695,30 +693,22 @@ if (!defined('_ADODB_LAYER')) {
 			$this->user = $argUsername;
 		}
 		if ($argPassword != "") {
-			//$this->password = 'not stored'; // not stored for security reasons
-
-			$this->password=$argPassword;
-
-
+			$this->password = 'not stored'; // not stored for security reasons
 		}
 		if ($argDatabaseName != "") {
 			$this->database = $argDatabaseName;
 		}
 
-		echo $this->host.'<br>';
-		echo $this->user.'<br>';
-		echo $this->password.'<br>';
-		echo $this->database;
-
-		
-
 		$this->_isPersistentConnection = false;
 
 		if ($forceNew) {
+
+			echo 'n';die;
 			if ($rez=$this->_nconnect($this->host, $this->user, $argPassword, $this->database)) {
 				return true;
 			}
 		} else {
+			echo 'no n';die;
 			if ($rez=$this->_connect($this->host, $this->user, $argPassword, $this->database)) {
 				return true;
 			}
