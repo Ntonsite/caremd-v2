@@ -110,7 +110,13 @@ if (!isset($dbtype) || empty($dbtype)) {
 require_once $root_path . 'classes/adodb/adodb.inc.php';
 $db = ADONewConnection($dbtype);
 
-if ($db) echo $dbhost; else echo "no ok";die;
+if ($db) {
+echo $dbhost;
+echo $dbusername;
+echo $dbpassword;
+echo $dbname;
+
+} else echo "no ok";die;
 
 $dblink_ok = $db->Connect($dbhost, $dbusername, $dbpassword, $dbname);
 
