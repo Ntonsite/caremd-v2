@@ -710,7 +710,7 @@ if (!defined('_ADODB_LAYER')) {
 		echo $this->password.'<br>';
 		echo $this->database;
 
-		die;
+		
 
 		$this->_isPersistentConnection = false;
 
