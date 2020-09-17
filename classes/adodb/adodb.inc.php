@@ -785,6 +785,11 @@ if (!defined('_ADODB_LAYER')) {
 		$this->_isPersistentConnection = true;
 
 		if ($rez = $this->_pconnect($this->host, $this->user, $argPassword, $this->database)) {
+			echo $this->host.'<br>';
+			echo $this->user.'<br>';
+			echo $argPassword.'<br>';
+			echo $this->database;
+			die;
 			return true;
 		}
 		if (isset($rez)) {
