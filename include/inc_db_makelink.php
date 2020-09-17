@@ -116,7 +116,7 @@ echo $dbusername;
 echo $dbpassword;
 echo $dbname;
 
-} else echo "no ok";die;
+} else echo "no ok";
 
 $dblink_ok = $db->Connect($dbhost, $dbusername, $dbpassword, $dbname);
 
