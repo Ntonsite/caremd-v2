@@ -65,6 +65,11 @@ class ADODB_ado extends ADOConnection {
 		$u = 'UID';
 		$p = 'PWD';
 
+		echo $argHostname.'<br>';
+		echo $argUsername.'<br>';
+		echo $argPassword.'<br>';
+		echo $argProvider;die;
+
 		if (!empty($this->charPage))
 			$dbc = new COM('ADODB.Connection',null,$this->charPage);
 		else

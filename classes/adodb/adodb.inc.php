@@ -702,13 +702,10 @@ if (!defined('_ADODB_LAYER')) {
 		$this->_isPersistentConnection = false;
 
 		if ($forceNew) {
-
-			echo 'n';die;
 			if ($rez=$this->_nconnect($this->host, $this->user, $argPassword, $this->database)) {
 				return true;
 			}
 		} else {
-			echo 'no n';die;
 			if ($rez=$this->_connect($this->host, $this->user, $argPassword, $this->database)) {
 				return true;
 			}
