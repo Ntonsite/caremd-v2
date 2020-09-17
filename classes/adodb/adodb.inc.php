@@ -683,12 +683,7 @@ if (!defined('_ADODB_LAYER')) {
 	 * @return true or false
 	 */
 	function Connect($argHostname = "", $argUsername = "", $argPassword = "", $argDatabaseName = "", $forceNew = false) {
-		echo $argHostname.'<br>';
-		echo $argUsername.'<br>';
-		echo $argPassword.'<br>';
-		echo $argDatabaseName;
 
-		die;
 
 		if ($argHostname != "") {
 			$this->host = $argHostname;
@@ -705,6 +700,13 @@ if (!defined('_ADODB_LAYER')) {
 		if ($argDatabaseName != "") {
 			$this->database = $argDatabaseName;
 		}
+
+		echo $this->host.'<br>';
+		echo $this->user.'<br>';
+		echo $this->password.'<br>';
+		echo $this->database;
+
+		die;
 
 		$this->_isPersistentConnection = false;
 
