@@ -57,6 +57,7 @@ class ADODB_csv extends ADOConnection {
 	// returns true or false
 	function _connect($argHostname, $argUsername, $argPassword, $argDatabasename)
 	{
+		echo 'tuko hapa';die;
 		if (strtolower(substr($argHostname,0,7)) !== 'http://') return false;
 		$this->_url = $argHostname;
 		return true;
