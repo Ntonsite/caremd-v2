@@ -1,14 +1,14 @@
 <?php
 # This is the database name
 #$dbname = 'caredb_kibongoto';
-$dbname = 'caredb_hlh_test';
+$dbname = 'caremd';
 $weberp_db='weberp_hlh';
 # Database user name, default is root or httpd for mysql, or postgres for postgresql
-$dbusername = 'root';
+$dbusername = 'cmd';
 # Database user password, default is empty char
 $dbpassword = 'kukzan2007';
 # Database host name, default = localhost
-$dbhost = 'localhost';
+$dbhost = '172.20.63.45';
 
 # Hospitals Logo Filename in directory gui/img/common/default/
 $hospital_logo = 'micros.gif';
