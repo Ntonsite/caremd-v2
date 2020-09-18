@@ -129,6 +129,14 @@ if (empty($dblink_ok)) {
 	echo "<b>Password:</b> ".$dbpassword.'<br>';
 	echo "<b>dbname:</b> " .$dbname;
 	die;
+}else{
+
+	            echo "<b>Database Connection Successiful</b><br>";
+	            echo "<b>Host:</b> ".$dbhost.'<br>';
+	            echo "<b>User:</b> ".$dbusername.'<br>';
+	            echo "<b>Password:</b> ".$dbpassword.'<br>';
+	            echo "<b>dbname:</b> " .$dbname;
+
 }
 
 
