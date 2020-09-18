@@ -10,6 +10,7 @@ $dbpassword = 'H4yd0m@2020!';
 # Database host name, default = localhost
 $dbhost = '172.20.63.45';
 
+
 # Hospitals Logo Filename in directory gui/img/common/default/
 $hospital_logo = 'micros.gif';
 

@@ -118,7 +118,18 @@ echo $dbname;
 
 } else echo "no ok"; */
 
+
+
 $dblink_ok = $db->Connect($dbhost, $dbusername, $dbpassword, $dbname);
+
+if (empty($dblink_ok)) {
+	echo "<b>Database Connection Failed</b><br>";
+	echo "<b>Host:</b> ".$dbhost.'<br>';
+	echo "<b>User:</b> ".$dbusername.'<br>';
+	echo "<b>Password:</b> ".$dbpassword.'<br>';
+	echo "<b>dbname:</b> " .$dbname;
+	die;
+}
 
 
 //if($dblink_ok) echo "db ok"; else echo "no link";
