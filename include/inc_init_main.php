@@ -4,7 +4,7 @@
 $dbname = 'caredb_hlh_test';
 $weberp_db='weberp_hlh';
 # Database user name, default is root or httpd for mysql, or postgres for postgresql
-$dbusername = 'cmd';
+$dbusername = 'root';
 # Database user password, default is empty char
 $dbpassword = 'kukzan2007';
 # Database host name, default = localhost
