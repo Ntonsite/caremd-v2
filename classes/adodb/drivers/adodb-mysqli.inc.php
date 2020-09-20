@@ -111,7 +111,9 @@ class ADODB_mysqli extends ADOConnection {
 		$this->optionFlags = array();
 		foreach($this->optionFlags as $arr) {
 			mysqli_options($this->_connectionID,$arr[0],$arr[1]);
+
 		}
+
 
 		/*
 		* Now merge in the standard connection parameters setting
@@ -131,6 +133,8 @@ class ADODB_mysqli extends ADOConnection {
 		}
 
 		#if (!empty($this->port)) $argHostname .= ":".$this->port;
+
+		
 		$ok = @mysqli_real_connect($this->_connectionID,
 					$argHostname,
 					$argUsername,
@@ -141,10 +145,14 @@ class ADODB_mysqli extends ADOConnection {
 					$this->socket,
 					$this->clientFlags);
 
+
+
 		if ($ok) {
 			if ($argDatabasename)  return $this->SelectDB($argDatabasename);
 			return true;
 		} else {
+			ADOConnection::outp("Could not connect : "  . $this->ErrorMsg());
+			
 			if ($this->debug) {
 				ADOConnection::outp("Could not connect : "  . $this->ErrorMsg());
 			}
