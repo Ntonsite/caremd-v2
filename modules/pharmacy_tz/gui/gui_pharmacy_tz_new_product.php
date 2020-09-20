@@ -274,6 +274,8 @@ function CheckCategory(){
 
               <?php
               //code for read only will stay here
+
+              
               ?>
 
               <tr>
