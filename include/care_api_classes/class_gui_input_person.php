@@ -389,6 +389,7 @@ class GuiInputPerson {
 							}
 						}
 						$newdata = 1;
+						$from=isset($from)? $from : null;
 						if (file_exists($this->displayfile)) {
 							header("location: $this->displayfile" . URL_REDIRECT_APPEND . "&pid=$pid&from=$from&newdata=1&target=entry");
 							exit;

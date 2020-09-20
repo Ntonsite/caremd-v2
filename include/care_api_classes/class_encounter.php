@@ -251,7 +251,8 @@ class Encounter extends Notes {
 		'modify_time',
 		'create_id',
 		'create_time',
-		'medical_service');
+		'medical_service',
+	    'qualification');
 
 	/**
 	 * Field names of care_encounter_sickconfirm table

@@ -917,7 +917,7 @@ if (nhifPatient&&allowVerification=="") {
 <script>
   function showConsultation(){
     var pid=document.getElementById("pid").value;
-    var qualificationID=document.getElementById("doctorQualification").value;
+    var qualificationID=document.getElementById("qualification").value;
     var url = "<?php echo $root_path ?>modules/registration_admission/return_consultation_jquery.php";
     $.ajax(url,{
       type: "POST",
@@ -929,16 +929,20 @@ if (nhifPatient&&allowVerification=="") {
       async: false
 
     }).done(function (data) {
+      console.log(data);
+       $("#consultation_fee").empty();
+       $("#consultation_fee").append(data);
 
-      alert(data);
+
+    
 
       
 
+  }).fail(function(data,textStatus, error){
+
+    console.log(error);
+
   });
-
-
-
-
 
   }
 </script>

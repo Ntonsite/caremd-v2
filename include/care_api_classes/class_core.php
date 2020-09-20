@@ -393,6 +393,8 @@ class Core {
 		}
 
 		if (!is_array($array)) {return FALSE;}
+
+		
 		while (list($x, $v) = $helper->CustomEach($array)) {
 			# use backquoting for mysql and no-quoting for other dbs
 			if ($dbtype == 'mysql' || $dbtype == 'mysqli') {
