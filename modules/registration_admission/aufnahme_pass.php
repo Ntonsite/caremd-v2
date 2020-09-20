@@ -33,7 +33,7 @@ if (!defined('ADMISSION_EXT_TABS') || !ADMISSION_EXT_TABS) {
 }
 
 
-
+$_SESSION['sess_en']= isset($_SESSION['sess_en'])? $_SESSION['sess_en'] : null;
 switch (@$target) {
 case 'entry':
 	$allowedarea = $allow_area['admit_write'];
@@ -96,8 +96,7 @@ require $root_path . 'include/inc_passcheck_internchk.php';
 if (@$pass && $pass == 'check') {
 	include $root_path . 'include/inc_passcheck.php';
 }
-print_r($pass);
-die;
+
 $errbuf = $LDAdmission;
 
 require $root_path . 'include/inc_passcheck_head.php';

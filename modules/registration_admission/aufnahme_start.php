@@ -207,6 +207,7 @@ if ($pid != '' || $encounter_nr != '') {
 		}
 
 		if (($mode == 'save') || ($forcesave != '')) {
+
 			if (!$forcesave) {
 				//clean and check input data variables
 				/**
@@ -294,6 +295,8 @@ if ($pid != '' || $encounter_nr != '') {
 						unset($_POST['pid']);
 					}
 
+
+
 					$encounter_obj->setDataArray($_POST);
 
 					if ($encounter_obj->updateEncounterFromInternalArray($encounter_nr)) {
@@ -369,6 +372,8 @@ if ($pid != '' || $encounter_nr != '') {
 					}
 
 					$encounter_obj->setDataArray($_POST);
+
+					//echo "<pre>";print_r($_POST);echo "</pre>";die;
 
 					if (@$encounter_obj->insertDataFromInternalArray()) {
 						/* Get last insert id */
@@ -591,6 +596,10 @@ if ($encounter_class_nr) {
                 alert("<?php echo $LDPlsSelectDept; ?>");
                 d.current_dept_nr.focus();
                 return false;
+            }else if(!d.qualification.value){
+            	alert("PLS SELECT  QUALIFICATION");
+            	d.qualification.focus();
+            	return false;
             } else if (!d.consultation_fee.value) {
                 alert(" PLS SELECT CONSULTATION");
                 d.consultation_fee.focus();
@@ -926,12 +935,16 @@ if (!isset($pid) || !$pid) {
 
 	$smarty->assign('LDTherapy', $LDCon);
 
-    //DOCTOR QUALIFICATION
-    if ($encounter_class_nr == 2) { 
-    
-    $smarty->assign('LDDoctorQualification',$LDDoctorQualification );
+    if ($encounter_nr) {
+    	$sqlClass="SELECT encounter_class_nr FROM care_encounter WHERE  encounter_nr=".$encounter_nr;
+    	$resultClass=$db->Execute($sqlClass);
+    	$inOutPatient=$resultClass->FetchRow();
+    	$inOutPatient=$inOutPatient['encounter_class_nr'];
+
+
     }
-    $cTemp='';
+		
+	$cTemp='';
 
     $sqlInsurance='';
     $InsranceResult='';
@@ -945,24 +958,34 @@ if (!isset($pid) || !$pid) {
     	$cash=false;
     }
 
+    //DOCTOR QUALIFICATION
+    if (($encounter_class_nr == 2 || $inOutPatient == 2)&&$cash) { 
+    
+    $smarty->assign('LDDoctorQualification',$LDDoctorQualification );
+    }
+   
+      
 
 
-    if ($cash) {
+
+    if (($encounter_class_nr == 2 ||$inOutPatient == 2)&&$cash) {
+    	
     	$callOnchange='onchange="showConsultation()"';
     }else{
     	$callOnchange='';
+
     }
 
 
 
 
-    $cTemp = $cTemp . '<select name="doctorQualification" id="doctorQualification" '.$callOnchange.' >
+    $cTemp = $cTemp . '<select name="qualification" id="qualification" '.$callOnchange.' >
 							<option value=""></option>';
 
 		$sqlQualification='';
 		$Result='';
 		$row='';
-		$sqlQualification="SELECT group_nr, role FROM care_role_person";		
+		$sqlQualification="SELECT group_nr, role FROM care_role_person";	
 		$Result=$db->Execute($sqlQualification);
 		while ($row=$Result->FetchRow()) {
 			$cTemp = $cTemp . '<option value="' . $row['group_nr'] . '" ';
@@ -975,9 +998,10 @@ if (!isset($pid) || !$pid) {
 
     $cTemp = $cTemp . '</select>';	
 
-    if ($encounter_class_nr == 2) {   
+    if (($encounter_class_nr == 2 || $inOutPatient == 2)&&$cash) {   
     $smarty->assign('sQualifications', $cTemp);	
     }	
+
 
 
 
@@ -1020,6 +1044,17 @@ if (!isset($pid) || !$pid) {
 		$cTemp = $cTemp . '</option>';
 	}
 		
+	}elseif(($encounter_class_nr == 2 || $inOutPatient == 2 )&&$cash) {
+		$cTemp = $cTemp . '<select name="consultation_fee" id="consultation_fee">';
+
+		$cTemp = $cTemp .='</select>';
+
+
+							
+
+		
+
+		
 	}else{
 
 		$cTemp = $cTemp . '<select name="consultation_fee">
@@ -1035,8 +1070,6 @@ if (!isset($pid) || !$pid) {
 	}
 
 }
-
-
 
 
 	
@@ -1161,7 +1194,7 @@ if (!isset($pid) || !$pid) {
 	//$smarty->assign('LDRecBy',$LDReg);
 
 	$smarty->assign('LDForm_nr', $LDForm_nr);
-	$smarty->assign('form_nr', '<input name="form_nr" type="text" size="20" value="' . $form_nr . '">');
+	$smarty->assign('form_nr', '<input name="form_nr" placeholder="form number" type="text"  value="' . $form_nr . '">');
 
 	$smarty->assign('LDSpecials', $LDSpecials);
 	$smarty->assign('referrer_notes', '<input name="referrer_notes" type="text" size="60" value="' . $referrer_notes . '">');
