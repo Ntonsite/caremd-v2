@@ -6,9 +6,9 @@ $weberp_db='weberp_hlh';
 # Database user name, default is root or httpd for mysql, or postgres for postgresql
 $dbusername = 'cmd-prod';
 # Database user password, default is empty char
-$dbpassword = 'H4yd0m2020!';
+$dbpassword = 'H4yd0m@2020!';
 # Database host name, default = localhost
-$dbhost = 'db.hlh.or.tz';
+$dbhost = '172.20.63.45';
 
 
 # Hospitals Logo Filename in directory gui/img/common/default/
