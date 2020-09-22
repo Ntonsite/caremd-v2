@@ -914,7 +914,7 @@ encounter_nr='$this->enc_nr' AND status NOT IN ($this->dead_stat)";
 	 */
 	function searchEncounterLabResults($key = '', $add_opt = '', $limit = FALSE, $len = 30, $so = 0) {
 		global $db, $sql_LIKE;
-		$debug = true;
+		$debug = false;
 		($debug) ? $db->debug = TRUE : $db->debug = FALSE;
 		if (empty($key)) {
 			return FALSE;
