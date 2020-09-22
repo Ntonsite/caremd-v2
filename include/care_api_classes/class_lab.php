@@ -914,13 +914,13 @@ encounter_nr='$this->enc_nr' AND status NOT IN ($this->dead_stat)";
 	 */
 	function searchEncounterLabResults($key = '', $add_opt = '', $limit = FALSE, $len = 30, $so = 0) {
 		global $db, $sql_LIKE;
-		$debug = false;
+		$debug = true;
 		($debug) ? $db->debug = TRUE : $db->debug = FALSE;
 		if (empty($key)) {
 			return FALSE;
 		}
 
-		$this->sql = "SELECT f.encounter_nr,f.send_date,
+		$this->sql = "SELECT f.encounter_nr,f.test_date,
 e.encounter_class_nr, p.pid, UPPER(p.name_last) as name_last, CONCAT(p.name_first,' ', p.name_2) AS name_first,
 p.date_birth, p.sex
                 FROM $this->tb_find_chemlab AS f
@@ -947,7 +947,7 @@ e.encounter_class_nr=$enc_class";
 		}
 		# Append the common condition
 		$this->sql .= " GROUP BY f.encounter_nr,
-e.encounter_class_nr, p.pid, UPPER(p.name_last) as name_last, CONCAT(p.name_first,' ', p.name_2) AS name_first,
+e.encounter_class_nr, p.pid,name_last,name_first,
 p.date_birth, p.sex  $add_opt";
 
 		if ($debug) {
