@@ -52,7 +52,7 @@ $bank_enabled = $_REQUEST['bankref'];
 
 
             if (healthFund!==insrID) {
-                alert("PLEASE SELECT CORRECT INSURANCE FOR THIS PATIENT   "+healthFund+" "+insrID);
+                alert("PLEASE SELECT CORRECT INSURANCE FOR THIS PATIENT   ");
                 return false;
 
             }else 
