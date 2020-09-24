@@ -60,6 +60,11 @@ $bank_enabled = $_REQUEST['bankref'];
                 alert("THERE IS ADVANCE PLEASE TICK FINAL BILL");
                 return false;
 
+            }else
+            if (totalAdv==0 && clearcheck.checked==true) {
+                alert("PLEASE UNTICK FINAL BILL");
+                return false;
+
             }else 
             if(bankEnabled==1&&bankref==""){
                 alert("PLEASE ENTER BANK REFERENCE");
