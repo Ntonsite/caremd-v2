@@ -681,7 +681,7 @@ class Bill extends Encounter {
         }
         
 
-
+          $price=0;
 
 
 		
@@ -840,7 +840,8 @@ class Bill extends Encounter {
 		$drg_obj = New Prescription;
 
 		while ($row = $result->FetchRow()) {
-			
+
+			$price=0;
 			
 
 			//echo $this->records['paramater_name'];
@@ -927,6 +928,8 @@ class Bill extends Encounter {
 			if ($this->debug) {
 				echo $this->sql;
 			}
+
+			//echo $this->sql;die;
 
 			$db->Execute($this->sql);
 
@@ -1024,7 +1027,7 @@ class Bill extends Encounter {
 		//echo $batch_nr;
 		while ($row = $result->FetchRow()) {
 
-
+            $price=0;
 
 
 
