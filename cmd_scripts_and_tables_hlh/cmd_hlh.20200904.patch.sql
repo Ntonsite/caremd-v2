@@ -101,6 +101,9 @@ UPDATE `care_person` SET insurance_ID='0' WHERE insurance_ID='84';
 UPDATE `care_test_request_chemlabor` SET status='done', specimen_collected='1' WHERE send_date < '2020-09-01';
 UPDATE `care_config_global` SET value=1 WHERE type='restrict_unbilled_items';
 UPDATE `care_test_request_radio` SET status='done' WHERE send_date < '2020-09-01';
+ALTER TABLE `care_encounter`  ADD `nhif_scheme_name` VARCHAR(255) NOT NULL  AFTER `nhif_scheme_id`;
+ALTER TABLE `care_encounter`  ADD `nhif_product_code` VARCHAR(255) NOT NULL  AFTER `nhif_scheme_name`;
+ALTER TABLE `care_encounter`  ADD `nhif_product_name` VARCHAR(255) NOT NULL  AFTER `nhif_product_code`;
 DROP VIEW `care_dhis_view`, `care_dhis_view_above5`, `care_dhis_view_under5`;
 
 
