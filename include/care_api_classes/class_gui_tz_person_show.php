@@ -583,6 +583,9 @@ if (mb_substr($insurance_name,0,4) == 'NHIF' && $glob_obj->getConfigValue("valid
 				$nhif_latest_authorization = "";
 				$nhif_remarks = "";
 				$nhif_visit_type = "";
+				$SchemeName = "";
+				$ProductCode = "";
+				$ProductName = "";
 
 //
 				if (isset($this->current_encounter) && $this->current_encounter) {
@@ -646,7 +649,10 @@ echo "<div><input id=\"authorize_btn\" type=\"button\" value=\"Authorize NHIF Ca
 					. "<p class=\"authorization\"><b FONT SIZE=-1  FACE=\"Arial\" color=\"#990000\">Authorization: </b><span id=\"nhif_authorization_status\">" . $nhif_authorization_status . "</span></p>"
 					. "<p class=\"authorization_no\"><b FONT SIZE=-1  FACE=\"Arial\" color=\"#990000\">Authorization No: </b><span id=\"nhif_authorization_number\">" . $nhif_authorization_number . "</span></p>"
 					. "<p class=\"nhif_remarks\"><b FONT SIZE=-1  FACE=\"Arial\" color=\"#990000\">Remarks: </b><span id=\"nhif_remarks\">" . $nhif_remarks . "</span></p>"
-					. "<p class=\"latest_authorization\"><b FONT SIZE=-1  FACE=\"Arial\" color=\"#990000\">Latest Authorization: </b><span id=\"nhif_latest_authorization\">" . $nhif_latest_authorization . "</span></p></div></td>";
+					. "<p class=\"latest_authorization\"><b FONT SIZE=-1  FACE=\"Arial\" color=\"#990000\">Latest Authorization: </b><span id=\"nhif_latest_authorization\">" . $nhif_latest_authorization . "</span></p>"
+					. "<p class=\"SchemeName\"><b FONT SIZE=-1  FACE=\"Arial\" color=\"#990000\">Scheme Name: </b><span id=\"SchemeName\">" . $SchemeName . "</span></p>"
+					. "<p class=\"ProductCode\"><b FONT SIZE=-1  FACE=\"Arial\" color=\"#990000\">Product Code: </b><span id=\"ProductCode\">" . $ProductCode . "</span></p>"
+					. "<p class=\"ProductName\"><b FONT SIZE=-1  FACE=\"Arial\" color=\"#990000\">Product Name: </b><span id=\"ProductName\">" . $ProductName . "</span></p></div></td>";
 
 			}
 			?>

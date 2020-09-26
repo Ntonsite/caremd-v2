@@ -252,7 +252,10 @@ class Encounter extends Notes {
 		'create_id',
 		'create_time',
 		'medical_service',
-	    'qualification');
+	    'nhif_scheme_name',
+        'nhif_product_code',
+        'nhif_product_name',
+        'qualification'); 	
 
 	/**
 	 * Field names of care_encounter_sickconfirm table
@@ -990,6 +993,19 @@ class Encounter extends Notes {
 		} else {
 			if ($enr) {
 				return $this->getValue('encounter_date', $enr);
+			} else {
+				return FALSE;
+			}
+
+		}
+	}
+
+	function nhifSchemeName($enr = 0) {
+		if ($this->is_loaded) {
+			return $this->encounter['nhif_scheme_name'];
+		} else {
+			if ($enr) {
+				return $this->getValue('nhif_scheme_name', $enr);
 			} else {
 				return FALSE;
 			}
@@ -2510,7 +2526,10 @@ class Encounter extends Notes {
 					$nhif_remarks = $pData->Remarks;
 					$nhif_dob = $pData->DateOfBirth;
 					$nhif_scheme_id = $pData->SchemeID;
-					$sql = "UPDATE care_encounter SET nhif_full_name = '$nhif_full_name', nhif_card_status = '$nhif_card_status', nhif_authorization_status = '$nhif_authorization_status', nhif_authorization_number = '$nhif_authorization_number', nhif_latest_authorization = '$nhif_latest_authorization', nhif_remarks = '$nhif_remarks', nhif_dob = '$nhif_dob', nhif_scheme_id = '$nhif_scheme_id' where encounter_nr = '$encounter_nr'";
+					$nhif_scheme_name=$pData->SchemeName;
+					$nhif_product_code=$pData->ProductCode;
+					$nhif_product_name=$pData->ProductName;
+					$sql = "UPDATE care_encounter SET nhif_full_name = '$nhif_full_name', nhif_card_status = '$nhif_card_status', nhif_authorization_status = '$nhif_authorization_status', nhif_authorization_number = '$nhif_authorization_number', nhif_latest_authorization = '$nhif_latest_authorization', nhif_remarks = '$nhif_remarks', nhif_dob = '$nhif_dob', nhif_scheme_id = '$nhif_scheme_id',nhif_scheme_name='$nhif_scheme_name',nhif_product_code='$nhif_product_code',nhif_product_name='$nhif_product_name' where encounter_nr = '$encounter_nr'";
 					$db->Execute($sql);
 
 					$patNHIFSQL = "UPDATE care_person SET nhif_authorization_details = ''  where pid = '$pid'";
