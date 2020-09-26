@@ -612,7 +612,11 @@ if ($rows) {
 				$insurance_name = $ins_obj->GetName_insurance_from_id($patient['insurance_ID']);
 			}
 
-			$smarty->assign('sInsuranceType', substr($insurance_name, 0, 15));
+			 if ($insurance_name=='NHIF') {
+			 	$insurance_name=$enc_obj->nhifSchemeName();
+			 }
+
+			$smarty->assign('sInsuranceType', substr($insurance_name, 0, 14));
 		} else {
 			if ($patient['insurance_ID'] == 0) {
 				$insurance_name = 'Cash-patient';
@@ -697,7 +701,7 @@ if ($rows) {
 
 					$smarty->assign('sNotesIcon', $sBuffer);
 
-					if ($insurance_name == "NHIF" && $_SESSION['transfer_nhif_patients'] == 1) {
+					if (strpos($insurance_name,'NHIF') !==false  && $_SESSION['transfer_nhif_patients'] == 1) {
 						$smarty->assign('sTransferIcon', '<a href="javascript:Transfer(\'' . $patient['encounter_nr'] . '\',\'\', \'' . $pid . '\')"><img ' . createComIcon($root_path, 'xchange.gif', '0', '', TRUE) . ' align="absmiddle" alt="' . $LDTransferPatient . '"></a><i onClick="transferNHIFPatient(\'' . $patient['encounter_nr'] . '\')" class="material-icons icon-blue">keyboard_tab</i>');
 					} else {
 						$smarty->assign('sTransferIcon', '<a href="javascript:Transfer(\'' . $patient['encounter_nr'] . '\',\'\', \'' . $pid . '\')"><img ' . createComIcon($root_path, 'xchange.gif', '0', '', TRUE) . ' align="absmiddle" alt="' . $LDTransferPatient . '"></a>');
@@ -726,7 +730,7 @@ if ($rows) {
 
 				$smarty->assign('sNotesIcon', $sBuffer);
 
-				if ($insurance_name == "NHIF" && $_SESSION['transfer_nhif_patients'] == 1) {
+				if (strpos($insurance_name,'NHIF') !==false && $_SESSION['transfer_nhif_patients'] == 1) {
 					$smarty->assign('sTransferIcon', '<a href="javascript:Transfer(\'' . $patient['encounter_nr'] . '\',\'\', \'' . $pid . '\')"><img ' . createComIcon($root_path, 'xchange.gif', '0', '', TRUE) . ' align="absmiddle" alt="' . $LDTransferPatient . '"></a><i onClick="transferNHIFPatient(\'' . $patient['encounter_nr'] . '\')" class="material-icons icon-blue">keyboard_tab</i>');
 
 				} else {
