@@ -45,6 +45,7 @@ echo setCharSet();
             timeout: 10000
         }).done(function (data) {
 
+
             accessToken = data.access_token;
             var visitType = uVisitType;
 
@@ -74,7 +75,7 @@ echo setCharSet();
         ).done(function (data) {
 
             ProgressDestroy();
-            //  alert(JSON.stringify(data));
+             alert(JSON.stringify(data));
             if (data.CardStatus === 'Invalid') {
                 alert(data.Remarks);
             } else {
@@ -84,7 +85,11 @@ echo setCharSet();
                     "Card Status:   " + data.CardStatus + "\n" +
                     "Authorization Status:   " + data.AuthorizationStatus + "\n" +
                     "Authorization No:  " + data.AuthorizationNo + "\n" +
-                    "Latest Athorization:   " + data.LatestAuthorization
+                    "Latest Athorization:   " + data.LatestAuthorization + "\n" +
+                    "SchemeName:   " + data.SchemeName + "\n" +
+                    "Product Code:   " + data.ProductCode + "\n" +
+                    "Product Name:   " + data.ProductName
+
                 );
 
                 <?php if ($current_encounter > 0): ?>
@@ -100,12 +105,17 @@ echo setCharSet();
                         data: data,
                         timeout: 10000
                 })
-
+                
                 $('#nhif_full_name').text(data.FullName);
                 $('#nhif_card_status').text(data.CardStatus);
                 $('#nhif_authorization_status').text(data.AuthorizationStatus);
                 $('#nhif_authorization_number').text(data.AuthorizationNo);
                 $('#nhif_latest_authorization').text(data.LatestAuthorization);
+                $('#SchemeName').text(data.SchemeName);
+                $('#ProductCode').text(data.ProductCode);
+                $('#ProductName').text(data.ProductName);
+
+
                 $('#nhif_remarks').text(data.Remarks);
                 if (data.AuthorizationStatus === 'ACCEPTED') {
                     hide_authorize();
