@@ -75,7 +75,7 @@ echo setCharSet();
         ).done(function (data) {
 
             ProgressDestroy();
-             alert(JSON.stringify(data));
+             //alert(JSON.stringify(data));
             if (data.CardStatus === 'Invalid') {
                 alert(data.Remarks);
             } else {
