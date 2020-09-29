@@ -345,7 +345,13 @@ echo '<font size=2 color="#ffffee" class="vi_data"><b>'
 if ($stored_request['doctor_sign']) {
 	echo stripslashes($stored_request['doctor_sign']);
 } else {
-	echo '__________________';
+	$splitNames=explode(" ", $h_DoctorID);
+    $FirstInitial=mb_substr($splitNames[0],0,1); 
+    $SecondInitial=mb_substr($splitNames[1],0,1);
+    $fullInitial=$FirstInitial.$SecondInitial;
+    echo $fullInitial;
+	
+	
 }
 ?></font>
                     </td>
