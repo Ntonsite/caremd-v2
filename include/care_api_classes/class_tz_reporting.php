@@ -10591,7 +10591,9 @@ paramater_name as id
 					<?php
 					fputcsv($filename, array($HeaderArray[0], $HeaderArray[1], $HeaderArray[2], $HeaderArray[3], $HeaderArray[4], $HeaderArray[5], $HeaderArray[6]));
 
-					$this->sql = "SELECT pricelist.partcode, bare.item_number,bare.description,sum(amount) as qty, sum(amount*materialcost) as total_cost, sum(amount*price) as total_sales,sum(amount*price)-sum(amount*materialcost) as profit  FROM care_tz_billing_archive_elem bare INNER JOIN care_tz_drugsandservices pricelist ON bare.item_number=pricelist.item_id WHERE from_unixtime(date_change,'%Y-%m-%d') BETWEEN '" . $MysqlDateFrom . "' AND '" . $MysqlDateTo . "' AND pricelist.purchasing_class like 'drug_list%' $insurance $admission  GROUP BY pricelist.partcode ORDER BY description ASC";
+					$this->sql = "SELECT pricelist.item_id, pricelist.partcode, bare.item_number,bare.description,sum(amount) as qty, sum(amount*materialcost) as total_cost, sum(amount*price) as total_sales,sum(amount*price)-sum(amount*materialcost) as profit  FROM care_tz_billing_archive_elem bare INNER JOIN care_tz_drugsandservices pricelist ON bare.item_number=pricelist.item_id WHERE from_unixtime(date_change,'%Y-%m-%d') BETWEEN '" . $MysqlDateFrom . "' AND '" . $MysqlDateTo . "' AND pricelist.purchasing_class like 'drug_list%' $insurance $admission  GROUP BY pricelist.item_id ORDER BY description ASC";
+
+
 
 					$this->result = $db->Execute($this->sql);
 
