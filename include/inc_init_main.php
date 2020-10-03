@@ -17,9 +17,8 @@ $hospital_logo = 'haydom.png';
 #NHIF Service Credentials
 #For use when integrating wiht NHIF Restful Service
 #
-/*
+
 $nhif_base = 'https://verification.nhif.or.tz/NHIFService';
-#$nhif_test_base = 'https://verification.nhif.or.tz/test/nhifservice';
 $nhif_claim_server ='https://verification.nhif.or.tz/claimsserver';
 $nhif_claim_url = 'https://verification.nhif.or.tz/claimsserver/api/v1/Packages/GetPricePackage';
 
@@ -27,9 +26,9 @@ $claims_token_url = 'https://verification.nhif.or.tz/ClaimsServer/Token';
 $claims_api_url = 'https://verification.nhif.or.tz/ClaimsServer/api/v1/Claims/SubmitFolios';
 $claim_reconciation='https:/verification.nhif.or.tz/claimsServer/api/v1/claims/getSubmittedCl
 aims';
-*/
 
 
+/*
 $nhif_base = 'https://verification.nhif.or.tz/NHIFService';
 #$nhif_test_base = 'https://verification.nhif.or.tz/test/nhifservice';
 $nhif_claim_server ='http://196.13.105.15/claimsserver';
@@ -38,7 +37,7 @@ $nhif_claim_url = 'http://196.13.105.15/claimsserver/api/v1/Packages/GetPricePac
 $claims_token_url = 'http://196.13.105.15/ClaimsServer/Token';
 $claims_api_url = 'http://196.13.105.15/ClaimsServer/api/v1/Claims/SubmitFolios';
 
-
+*/
 
 
 
