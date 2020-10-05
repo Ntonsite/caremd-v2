@@ -182,6 +182,7 @@ class GlobalConfig extends Core {
 	 */
 	function getConfigValue($type = '') {
 		global $db;
+		
 
 		if (empty($type) || !$type) {
 			return '';

@@ -531,9 +531,9 @@ class selianreport extends report
 			$diagnosisesSQL = "SELECT
                 diag.ICD_10_code as code, diag.opd_series,  diag.opd_name, cp.date_birth, cp.sex, cp.pid
                 FROM care_tz_diagnosis AS diag
-                LEFT JOIN care_person AS cp
+                INNER JOIN care_person AS cp
                     ON diag.PID = cp.pid
-                LEFT JOIN care_encounter ce
+                INNER JOIN care_encounter ce
                     ON ce.encounter_nr = diag.encounter_nr
                 WHERE diagnosis_type = 'final'
                 AND $sql_timeframe $hf $idara ";

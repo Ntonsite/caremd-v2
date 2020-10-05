@@ -139,7 +139,42 @@ if (IS_TANZANIAN) {
 							$LD_Elements[$column][$row]['restricted'] = $drugs_row['nhif_is_restricted'];
 							$LD_Elements[$column][$row]['item_id'] = $drugs_row['item_id'];
 						}
-					} else {
+					} elseif($insurance_ID<1) {
+						$row++;
+						if ($row >= $max_row) {
+							$column++;
+							$row = 0;
+						}
+						//check if show price is enabled
+						$sqlShowPrice="SELECT value FROM care_config_global WHERE type='show_price_on_prescription'";
+						$showPriceResult=$db->Execute($sqlShowPrice);
+						$showPriceRow=$showPriceResult->FetchRow();
+						if ($showPriceRow['value'] == 1) {
+							$showPriceEnabled = 1;
+						}else{
+							$showPriceEnabled = 0;
+						}
+
+						$cashPrice='';
+
+						if ($showPriceEnabled == 1) {
+							$cashPrice=0;
+							$itemNumber = 'LAB' . $parameters['nr'];
+							$sqlCashPrice="SELECT unit_price FROM care_tz_drugsandservices WHERE item_number='$itemNumber'";
+							$cashPriceResult=$db->Execute($sqlCashPrice);
+							$cashPriceRow=$cashPriceResult->FetchRow();
+							$cashPrice= '(Tsh.'.$cashPriceRow['unit_price'].')';
+
+
+							
+						}
+
+						$LD_Elements[$column][$row]['type'] = 'normal';
+						$LD_Elements[$column][$row]['value'] = $parameters['name'];
+						$LD_Elements[$column][$row]['id'] = $parameters['id'];
+						$LD_Elements[$column][$row]['cash'] =$cashPrice;
+
+					}else{
 						$row++;
 						if ($row >= $max_row) {
 							$column++;

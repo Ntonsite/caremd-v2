@@ -95,6 +95,8 @@ if ($search && !empty($keyword)) {
 	# Get the resulting record count
 	if ($linecount = $lab_obj->LastRecordCount()) {
 
+
+
 		if ($mode != 'paginate') {
 			$_SESSION['sess_searchkey'] = $keyword;
 		}
@@ -105,9 +107,13 @@ if ($search && !empty($keyword)) {
 			$pagen->setTotalDataCount($totalcount);
 		} else {
 
+
+
 			if ($editmode) {
+			
 				$lab_obj->searchEncounterLaboratoryInfo($keyword);
 			} else {
+				
 				$lab_obj->searchEncounterLabResults($keyword);
 			}
 			$totalcount = $lab_obj->LastRecordCount();
@@ -208,7 +214,7 @@ if ($linecount) {
 
 	# Create the column descriptors
 	?>
-                        <table border=0 cellpadding=3 cellspacing=1>
+                        <table border=1 cellpadding=3 cellspacing=1>
                             <tr class="wardlisttitlerow">
 
                                 <td><b>

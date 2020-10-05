@@ -1,4 +1,5 @@
 <?php
+
 require './roots.php';
 require $root_path . 'include/inc_environment_global.php';
 require $root_path . 'language/en/lang_en_konsil_chemlabor.php';
@@ -38,7 +39,6 @@ $datetime2 = date_create($patient['date_birth']);
 $interval = date_diff($datetime1, $datetime2); 
 $days=$interval->format('%R%a days') . "\n";
 $dobDiff=abs($days);
-
 
 
 
@@ -423,6 +423,8 @@ if ($records) {
 	$columns = 0;
 	$ptrack = 0;
 
+
+
 //echo $requestData;
 	while (list($groupId, $paramEnc) = $helper->customEach($requestData)) {
 		$gName = $lab_obj->getGroupName($groupId);
@@ -471,9 +473,13 @@ if ($records) {
 
 echo $cache;
 
+
+
+
 echo '</table>';
-$from = $from ?? "";
-$edit = $edit ?? "";
+
+$from = isset($from) ? $from : "";
+$edit = isset($edit) ? $edit : "";
 echo '
 <input type="hidden" name="sid" value="' . $sid . '">
 <input type="hidden" name="from" value="' . $from . '">
@@ -505,6 +511,8 @@ if (@$fileRecords) {
 		$fileBtns .= '<button onclick="openFileResults(\'' . $fileRecord["file_path"] . '\')" class="btn btn-sm btn-success">View ' . $fileRecord['date'] . ' Results</button <br>';
 	}
 }
+
+
 
 $labcommentSQL="SELECT batch_nr,lab_comment FROM care_test_findings_chemlab WHERE lab_comment<>'' AND encounter_nr=".$encounter_nr;
 $disp="";

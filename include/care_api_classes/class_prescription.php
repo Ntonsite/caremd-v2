@@ -292,7 +292,7 @@ class Prescription extends Core {
 			$weberp_cat = 'SP';
 		}
 
-		$this->sql = 'SELECT  item_description as description, item_id as drug_id, partcode as stockid, not_in_use, nhif_item_code, nhif_is_restricted FROM ' .
+		$this->sql = 'SELECT  item_description as description, item_id as drug_id, partcode as stockid, not_in_use, nhif_item_code, nhif_is_restricted,unit_price FROM ' .
 		$this->tb_drugsandservices;
 
 		$this->sql .= $query_string . ' ' . $query;
@@ -397,6 +397,46 @@ class Prescription extends Core {
 			}
 		}
 		return $isNHIFMember;
+	}
+
+	public function isCash() {
+		global $db;
+		$insurance_ID = 0;
+		$isCash = 0;
+		$pid = @($_SESSION['sess_pid']) ? $_SESSION['sess_pid'] : 0;
+
+		$patientSQL = "SELECT insurance_ID from care_person WHERE pid = '$pid'";
+		$patientResult = $db->Execute($patientSQL);
+
+		if (@$patientResult && $patientResult->RecordCount()) {
+			$patient = $patientResult->FetchRow();
+			$insurance_ID = $patient['insurance_ID'];
+		}
+
+		if ($insurance_ID < 1) {	    	
+             $isCash=1;
+			
+		}
+		return $isCash;
+	}
+
+	public function showPrice() {
+		global $db;
+		$showPrice=0;	
+
+		$showPriceSQL = "SELECT value from care_config_global WHERE type = 'show_price_on_prescription'";
+		$showPriceResult = $db->Execute($showPriceSQL);
+
+		if (@$showPriceResult && $showPriceResult->RecordCount()) {
+			$showPrice = $showPriceResult->FetchRow();
+			$showPrice = $showPrice['value'];
+		}
+
+		if ($showPrice == 1) {	    	
+             $showPrice=1;
+			
+		}
+		return $showPrice;
 	}
 
 	function nhifCardNumber($pid){
@@ -780,13 +820,17 @@ $db->Execute($this->sql);
 	}
 
 	function DisplayDrugs($drug_list) {
+
 		sort($drug_list);
 		if (is_array($drug_list)) {
 			while (list($x, $v) = each($drug_list)) {
 				if ($v['nhif_is_restricted'] && $this->isNHIFMember()) {
 					echo '<option ' . (($v['nhif_is_restricted'] == 1) ? ' style="color:red;" ' : '') . ' value="' . $v['drug_id'] . '">';
 					echo $v['description'] . (($v['nhif_is_restricted'] == 1) ? ' &nbsp; &nbsp; &lsaquo;&mdash; Item Restricted' : '');
-				} else {
+				} elseif($this->isCash() && $this->ShowPrice()) {
+					echo '<option ' . (($v['not_in_use'] == 1) ? ' disabled="disabled" style="color:red;" ' : '') . ' value="' . $v['drug_id'] . '">';
+					echo $v['description'].'('.'tsh.'.number_format($v['unit_price']).')' . (($v['not_in_use'] == 1) ? ' &nbsp; &nbsp; &lsaquo;&mdash; Out Of Stock' : '');
+				}else {
 					echo '<option ' . (($v['not_in_use'] == 1) ? ' disabled="disabled" style="color:red;" ' : '') . ' value="' . $v['drug_id'] . '">';
 					echo $v['description'] . (($v['not_in_use'] == 1) ? ' &nbsp; &nbsp; &lsaquo;&mdash; Out Of Stock' : '');
 				}
