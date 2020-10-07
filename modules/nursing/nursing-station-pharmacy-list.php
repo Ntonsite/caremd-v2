@@ -359,7 +359,7 @@ while ($rows = $RESULT_TOTALDOSE->FetchRow()) {
    // echo "<pre>"; print_r($row); echo "</pre>";
 
     $sqlIssued="SELECT *, SUM(qtyIssued) AS totalGiven FROM care_tz_ward_dispensed as dis INNER JOIN care_encounter_prescription cep ON  dis.prescriptionNr=cep.nr
-    INNER JOIN care_tz_drugsandservices as ds ON ds.item_id=cep.article_item_number WHERE cep.article_item_number='".$rows['article_item_number']."' AND wardNr='".$ward_nr."' AND cep.is_disabled<>1 GROUP BY cep.article_item_number";
+    INNER JOIN care_tz_drugsandservices as ds ON ds.item_id=cep.article_item_number INNER JOIN care_encounter ce ON ce.encounter_nr=cep.encounter_nr WHERE cep.article_item_number='".$rows['article_item_number']."' AND wardNr='".$ward_nr."' AND cep.is_disabled<>1 AND ce.is_discharged=0  GROUP BY cep.article_item_number";
     $resultIssued=$db->Execute($sqlIssued);
 
     if ($rowsIssued=$resultIssued->FetchRow()) {
