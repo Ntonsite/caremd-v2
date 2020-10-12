@@ -22,6 +22,21 @@
                             </select> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
 	                        </label>
+	                        <label>
+	                        	<select name="in_out">
+	                        		<option value="2" selected= >OPD</option>
+	                        		<option value="1"  >IPD</option>
+	                        		<?php
+	                        		if ($_POST['in_out']==1) {
+	                        			?>
+	                        			<option value="1" selected >IPD</option>
+	                        			<?php
+	                        			
+	                        		}
+	                        		?>
+	                        		
+	                        	</select>
+	                        </label>
 							<label>
 								<input type="submit" name="show" value="<?php echo $LDShow; ?>">
 							</label>

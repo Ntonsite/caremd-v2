@@ -1,68 +1,111 @@
-<?php
+<html>
+    <head>
 
-error_reporting(E_COMPILE_ERROR | E_ERROR | E_CORE_ERROR);
+    </head>
+</html>
+<?php
 require('./roots.php');
 require($root_path . 'include/inc_environment_global.php');
-//require('con_db.php');
-//connect_db();
-#Load and create paginator object
-require_once($root_path . 'include/care_api_classes/class_tz_reporting.php');
-require_once($root_path . 'include/care_api_classes/class_department.php');
-
+$lang_tables[] = 'date_time.php';
+$lang_tables[] = 'reporting.php';
+require($root_path . 'include/inc_front_chain_lang.php');
+require($root_path . 'language/en/lang_en_reporting.php');
+require($root_path . 'language/en/lang_en_date_time.php');
+require($root_path . 'include/inc_date_format_functions.php');
+require_once($root_path . 'include/care_api_classes/class_tz_insurance.php');
+require_once($root_path . 'include/care_api_classes/class_ward.php');
 $pageName = "Reporting";
 
+$ward_obj = new Ward;
+$items = 'nr,name';
+$TP_SELECT_BLOCK_IN = '';
+$ward_info = $ward_obj->getAllWardsItemsObject($items);
+$TP_SELECT_BLOCK_IN.='<select name="current_ward_nr" size="1"><option value="all_ipd">all</option>';
+if (!empty($ward_info) && $ward_info->RecordCount()) {
+    while ($station = $ward_info->FetchRow()) {
+        $TP_SELECT_BLOCK_IN.='
+                                <option value="' . $station['nr'] . '" ';
+        if (isset($current_ward_nr) && ($current_ward_nr == $station['nr']))
+            $TP_SELECT_BLOCK.='selected';
+        $TP_SELECT_BLOCK_IN.='>' . $station['name'] . '</option>';
+    }
+}
+$TP_SELECT_BLOCK_IN.='</select>';
+
+require_once($root_path . 'include/care_api_classes/class_department.php');
 $dept_obj = new Department;
+$medical_depts = $dept_obj->getAllMedical();
+$TP_SELECT_BLOCK = '<select name="dept_nr" size="1"><option value="all_opd">all</option>';
+$later_depts = $medical_depts;
+
+while (list($x, $v) = each($medical_depts)) {
+    $TP_SELECT_BLOCK.='
+    <option value="' . $v['nr'] . '">';
+    $buffer = $v['LD_var'];
+    if (isset($$buffer) && !empty($$buffer))
+        $TP_SELECT_BLOCK.=$$buffer;
+    else
+        $TP_SELECT_BLOCK.=$v['name_formal'];
+    $TP_SELECT_BLOCK.='</option>';
+}
+$TP_SELECT_BLOCK.='</select>';
 
 
+
+$insurance_obj = new Insurance_tz;
+
+#Load and create paginator object
+require_once($root_path . 'include/care_api_classes/class_tz_reporting.php');
 /**
  * getting summary of OPD...
  */
 $rep_obj = new selianreport();
-$medical_depts = $dept_obj->getAllMedical();
-$lang_tables[] = 'date_time.php';
-$lang_tables[] = 'reporting.php';
-require($root_path . 'include/inc_front_chain_lang.php');
-require_once('include/inc_timeframe.php');
-$month = array_search(1, $ARR_SELECT_MONTH);
-$year = array_search(1, $ARR_SELECT_YEAR);
 
 
-
-
-
-
-
-if ($printout) {
-
-    $start = $_GET['start'];
-    $end = $_GET['end'];
-    $start_timeframe = $start;
-    $end_timeframe = $end;
-    $startdate = date("y.m.d ", $start_timeframe);
-    $enddate = date("y.m.d", $end_timeframe);
-} else {
-    $start = mktime(0, 0, 0, $month, 1, $year);
-    $end = mktime(0, 0, 0, $month + 1, 1, $year);
-
-    //$start_timeframe = mktime (0,0,0,$month, 1, $year);
-    //$end_timeframe = mktime (0,0,0,$month+1, 0, $year);
-
-    $startdate = date("Y-m-d ", $start);
-    $enddate = date("Y-m-d", $end);
-}
+//require_once('include/inc_timeframe.php');
+/**
+ * Getting the timeframe...
+ */
 $debug = FALSE;
-($debug) ? $db->debug = TRUE : $db->debug = FALSE;
+$PRINTOUT = FALSE;
+$EXPORT = FALSE;
 
-// Last day of requested month
-//echo $startdate = gmdate("Y-m-d H:i:s", $start_timeframe);
-//echo $enddate = gmdate("Y-m-d H:i:s", $end_timeframe);
+if (empty($_GET['printout']) && empty($_GET['export'])) {
+    if (isset($_POST['date_from']) && !empty($_POST['date_from']) && isset($_POST['date_to']) && !empty($_POST['date_to'])) {
+
+        $selected_date_from = @formatDate2STD($_POST['date_from'], $date_format);
+        $selected_date_to = @formatDate2STD($_POST['date_to'], $date_format);
+    }
+}
+$dept_nr = 0;
+if (isset($_POST['admission_id'])) {
+    switch ($_POST['admission_id']) {
+        case 1:
+            $dept_nr = $_POST['current_ward_nr'];
+        case 2:
+            $dept_nr = $_POST['dept_nr'];
+    }
+}
+$insurance = 0;
+if (isset($_POST['insurance'])) {
+    $insurance = $_POST['insurance'];
+}
 
 
+
+if (isset($_GET['printout'])) {
+    $PRINTOUT = TRUE;
+}
+
+if (isset($_GET['export'])) {
+    $EXPORT = TRUE;
+}
 
 require_once($root_path . 'main_theme/head.inc.php');
 require_once($root_path . 'main_theme/header.inc.php');
 require_once($root_path . 'main_theme/topHeader.inc.php');
 
+  
 
 require_once('gui/gui_OPD_Admission.php');
 

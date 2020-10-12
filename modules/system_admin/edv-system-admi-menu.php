@@ -255,6 +255,16 @@ switch ($dbtype) {
                             </a></FONT><br>
                         </td>
                     </tr>
+                    <tr>
+                        <td bgcolor="#e9e9e9"><FONT  color="#0000cc" FACE="verdana,arial" size=2><b><?php echo 'Show Price List on Prescription'; ?></b> </FONT></td>
+                    </tr>
+                    <tr>
+
+                        <td bgcolor="#ffffff"><FONT  color="#0000cc" FACE="verdana,arial" size=2>&nbsp;&nbsp;&nbsp;<img <?php echo createComIcon($root_path, 'redpfeil.gif', '0', 'absmiddle') ?>>
+                            <a href="edv_show_price.php?sid=<?php echo $sid . "&lang=" . $lang ?>" target="SYSADMIN_WFRAME"><?php echo 'Show Pricelist on Prescription'; ?>
+                            </a></FONT><br>
+                        </td>
+                    </tr>
 
 <!--                    <tr>
                         <td bgcolor="#ffffff"><FONT  color="#0000cc" FACE="verdana,arial" size=2>&nbsp;&nbsp;&nbsp;<img <?php echo createComIcon($root_path, 'redpfeil.gif', '0', 'absmiddle') ?>>

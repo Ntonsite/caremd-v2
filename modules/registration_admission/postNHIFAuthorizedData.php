@@ -4,6 +4,8 @@ require($root_path . 'include/inc_environment_global.php');
 require_once($root_path . 'include/inc_front_chain_lang.php');
 global $db;
 
+
+
 $nhif_full_name = $_POST['nhif_full_name'];
 $nhif_card_status = $_POST['nhif_card_status'];
 $nhif_authorization_status = $_POST['nhif_authorization_status'];

@@ -1016,19 +1016,24 @@ if (!isset($pid) || !$pid) {
 
 	// CONSULTATION FEE
 	$cTemp='';
-    $cTemp = isset($cTemp) ? $cTemp : null; 
+    $cTemp = isset($cTemp) ? $cTemp : null; 	
 
+	$patNHIFSQL = "SELECT nhif_authorization_details FROM care_person where pid = '$pid'";
+	$patNHIFResult = $db->Execute($patNHIFSQL);
 
-	//we picked last enconter because not new encounter created yet
-	$sqlNhifScheme="SELECT max(encounter_nr) as lastVisitNr, nhif_scheme_id FROM care_encounter
-	WHERE pid=".$pid;
-	$resultNhifScheme=$db->Execute($sqlNhifScheme);
-	$NhifScheme=$resultNhifScheme->FetchRow();
-	$NhifSchemeId=$NhifScheme['nhif_scheme_id'];
+	if (@$patNHIFResult && $patNHIFResult->RecordCount() > 0) {
+				$pat = $patNHIFResult->FetchRow();
+				$patJson = $pat['nhif_authorization_details'];
+				if (@$patJson) {
+				$pData = json_decode($patJson);
+				$nhif_scheme_id = $pData->SchemeID;
+				 $NhifSchemeId=$nhif_scheme_id;
+			}
+		}
 
 	//echo $sqlNhifScheme;die;
 
-	if ($NhifSchemeId) {
+	if (@$NhifSchemeId) {
 
 		$cTemp = $cTemp . '<select name="consultation_fee">
 							<option value=""></option>';

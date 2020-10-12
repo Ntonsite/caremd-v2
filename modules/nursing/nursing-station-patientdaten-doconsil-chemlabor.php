@@ -1049,10 +1049,11 @@ for ($i = 0; $i <= $max_row; $i++) {
 				echo '</td><td>';
 
 				$fontColor = $LD_Elements[$j][$i]['restricted'] == 1 ? 'red' : '';
+				$tsh = isset($LD_Elements[$j][$i]['cash']) ? $LD_Elements[$j][$i]['cash'] : '';
 				if ($edit)
 				//test label
 				{
-					echo '<a href="javascript:setM(\'' . $LD_Elements[$j][$i]['id'] . '\', \'' . $editable . '\',\'' . $LD_Elements[$j][$i]['item_id'] . '\',\'' .$isNHIF . '\',\'' . $LD_Elements[$j][$i]['restricted'] . '\',\'' . $LD_Elements[$j][$i]['item_code'] . '\')">' . '<font size="2" color="' . $fontColor . '">' . $LD_Elements[$j][$i]['value'] . '</a>';
+					echo '<a href="javascript:setM(\'' . $LD_Elements[$j][$i]['id'] . '\', \'' . $editable . '\',\'' . $LD_Elements[$j][$i]['item_id'] . '\',\'' .$isNHIF . '\',\'' . $LD_Elements[$j][$i]['restricted'] . '\',\'' . $LD_Elements[$j][$i]['item_code'] . '\')">' . '<font size="2" color="' . $fontColor . '">' . $LD_Elements[$j][$i]['value'].$tsh .'</a>';
 				} else {
 					echo '<font size="2" color="' . $fontColor . '">' . $LD_Elements[$j][$i]['value'] . '</font>';
 				}

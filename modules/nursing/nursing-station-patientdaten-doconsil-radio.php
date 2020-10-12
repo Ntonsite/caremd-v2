@@ -621,16 +621,22 @@ echo "<img src='".$root_path."classes/barcode/image.php?code=".$batch_nr."&style
                                             <table border=0 cellpadding=1 cellspacing=1 width=100%>
 
                                                 <?php
+
 echo '<tr><td colspan=2><div class=fva2_ml10 style="padding-top: 10px;padding-bottom: 10px;">' . $LDReqTest . ':<br>';
 echo '<select name="test_request" id="testRequest">';
 echo '<option value="">==Select a test==</option>';
 $drug_list = $pres_obj->getDrugList('xray', '0');
 for ($i = 0; $i < sizeOf($drug_list); $i++) {
+	$unit_price='';
+	if ($pres_obj->isCash() && $pres_obj->showPrice()) {
+		$unit_price='(Tsh'.$drug_list[$i]['unit_price'].')';
+		
+	}
 
 	if ($drug_list[$i][1] == $stored_request['test_request']) {
-		echo '<option data-isRestricted="' . $drug_list[$i]['nhif_is_restricted'] . '" selected value="' . $drug_list[$i][1] . '">' . $drug_list[$i][0] . '</option>';
+		echo '<option data-isRestricted="' . $drug_list[$i]['nhif_is_restricted'] . '" selected value="' . $drug_list[$i][1] . '">' . $drug_list[$i][0].$unit_price . '</option>';
 	} else {
-		echo '<option data-isRestricted="' . $drug_list[$i]['nhif_is_restricted'] . '"  value="' . $drug_list[$i][1] . '">' . $drug_list[$i][0] . '</option>';
+		echo '<option data-isRestricted="' . $drug_list[$i]['nhif_is_restricted'] . '"  value="' . $drug_list[$i][1] . '">' . $drug_list[$i][0] .$unit_price. '</option>';
 	}
 }
 echo '</select></td></tr>';

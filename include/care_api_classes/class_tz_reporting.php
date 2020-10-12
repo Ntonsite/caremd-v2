@@ -6022,7 +6022,72 @@ paramater_name as id
 		//------------------------------------------------------------------------------------------------------
 		function Get_Visits_Count()
 		{
-			global $db, $tmp_tbl_admissions;
+			global $db, $tmp_tbl_admissions,$start,$end,$_POST;
+
+
+
+			//echo date('Y-m-d',$end);die;
+			//echo $last_day_this_month  = date('09-t-Y');die;
+
+			$normalDate=date('Y-m-d',$start);
+			//$string=strtotime(date("Y-m-t", $normalDate));die;
+			$endDateThisMonth=date('Y-m-t',$start);
+            
+            //get end day for selected month
+			$explodeDate=explode("-", $endDateThisMonth);
+			$endDay=$explodeDate[2];
+
+
+			$startDate=$normalDate.' 00:00:00';
+			$endDate=$endDateThisMonth.' 23:59:59';
+
+			if ($_POST['in_out']==1) {
+				$in_out=1;
+				
+			}elseif ($_POST['in_out'] == 2) {
+				$in_out=2;
+			}else{
+				$in_out=2;
+			}
+
+			
+			$sqlAgeRange="SELECT
+            SUM(IF(DATEDIFF(curdate(),care_person.date_birth) < $endDay && care_person.sex='m',1,0)) as underMonthMale,
+            SUM(IF(DATEDIFF(curdate(),care_person.date_birth) < $endDay &&care_person.sex='f',1,0)) as underMonthFemale,
+
+            SUM(IF(DATEDIFF(curdate(),care_person.date_birth) BETWEEN $endDay AND 364 &&care_person.sex='m',1,0)) as MonthToUnderYearMale,             
+            SUM(IF(DATEDIFF(curdate(),care_person.date_birth) BETWEEN $endDay AND 364 &&care_person.sex='f',1,0)) as MonthToUnderYearFemale,            
+                     
+            SUM(IF(DATEDIFF(curdate(),care_person.date_birth) BETWEEN 365 AND 1824 &&care_person.sex='m',1,0)) as yearToUnderFiveYearsMale,
+            SUM(IF(DATEDIFF(curdate(),care_person.date_birth) BETWEEN 365 AND 1824 &&care_person.sex='f',1,0)) as yearToUnderFiveYearsFemale,
+            
+            SUM(IF(DATEDIFF(curdate(),care_person.date_birth) BETWEEN 1825 AND 21899 &&care_person.sex='m',1,0)) as fiveYearsToUnderSixtyYearsMale,            
+            SUM(IF(DATEDIFF(curdate(),care_person.date_birth) BETWEEN 1825 AND 21899 &&care_person.sex='f',1,0)) as fiveYearsToUnderSixtyYearsFemale,
+
+            SUM(IF(DATEDIFF(curdate(),care_person.date_birth)>21900 &&care_person.sex='m',1,0)) as sixtyYearsAndAboveMale,
+            SUM(IF(DATEDIFF(curdate(),care_person.date_birth)>21900 &&care_person.sex='f',1,0)) as sixtyYearsAndAboveFemale
+
+            FROM care_person INNER JOIN care_encounter 
+            ON care_encounter.pid=care_person.pid 
+            WHERE care_encounter.encounter_class_nr=$in_out AND care_encounter.encounter_date BETWEEN '$startDate' AND '$endDate'";
+
+            //echo $sqlAgeRange;die;
+
+            $resultAge=$db->Execute($sqlAgeRange);
+
+
+
+            $rowAge=$resultAge->FetchRow();
+
+			
+
+
+			
+
+
+
+			
+              
 
 			$debug = FALSE;
 			($debug) ? $db->debug = TRUE : $db->debug = FALSE;
@@ -6051,63 +6116,70 @@ paramater_name as id
 			$arr_reg['under60']['female'];
 			$arr_reg['under60']['total'];
 
+
+
 			/*             * ************* Admissions Under 1 Month *************** */
 
-			$sql = "SELECT count(*) as age_m FROM $tmp_tbl_admissions
-					   WHERE sex='m' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 month))";
-			if ($rs_ptr = $db->Execute($sql)) {
-				$row_m = $rs_ptr->FetchRow();
-			}
+			// $sql = "SELECT count(*) as age_m FROM $tmp_tbl_admissions
+			// 		   WHERE sex='m' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 month))";
+			// if ($rs_ptr = $db->Execute($sql)) {
+			// 	$row_m = $rs_ptr->FetchRow();
+			// }
 
-			$sql = "SELECT count(*) as age_f FROM $tmp_tbl_admissions
-					   WHERE sex='f' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 month))";
-			if ($rs_ptr = $db->Execute($sql)) {
-				$row_f = $rs_ptr->FetchRow();
-			}
 
-			$arr_reg['underage']['male'] = $row_m['age_m'];
-			$arr_reg['underage']['female'] = $row_f['age_f'];
-			$arr_reg['underage']['total'] = $row_m['age_m'] + $row_f['age_f'];
 
-			/*             * *********** Under 1 year over 1 Month ********************** */
+			// $sql = "SELECT count(*) as age_f FROM $tmp_tbl_admissions
+			// 		   WHERE sex='f' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 month))";
+			// if ($rs_ptr = $db->Execute($sql)) {
+			// 	$row_f = $rs_ptr->FetchRow();
+			// }
 
-			$sql = "SELECT count(*) as age_m FROM $tmp_tbl_admissions
-					   WHERE sex='m' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 year))
-					   AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 month))";
-			if ($rs_ptr = $db->Execute($sql)) {
-				$row_m = $rs_ptr->FetchRow();
-			}
+			$arr_reg['underage']['male'] = $rowAge['underMonthMale'];
+			$arr_reg['underage']['female'] = $rowAge['underMonthFemale'];
+			$arr_reg['underage']['total'] = $rowAge['underMonthMale'] + $rowAge['underMonthFemale'];
 
-			$sql = "SELECT count(*) as age_f FROM $tmp_tbl_admissions
-					   WHERE sex='f' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 year))
-					   AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 month))";
-			if ($rs_ptr = $db->Execute($sql)) {
-				$row_f = $rs_ptr->FetchRow();
-			}
+			/*             * *********** One Month to under 1 year ********************** */
 
-			$arr_reg['underyr']['male'] = $row_m['age_m'];
-			$arr_reg['underyr']['female'] = $row_f['age_f'];
-			$arr_reg['underyr']['total'] = $row_m['age_m'] + $row_f['age_f'];
+			// $sql = "SELECT count(*) as age_m FROM $tmp_tbl_admissions
+			// 		   WHERE sex='m' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 year))
+			// 		   AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 month))";
+			// if ($rs_ptr = $db->Execute($sql)) {
+			// 	$row_m = $rs_ptr->FetchRow();
+			// }
 
-			/*             * *********** Under 5 years over 1 Year ********************** */
+			// $sql = "SELECT count(*) as age_f FROM $tmp_tbl_admissions
+			// 		   WHERE sex='f' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 year))
+			// 		   AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 month))";
+			// if ($rs_ptr = $db->Execute($sql)) {
+			// 	$row_f = $rs_ptr->FetchRow();
+			// }
+           
+           
+			$arr_reg['underyr']['male'] = $rowAge['MonthToUnderYearMale'];
+			$arr_reg['underyr']['female'] = $rowAge['MonthToUnderYearFemale'];
+			$arr_reg['underyr']['total'] = $rowAge['MonthToUnderYearMale'] + $rowAge['MonthToUnderYearFemale'];
 
-			$sql = "SELECT count(*) as age_m FROM $tmp_tbl_admissions
-					   WHERE sex='m' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 5 year))
-					   AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 year))";
-			if ($rs_ptr = $db->Execute($sql)) {
-				$row_m = $rs_ptr->FetchRow();
-			}
+			/*             * *********** One year to under five years ********************** */
 
-			$sql = "SELECT count(*) as age_f FROM $tmp_tbl_admissions
-					   WHERE sex='f' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 5 year))
-					    AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 year))";
-			if ($rs_ptr = $db->Execute($sql)) {
-				$row_f = $rs_ptr->FetchRow();
-			}
+			// $sql = "SELECT count(*) as age_m FROM $tmp_tbl_admissions
+			// 		   WHERE sex='m' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 5 year))
+			// 		   AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 year))";
+			// if ($rs_ptr = $db->Execute($sql)) {
+			// 	$row_m = $rs_ptr->FetchRow();
+			// }
 
-			$arr_reg['under5']['male'] = $row_m['age_m'];
-			$arr_reg['under5']['female'] = $row_f['age_f'];
-			$arr_reg['under5']['total'] = $row_m['age_m'] + $row_f['age_f'];
+			// $sql = "SELECT count(*) as age_f FROM $tmp_tbl_admissions
+			// 		   WHERE sex='f' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 5 year))
+			// 		    AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 year))";
+			// if ($rs_ptr = $db->Execute($sql)) {
+			// 	$row_f = $rs_ptr->FetchRow();
+			// }
+
+			
+
+			$arr_reg['under5']['male'] = $rowAge['yearToUnderFiveYearsMale'];
+			$arr_reg['under5']['female'] = $rowAge['yearToUnderFiveYearsFemale'];
+			$arr_reg['under5']['total'] = $rowAge['yearToUnderFiveYearsMale'] + $rowAge['yearToUnderFiveYearsFemale'];
 
 			/*             * *********** Over 5 years ********************** */
 			/*
@@ -6126,43 +6198,43 @@ paramater_name as id
 			              $arr_reg['over5']['total'] =   $row_m['age_m'] + $row_f['age_f'];
 		*/
 
-			/*             * *********** Over 60 years ********************** */
+			/*             * *********** Five years to under sixty years ********************** */
 
-			$sql = "SELECT count(*) as age_m FROM $tmp_tbl_admissions
-					   WHERE sex='m' AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 60 year))";
-			if ($rs_ptr = $db->Execute($sql)) {
-				$row_m = $rs_ptr->FetchRow();
-			}
+			// $sql = "SELECT count(*) as age_m FROM $tmp_tbl_admissions
+			// 		   WHERE sex='m' AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 60 year))";
+			// if ($rs_ptr = $db->Execute($sql)) {
+			// 	$row_m = $rs_ptr->FetchRow();
+			// }
 
-			$sql = "SELECT count(*) as age_f FROM $tmp_tbl_admissions
-					   WHERE sex='f' AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 60 year))";
-			if ($rs_ptr = $db->Execute($sql)) {
-				$row_f = $rs_ptr->FetchRow();
-			}
+			// $sql = "SELECT count(*) as age_f FROM $tmp_tbl_admissions
+			// 		   WHERE sex='f' AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 60 year))";
+			// if ($rs_ptr = $db->Execute($sql)) {
+			// 	$row_f = $rs_ptr->FetchRow();
+			// }
+            
+			$arr_reg['over60']['male'] = $rowAge['fiveYearsToUnderSixtyYearsMale'];
+			$arr_reg['over60']['female'] = $rowAge['fiveYearsToUnderSixtyYearsFemale'];
+			$arr_reg['over60']['total'] = $rowAge['fiveYearsToUnderSixtyYearsMale']+ $rowAge['fiveYearsToUnderSixtyYearsFemale'];
 
-			$arr_reg['over60']['male'] = $row_m['age_m'];
-			$arr_reg['over60']['female'] = $row_f['age_f'];
-			$arr_reg['over60']['total'] = $row_m['age_m'] + $row_f['age_f'];
+			/*             * *********** Sixty years and above ********************** */
 
-			/*             * *********** Under 5 years over 60 Years ********************** */
+			// $sql = "SELECT count(*) as age_m FROM $tmp_tbl_admissions
+			// 		   WHERE sex='m' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 60 year))
+			// 		   AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 5 year))";
+			// if ($rs_ptr = $db->Execute($sql)) {
+			// 	$row_m = $rs_ptr->FetchRow();
+			// }
 
-			$sql = "SELECT count(*) as age_m FROM $tmp_tbl_admissions
-					   WHERE sex='m' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 60 year))
-					   AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 5 year))";
-			if ($rs_ptr = $db->Execute($sql)) {
-				$row_m = $rs_ptr->FetchRow();
-			}
+			// $sql = "SELECT count(*) as age_f FROM $tmp_tbl_admissions
+			// 		   WHERE sex='f' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 60 year))
+			// 		    AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 5 year))";
+			// if ($rs_ptr = $db->Execute($sql)) {
+			// 	$row_f = $rs_ptr->FetchRow();
+			// }
 
-			$sql = "SELECT count(*) as age_f FROM $tmp_tbl_admissions
-					   WHERE sex='f' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 60 year))
-					    AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 5 year))";
-			if ($rs_ptr = $db->Execute($sql)) {
-				$row_f = $rs_ptr->FetchRow();
-			}
-
-			$arr_reg['under60']['male'] = $row_m['age_m'];
-			$arr_reg['under60']['female'] = $row_f['age_f'];
-			$arr_reg['under60']['total'] = $row_m['age_m'] + $row_f['age_f'];
+			$arr_reg['under60']['male'] = $rowAge['sixtyYearsAndAboveMale'];
+			$arr_reg['under60']['female'] = $rowAge['sixtyYearsAndAboveFemale'];
+			$arr_reg['under60']['total'] = $rowAge['sixtyYearsAndAboveMale'] + $rowAge['sixtyYearsAndAboveFemale'];
 
 			$arr_reg['total'] = $arr_reg['underage']['total'] + $arr_reg['underyr']['total'] + $arr_reg['under5']['total'] + $arr_reg['over5']['total'] + $arr_reg['over60']['total'] + $arr_reg['under60']['total'];
 
@@ -6321,9 +6393,62 @@ paramater_name as id
 		//----------------------------------------------------------------------------------------------------
 		function Get_New_Reg_Count()
 		{
-			global $db, $tmp_tbl_admissions;
+			global $db, $tmp_tbl_admissions,$start,$end,$_POST;
 			$debug = FALSE;
 			($debug) ? $db->debug = TRUE : $db->debug = FALSE;
+
+
+			$normalDate=date('Y-m-d',$start);
+			//$string=strtotime(date("Y-m-t", $normalDate));die;
+			$endDateThisMonth=date('Y-m-t',$start);
+            
+            //get end day for selected month
+			$explodeDate=explode("-", $endDateThisMonth);
+			$endDay=$explodeDate[2];
+
+
+			$startDate=$normalDate.' 00:00:00';
+			$endDate=$endDateThisMonth.' 23:59:59';
+
+			if ($_POST['in_out']==1) {
+				$in_out=1;
+				
+			}elseif ($_POST['in_out'] == 2) {
+				$in_out=2;
+			}else{
+				$in_out=2;
+			}
+
+
+
+			$sqlAgeNew="SELECT
+            SUM(IF(DATEDIFF(curdate(),care_person.date_birth) < $endDay && care_person.sex='m' && DATE_FORMAT(care_person.date_reg,'%Y-%m-%d')=DATE_FORMAT(care_encounter.encounter_date,'%Y-%m-%d') ,1,0)) as NewUnderMonthMale,
+            SUM(IF(DATEDIFF(curdate(),care_person.date_birth) < $endDay &&care_person.sex='f'  && DATE_FORMAT(care_person.date_reg,'%Y-%m-%d')=DATE_FORMAT(care_encounter.encounter_date,'%Y-%m-%d'),1,0)) as NewUnderMonthFemale,
+
+            SUM(IF(DATEDIFF(curdate(),care_person.date_birth) BETWEEN $endDay AND 364 &&care_person.sex='m'&& DATE_FORMAT(care_person.date_reg,'%Y-%m-%d')=DATE_FORMAT(care_encounter.encounter_date,'%Y-%m-%d'),1,0)) as NewMonthToUnderYearMale,             
+            SUM(IF(DATEDIFF(curdate(),care_person.date_birth) BETWEEN $endDay AND 364 &&care_person.sex='f'&& DATE_FORMAT(care_person.date_reg,'%Y-%m-%d')=DATE_FORMAT(care_encounter.encounter_date,'%Y-%m-%d'),1,0)) as NewMonthToUnderYearFemale,            
+                     
+            SUM(IF(DATEDIFF(curdate(),care_person.date_birth) BETWEEN 365 AND 1824 &&care_person.sex='m'&& DATE_FORMAT(care_person.date_reg,'%Y-%m-%d')=DATE_FORMAT(care_encounter.encounter_date,'%Y-%m-%d'),1,0)) as NewYearToUnderFiveYearsMale,
+            SUM(IF(DATEDIFF(curdate(),care_person.date_birth) BETWEEN 365 AND 1824 &&care_person.sex='f'&& DATE_FORMAT(care_person.date_reg,'%Y-%m-%d')=DATE_FORMAT(care_encounter.encounter_date,'%Y-%m-%d'),1,0)) as NewYearToUnderFiveYearsFemale,
+            
+            SUM(IF(DATEDIFF(curdate(),care_person.date_birth) BETWEEN 1825 AND 21899 &&care_person.sex='m'&& DATE_FORMAT(care_person.date_reg,'%Y-%m-%d')=DATE_FORMAT(care_encounter.encounter_date,'%Y-%m-%d'),1,0)) as NewFiveYearsToUnderSixtyYearsMale,            
+            SUM(IF(DATEDIFF(curdate(),care_person.date_birth) BETWEEN 1825 AND 21899 &&care_person.sex='f'&& DATE_FORMAT(care_person.date_reg,'%Y-%m-%d')=DATE_FORMAT(care_encounter.encounter_date,'%Y-%m-%d'),1,0)) as NewFiveYearsToUnderSixtyYearsFemale,
+
+            SUM(IF(DATEDIFF(curdate(),care_person.date_birth)>21900 &&care_person.sex='m'&& DATE_FORMAT(care_person.date_reg,'%Y-%m-%d')=DATE_FORMAT(care_encounter.encounter_date,'%Y-%m-%d'),1,0)) as NewSixtyYearsAndAboveMale,
+            SUM(IF(DATEDIFF(curdate(),care_person.date_birth)>21900 &&care_person.sex='f'&& DATE_FORMAT(care_person.date_reg,'%Y-%m-%d')=DATE_FORMAT(care_encounter.encounter_date,'%Y-%m-%d'),1,0)) as NewSixtyYearsAndAboveFemale
+
+            FROM care_person INNER JOIN care_encounter 
+            ON care_encounter.pid=care_person.pid 
+            WHERE care_encounter.encounter_class_nr=$in_out AND care_encounter.encounter_date BETWEEN '$startDate' AND '$endDate'";
+
+
+
+            $resultNew=$db->Execute($sqlAgeNew);
+
+            $rowNew=$resultNew->FetchRow();
+
+
+
 
 			$arr_newreg['underage']['male'];
 			$arr_newreg['underage']['female'];
@@ -6335,12 +6460,7 @@ paramater_name as id
 
 			$arr_newreg['under5']['male'];
 			$arr_newreg['under5']['female'];
-			$arr_newreg['under5']['total'];
-
-			//$arr_newreg['over5']['male'];
-			//$arr_newreg['over5']['female'];
-			//$arr_newreg['over5']['total'];
-
+			$arr_newreg['under5']['total'];			
 			$arr_newreg['over60']['male'];
 			$arr_newreg['over60']['female'];
 			$arr_newreg['over60']['total'];
@@ -6351,67 +6471,72 @@ paramater_name as id
 
 			/*             * ************* Admissions Under 1 Month *************** */
 
-			$sql = "SELECT count(*) as age_m FROM $tmp_tbl_admissions
-					   WHERE sex='m' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 month))
-					   AND date_format(encounter_date,'%d.%m.%y') = date_format(date_reg,'%d.%m.%y')";
-			if ($rs_ptr = $db->Execute($sql)) {
-				$row_m = $rs_ptr->FetchRow();
-			}
+                         
+                
 
-			$sql = "SELECT count(*) as age_f FROM $tmp_tbl_admissions
-					   WHERE sex='f' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 month))
-					   AND date_format(encounter_date,'%d.%m.%y') = date_format(date_reg,'%d.%m.%y')";
-			if ($rs_ptr = $db->Execute($sql)) {
-				$row_f = $rs_ptr->FetchRow();
-			}
 
-			$arr_newreg['underage']['male'] = $row_m['age_m'];
-			$arr_newreg['underage']['female'] = $row_f['age_f'];
-			$arr_newreg['underage']['total'] = $row_m['age_m'] + $row_f['age_f'];
+
+			// $sql = "SELECT count(*) as age_m FROM $tmp_tbl_admissions
+			// 		   WHERE sex='m' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 month))
+			// 		   AND date_format(encounter_date,'%d.%m.%y') = date_format(date_reg,'%d.%m.%y')";
+			// if ($rs_ptr = $db->Execute($sql)) {
+			// 	$row_m = $rs_ptr->FetchRow();
+			// }
+
+			// $sql = "SELECT count(*) as age_f FROM $tmp_tbl_admissions
+			// 		   WHERE sex='f' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 month))
+			// 		   AND date_format(encounter_date,'%d.%m.%y') = date_format(date_reg,'%d.%m.%y')";
+			// if ($rs_ptr = $db->Execute($sql)) {
+			// 	$row_f = $rs_ptr->FetchRow();
+			// }
+
+			$arr_newreg['underage']['male'] = $rowNew['NewUnderMonthMale'];
+			$arr_newreg['underage']['female'] = $rowNew['NewUnderMonthFemale'];
+			$arr_newreg['underage']['total'] = $rowNew['NewUnderMonthMale'] + $rowNew['NewUnderMonthFemale'];
 
 			/*             * *********** Under 1 year over 1 Month ********************** */
 
-			$sql = "SELECT count(*) as age_m FROM $tmp_tbl_admissions
-					   WHERE sex='m' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 year))
-					   AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 month))
-					   AND date_format(encounter_date,'%d.%m.%y') = date_format(date_reg,'%d.%m.%y')";
-			if ($rs_ptr = $db->Execute($sql)) {
-				$row_m = $rs_ptr->FetchRow();
-			}
+			// $sql = "SELECT count(*) as age_m FROM $tmp_tbl_admissions
+			// 		   WHERE sex='m' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 year))
+			// 		   AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 month))
+			// 		   AND date_format(encounter_date,'%d.%m.%y') = date_format(date_reg,'%d.%m.%y')";
+			// if ($rs_ptr = $db->Execute($sql)) {
+			// 	$row_m = $rs_ptr->FetchRow();
+			// }
 
-			$sql = "SELECT count(*) as age_f FROM $tmp_tbl_admissions
-					   WHERE sex='f' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 year))
-					   AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 month))
-					   AND date_format(encounter_date,'%d.%m.%y') = date_format(date_reg,'%d.%m.%y')";
-			if ($rs_ptr = $db->Execute($sql)) {
-				$row_f = $rs_ptr->FetchRow();
-			}
+			// $sql = "SELECT count(*) as age_f FROM $tmp_tbl_admissions
+			// 		   WHERE sex='f' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 year))
+			// 		   AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 month))
+			// 		   AND date_format(encounter_date,'%d.%m.%y') = date_format(date_reg,'%d.%m.%y')";
+			// if ($rs_ptr = $db->Execute($sql)) {
+			// 	$row_f = $rs_ptr->FetchRow();
+			// }
 
-			$arr_newreg['underyr']['male'] = $row_m['age_m'];
-			$arr_newreg['underyr']['female'] = $row_f['age_f'];
-			$arr_newreg['underyr']['total'] = $row_m['age_m'] + $row_f['age_f'];
+			$arr_newreg['underyr']['male'] = $rowNew['NewMonthToUnderYearMale'];
+			$arr_newreg['underyr']['female'] = $rowNew['NewMonthToUnderYearFemale'];
+			$arr_newreg['underyr']['total'] = $rowNew['NewMonthToUnderYearMale'] + $rowNew['NewMonthToUnderYearFemale'];
 
 			/*             * *********** Under 5 years over 1 Year ********************** */
 
-			$sql = "SELECT count(*) as age_m FROM $tmp_tbl_admissions
-					   WHERE sex='m' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 5 year))
-					   AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 year))
-					   AND date_format(encounter_date,'%d.%m.%y') = date_format(date_reg,'%d.%m.%y')";
-			if ($rs_ptr = $db->Execute($sql)) {
-				$row_m = $rs_ptr->FetchRow();
-			}
+			// $sql = "SELECT count(*) as age_m FROM $tmp_tbl_admissions
+			// 		   WHERE sex='m' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 5 year))
+			// 		   AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 year))
+			// 		   AND date_format(encounter_date,'%d.%m.%y') = date_format(date_reg,'%d.%m.%y')";
+			// if ($rs_ptr = $db->Execute($sql)) {
+			// 	$row_m = $rs_ptr->FetchRow();
+			// }
 
-			$sql = "SELECT count(*) as age_f FROM $tmp_tbl_admissions
-					   WHERE sex='f' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 5 year))
-					    AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 year))
-						AND date_format(encounter_date,'%d.%m.%y') = date_format(date_reg,'%d.%m.%y')";
-			if ($rs_ptr = $db->Execute($sql)) {
-				$row_f = $rs_ptr->FetchRow();
-			}
+			// $sql = "SELECT count(*) as age_f FROM $tmp_tbl_admissions
+			// 		   WHERE sex='f' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 5 year))
+			// 		    AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 year))
+			// 			AND date_format(encounter_date,'%d.%m.%y') = date_format(date_reg,'%d.%m.%y')";
+			// if ($rs_ptr = $db->Execute($sql)) {
+			// 	$row_f = $rs_ptr->FetchRow();
+			// }
 
-			$arr_newreg['under5']['male'] = $row_m['age_m'];
-			$arr_newreg['under5']['female'] = $row_f['age_f'];
-			$arr_newreg['under5']['total'] = $row_m['age_m'] + $row_f['age_f'];
+			$arr_newreg['under5']['male'] = $rowNew['NewYearToUnderFiveYearsMale'];
+			$arr_newreg['under5']['female'] = $rowNew['NewYearToUnderFiveYearsFemale'];
+			$arr_newreg['under5']['total'] = $rowNew['NewYearToUnderFiveYearsMale'] + $rowNew['NewYearToUnderFiveYearsFemale'];
 
 			/*             * *********** Over 5 years ********************** */
 			/*
@@ -6433,45 +6558,45 @@ paramater_name as id
 		*/
 			/*             * *********** Over 60 years ********************** */
 
-			$sql = "SELECT count(*) as age_m FROM $tmp_tbl_admissions
-					   WHERE sex='m' AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 60 year))
-					   AND date_format(encounter_date,'%d.%m.%y') = date_format(date_reg,'%d.%m.%y')";
-			if ($rs_ptr = $db->Execute($sql)) {
-				$row_m = $rs_ptr->FetchRow();
-			}
+			// $sql = "SELECT count(*) as age_m FROM $tmp_tbl_admissions
+			// 		   WHERE sex='m' AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 60 year))
+			// 		   AND date_format(encounter_date,'%d.%m.%y') = date_format(date_reg,'%d.%m.%y')";
+			// if ($rs_ptr = $db->Execute($sql)) {
+			// 	$row_m = $rs_ptr->FetchRow();
+			// }
 
-			$sql = "SELECT count(*) as age_f FROM $tmp_tbl_admissions
-					   WHERE sex='f' AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 60 year))
-					   AND date_format(encounter_date,'%d.%m.%y') = date_format(date_reg,'%d.%m.%y')";
-			if ($rs_ptr = $db->Execute($sql)) {
-				$row_f = $rs_ptr->FetchRow();
-			}
+			// $sql = "SELECT count(*) as age_f FROM $tmp_tbl_admissions
+			// 		   WHERE sex='f' AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 60 year))
+			// 		   AND date_format(encounter_date,'%d.%m.%y') = date_format(date_reg,'%d.%m.%y')";
+			// if ($rs_ptr = $db->Execute($sql)) {
+			// 	$row_f = $rs_ptr->FetchRow();
+			// }
 
-			$arr_newreg['over60']['male'] = $row_m['age_m'];
-			$arr_newreg['over60']['female'] = $row_f['age_f'];
-			$arr_newreg['over60']['total'] = $row_m['age_m'] + $row_f['age_f'];
+			$arr_newreg['over60']['male'] = $rowNew['NewFiveYearsToUnderSixtyYearsMale'];
+			$arr_newreg['over60']['female'] = $rowNew['NewFiveYearsToUnderSixtyYearsFemale'];
+			$arr_newreg['over60']['total'] = $rowNew['NewFiveYearsToUnderSixtyYearsMale'] + $rowNew['NewFiveYearsToUnderSixtyYearsFemale'];
 
 			/*             * *********** Under 5 years over 60 Year ********************** */
 
-			$sql = "SELECT count(*) as age_m FROM $tmp_tbl_admissions
-					   WHERE sex='m' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 60 year))
-					   AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 5 year))
-					   AND date_format(encounter_date,'%d.%m.%y') = date_format(date_reg,'%d.%m.%y')";
-			if ($rs_ptr = $db->Execute($sql)) {
-				$row_m = $rs_ptr->FetchRow();
-			}
+			// $sql = "SELECT count(*) as age_m FROM $tmp_tbl_admissions
+			// 		   WHERE sex='m' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 60 year))
+			// 		   AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 5 year))
+			// 		   AND date_format(encounter_date,'%d.%m.%y') = date_format(date_reg,'%d.%m.%y')";
+			// if ($rs_ptr = $db->Execute($sql)) {
+			// 	$row_m = $rs_ptr->FetchRow();
+			// }
 
-			$sql = "SELECT count(*) as age_f FROM $tmp_tbl_admissions
-					   WHERE sex='f' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 60 year))
-					    AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 5 year))
-						AND date_format(encounter_date,'%d.%m.%y') = date_format(date_reg,'%d.%m.%y')";
-			if ($rs_ptr = $db->Execute($sql)) {
-				$row_f = $rs_ptr->FetchRow();
-			}
+			// $sql = "SELECT count(*) as age_f FROM $tmp_tbl_admissions
+			// 		   WHERE sex='f' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 60 year))
+			// 		    AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 5 year))
+			// 			AND date_format(encounter_date,'%d.%m.%y') = date_format(date_reg,'%d.%m.%y')";
+			// if ($rs_ptr = $db->Execute($sql)) {
+			// 	$row_f = $rs_ptr->FetchRow();
+			// }
 
-			$arr_newreg['under60']['male'] = $row_m['age_m'];
-			$arr_newreg['under60']['female'] = $row_f['age_f'];
-			$arr_newreg['under60']['total'] = $row_m['age_m'] + $row_f['age_f'];
+			$arr_newreg['under60']['male'] = $rowNew['NewSixtyYearsAndAboveMale'];
+			$arr_newreg['under60']['female'] = $rowNew['NewSixtyYearsAndAboveFemale'];
+			$arr_newreg['under60']['total'] = $rowNew['NewSixtyYearsAndAboveMale'] + $rowNew['NewSixtyYearsAndAboveFemale'];
 
 			$arr_newreg['total'] = $arr_newreg['underage']['total'] + $arr_newreg['underyr']['total'] + $arr_newreg['under5']['total'] + $arr_newreg['over5']['total'] + $arr_newreg['over60']['total'] + $arr_newreg['under60']['total'];
 
@@ -6481,9 +6606,68 @@ paramater_name as id
 		//------------------------------------------------------------------------------------------------------
 		function Get_Return_Reg_Count()
 		{
-			global $db, $tmp_tbl_admissions;
+			global $db, $tmp_tbl_admissions,$start,$_POST;
 			$debug = FALSE;
 			($debug) ? $db->debug = TRUE : $db->debug = FALSE;
+
+			$normalDate=date('Y-m-d',$start);
+			//$string=strtotime(date("Y-m-t", $normalDate));die;
+			$endDateThisMonth=date('Y-m-t',$start);
+            
+            //get end day for selected month
+			$explodeDate=explode("-", $endDateThisMonth);
+			$endDay=$explodeDate[2];
+
+
+			$startDate=$normalDate.' 00:00:00';
+			$endDate=$endDateThisMonth.' 23:59:59';
+
+			if ($_POST['in_out']==1) {
+				$in_out=1;
+				
+			}elseif ($_POST['in_out'] == 2) {
+				$in_out=2;
+			}else{
+				$in_out=2;
+			}
+
+
+
+			$sqlAgeReturn="SELECT
+            SUM(IF(DATEDIFF(curdate(),care_person.date_birth) < $endDay && care_person.sex='m' && DATE_FORMAT(care_person.date_reg,'%Y-%m-%d')!=DATE_FORMAT(care_encounter.encounter_date,'%Y-%m-%d') ,1,0)) as ReturnUnderMonthMale,
+            SUM(IF(DATEDIFF(curdate(),care_person.date_birth) < $endDay &&care_person.sex='f'  && DATE_FORMAT(care_person.date_reg,'%Y-%m-%d')!=DATE_FORMAT(care_encounter.encounter_date,'%Y-%m-%d'),1,0)) as ReturnUnderMonthFemale,
+
+            SUM(IF(DATEDIFF(curdate(),care_person.date_birth) BETWEEN $endDay AND 364 &&care_person.sex='m'&& DATE_FORMAT(care_person.date_reg,'%Y-%m-%d')!=DATE_FORMAT(care_encounter.encounter_date,'%Y-%m-%d'),1,0)) as ReturnMonthToUnderYearMale,             
+            SUM(IF(DATEDIFF(curdate(),care_person.date_birth) BETWEEN $endDay AND 364 &&care_person.sex='f'&& DATE_FORMAT(care_person.date_reg,'%Y-%m-%d')!=DATE_FORMAT(care_encounter.encounter_date,'%Y-%m-%d'),1,0)) as ReturnMonthToUnderYearFemale,            
+                     
+            SUM(IF(DATEDIFF(curdate(),care_person.date_birth) BETWEEN 365 AND 1824 &&care_person.sex='m'&& DATE_FORMAT(care_person.date_reg,'%Y-%m-%d')!=DATE_FORMAT(care_encounter.encounter_date,'%Y-%m-%d'),1,0)) as ReturnYearToUnderFiveYearsMale,
+            SUM(IF(DATEDIFF(curdate(),care_person.date_birth) BETWEEN 365 AND 1824 &&care_person.sex='f'&& DATE_FORMAT(care_person.date_reg,'%Y-%m-%d')!=DATE_FORMAT(care_encounter.encounter_date,'%Y-%m-%d'),1,0)) as ReturnYearToUnderFiveYearsFemale,
+            
+            SUM(IF(DATEDIFF(curdate(),care_person.date_birth) BETWEEN 1825 AND 21899 &&care_person.sex='m'&& DATE_FORMAT(care_person.date_reg,'%Y-%m-%d')!=DATE_FORMAT(care_encounter.encounter_date,'%Y-%m-%d'),1,0)) as ReturnFiveYearsToUnderSixtyYearsMale,            
+            SUM(IF(DATEDIFF(curdate(),care_person.date_birth) BETWEEN 1825 AND 21899 &&care_person.sex='f'&& DATE_FORMAT(care_person.date_reg,'%Y-%m-%d')!=DATE_FORMAT(care_encounter.encounter_date,'%Y-%m-%d'),1,0)) as ReturnFiveYearsToUnderSixtyYearsFemale,
+
+            SUM(IF(DATEDIFF(curdate(),care_person.date_birth)>21900 &&care_person.sex='m'&& DATE_FORMAT(care_person.date_reg,'%Y-%m-%d')!=DATE_FORMAT(care_encounter.encounter_date,'%Y-%m-%d'),1,0)) as ReturnSixtyYearsAndAboveMale,
+            SUM(IF(DATEDIFF(curdate(),care_person.date_birth)>21900 &&care_person.sex='f'&& DATE_FORMAT(care_person.date_reg,'%Y-%m-%d')!=DATE_FORMAT(care_encounter.encounter_date,'%Y-%m-%d'),1,0)) as ReturnSixtyYearsAndAboveFemale
+
+            FROM care_person INNER JOIN care_encounter 
+            ON care_encounter.pid=care_person.pid 
+            WHERE care_encounter.encounter_class_nr=$in_out AND care_encounter.encounter_date BETWEEN '$startDate' AND '$endDate'";   
+
+
+			
+
+
+
+
+            
+
+
+            //echo $sqlAgeReturn;die;
+
+            $resultReturn=$db->Execute($sqlAgeReturn);
+
+            $rowReturn=$resultReturn->FetchRow();
+
 
 			$arr_ret['underage']['male'];
 			$arr_ret['underage']['female'];
@@ -6511,67 +6695,76 @@ paramater_name as id
 
 			/*             * ************* Admissions Under 1 Month *************** */
 
-			$sql = "SELECT count(*) as age_m FROM $tmp_tbl_admissions
-					   WHERE sex='m' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 month))
-					   AND date_format(encounter_date,'%d.%m.%y') != date_format(date_reg,'%d.%m.%y')";
-			if ($rs_ptr = $db->Execute($sql)) {
-				$row_m = $rs_ptr->FetchRow();
-			}
+			// $sql = "SELECT count(*) as age_m FROM $tmp_tbl_admissions
+			// 		   WHERE sex='m' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 month))
+			// 		   AND date_format(encounter_date,'%d.%m.%y') != date_format(date_reg,'%d.%m.%y')";
+			// if ($rs_ptr = $db->Execute($sql)) {
+			// 	$row_m = $rs_ptr->FetchRow();
+			// }
 
-			$sql = "SELECT count(*) as age_f FROM $tmp_tbl_admissions
-					   WHERE sex='f' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 month))
-					   AND date_format(encounter_date,'%d.%m.%y') != date_format(date_reg,'%d.%m.%y')";
-			if ($rs_ptr = $db->Execute($sql)) {
-				$row_f = $rs_ptr->FetchRow();
-			}
+			// $sql = "SELECT count(*) as age_f FROM $tmp_tbl_admissions
+			// 		   WHERE sex='f' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 month))
+			// 		   AND date_format(encounter_date,'%d.%m.%y') != date_format(date_reg,'%d.%m.%y')";
+			// if ($rs_ptr = $db->Execute($sql)) {
+			// 	$row_f = $rs_ptr->FetchRow();
+			// }
 
-			$arr_ret['underage']['male'] = $row_m['age_m'];
-			$arr_ret['underage']['female'] = $row_f['age_f'];
-			$arr_ret['underage']['total'] = $row_m['age_m'] + $row_f['age_f'];
 
-			/*             * *********** Under 1 year over 1 Month ********************** */
 
-			$sql = "SELECT count(*) as age_m FROM $tmp_tbl_admissions
-					   WHERE sex='m' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 year))
-					   AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 month))
-					   AND date_format(encounter_date,'%d.%m.%y') != date_format(date_reg,'%d.%m.%y')";
-			if ($rs_ptr = $db->Execute($sql)) {
-				$row_m = $rs_ptr->FetchRow();
-			}
 
-			$sql = "SELECT count(*) as age_f FROM $tmp_tbl_admissions
-					   WHERE sex='f' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 year))
-					   AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 month))
-					   AND date_format(encounter_date,'%d.%m.%y') != date_format(date_reg,'%d.%m.%y')";
-			if ($rs_ptr = $db->Execute($sql)) {
-				$row_f = $rs_ptr->FetchRow();
-			}
 
-			$arr_ret['underyr']['male'] = $row_m['age_m'];
-			$arr_ret['underyr']['female'] = $row_f['age_f'];
-			$arr_ret['underyr']['total'] = $row_m['age_m'] + $row_f['age_f'];
+			$arr_ret['underage']['male'] =$rowReturn['ReturnUnderMonthMale'];
+			$arr_ret['underage']['female'] = $rowReturn['ReturnUnderMonthFemale']; 
+			$arr_ret['underage']['total'] = $rowReturn['ReturnUnderMonthMale'] + $rowReturn['ReturnUnderMonthFemale'];
 
-			/*             * *********** Under 5 years over 1 Year ********************** */
+			/*             * *********** 1 month to under 1 year ********************** */
 
-			$sql = "SELECT count(*) as age_m FROM $tmp_tbl_admissions
-					   WHERE sex='m' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 5 year))
-					   AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 year))
-					   AND date_format(encounter_date,'%d.%m.%y') != date_format(date_reg,'%d.%m.%y')";
-			if ($rs_ptr = $db->Execute($sql)) {
-				$row_m = $rs_ptr->FetchRow();
-			}
+			// $sql = "SELECT count(*) as age_m FROM $tmp_tbl_admissions
+			// 		   WHERE sex='m' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 year))
+			// 		   AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 month))
+			// 		   AND date_format(encounter_date,'%d.%m.%y') != date_format(date_reg,'%d.%m.%y')";
+			// if ($rs_ptr = $db->Execute($sql)) {
+			// 	$row_m = $rs_ptr->FetchRow();
+			// }
 
-			$sql = "SELECT count(*) as age_f FROM $tmp_tbl_admissions
-					   WHERE sex='f' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 5 year))
-					    AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 year))
-						AND date_format(encounter_date,'%d.%m.%y') != date_format(date_reg,'%d.%m.%y')";
-			if ($rs_ptr = $db->Execute($sql)) {
-				$row_f = $rs_ptr->FetchRow();
-			}
+			// $sql = "SELECT count(*) as age_f FROM $tmp_tbl_admissions
+			// 		   WHERE sex='f' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 year))
+			// 		   AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 month))
+			// 		   AND date_format(encounter_date,'%d.%m.%y') != date_format(date_reg,'%d.%m.%y')";
+			// if ($rs_ptr = $db->Execute($sql)) {
+			// 	$row_f = $rs_ptr->FetchRow();
+			// }
 
-			$arr_ret['under5']['male'] = $row_m['age_m'];
-			$arr_ret['under5']['female'] = $row_f['age_f'];
-			$arr_ret['under5']['total'] = $row_m['age_m'] + $row_f['age_f'];
+			
+              
+			$arr_ret['underyr']['male'] = $rowReturn['ReturnMonthToUnderYearMale'];
+			$arr_ret['underyr']['female'] = $rowReturn['ReturnMonthToUnderYearFemale'];
+			$arr_ret['underyr']['total'] = $rowReturn['ReturnMonthToUnderYearMale'] + $rowReturn['ReturnMonthToUnderYearFemale'];
+
+			/*             * *********** Return 1 to under 5 Year ********************** */
+			
+
+			// $sql = "SELECT count(*) as age_m FROM $tmp_tbl_admissions
+			// 		   WHERE sex='m' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 5 year))
+			// 		   AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 year))
+			// 		   AND date_format(encounter_date,'%d.%m.%y') != date_format(date_reg,'%d.%m.%y')";
+			// if ($rs_ptr = $db->Execute($sql)) {
+			// 	$row_m = $rs_ptr->FetchRow();
+			// }
+
+			// $sql = "SELECT count(*) as age_f FROM $tmp_tbl_admissions
+			// 		   WHERE sex='f' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 5 year))
+			// 		    AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 1 year))
+			// 			AND date_format(encounter_date,'%d.%m.%y') != date_format(date_reg,'%d.%m.%y')";
+			// if ($rs_ptr = $db->Execute($sql)) {
+			// 	$row_f = $rs_ptr->FetchRow();
+			// }
+
+			
+
+			$arr_ret['under5']['male'] = $rowReturn['ReturnYearToUnderFiveYearsMale'];
+			$arr_ret['under5']['female'] = $rowReturn['ReturnYearToUnderFiveYearsFemale'];
+			$arr_ret['under5']['total'] = $rowReturn['ReturnYearToUnderFiveYearsMale'] + $rowReturn['ReturnYearToUnderFiveYearsFemale'];
 
 			/*             * *********** Over 5 years ********************** */
 			/*
@@ -6591,47 +6784,50 @@ paramater_name as id
 			              $arr_ret['over5']['female'] = $row_f['age_f'];
 			              $arr_ret['over5']['total'] =   $row_m['age_m'] + $row_f['age_f'];
 		*/
-			/*             * *********** Over 60 years ********************** */
+			/*             * *********** Return five years to under sixty years ********************** */
+			
 
-			$sql = "SELECT count(*) as age_m FROM $tmp_tbl_admissions
-					   WHERE sex='m' AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 60 year))
-					   AND date_format(encounter_date,'%d.%m.%y') != date_format(date_reg,'%d.%m.%y')";
-			if ($rs_ptr = $db->Execute($sql)) {
-				$row_m = $rs_ptr->FetchRow();
-			}
+			// $sql = "SELECT count(*) as age_m FROM $tmp_tbl_admissions
+			// 		   WHERE sex='m' AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 60 year))
+			// 		   AND date_format(encounter_date,'%d.%m.%y') != date_format(date_reg,'%d.%m.%y')";
+			// if ($rs_ptr = $db->Execute($sql)) {
+			// 	$row_m = $rs_ptr->FetchRow();
+			// }
 
-			$sql = "SELECT count(*) as age_f FROM $tmp_tbl_admissions
-					   WHERE sex='f' AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 60 year))
-					   AND date_format(encounter_date,'%d.%m.%y') != date_format(date_reg,'%d.%m.%y')";
-			if ($rs_ptr = $db->Execute($sql)) {
-				$row_f = $rs_ptr->FetchRow();
-			}
+			// $sql = "SELECT count(*) as age_f FROM $tmp_tbl_admissions
+			// 		   WHERE sex='f' AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 60 year))
+			// 		   AND date_format(encounter_date,'%d.%m.%y') != date_format(date_reg,'%d.%m.%y')";
+			// if ($rs_ptr = $db->Execute($sql)) {
+			// 	$row_f = $rs_ptr->FetchRow();
+			// }
 
-			$arr_ret['over60']['male'] = $row_m['age_m'];
-			$arr_ret['over60']['female'] = $row_f['age_f'];
-			$arr_ret['over60']['total'] = $row_m['age_m'] + $row_f['age_f'];
+			$arr_ret['over60']['male'] = $rowReturn['ReturnFiveYearsToUnderSixtyYearsMale'];
+			$arr_ret['over60']['female'] = $rowReturn['ReturnFiveYearsToUnderSixtyYearsFemale'];
+			$arr_ret['over60']['total'] = $rowReturn['ReturnFiveYearsToUnderSixtyYearsMale'] + $rowReturn['ReturnFiveYearsToUnderSixtyYearsFemale'];
 
 			/*             * *********** Under 5 years over 60 Year ********************** */
 
-			$sql = "SELECT count(*) as age_m FROM $tmp_tbl_admissions
-					   WHERE sex='m' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 60 year))
-					   AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 5 year))
-					   AND date_format(encounter_date,'%d.%m.%y') != date_format(date_reg,'%d.%m.%y')";
-			if ($rs_ptr = $db->Execute($sql)) {
-				$row_m = $rs_ptr->FetchRow();
-			}
+			// $sql = "SELECT count(*) as age_m FROM $tmp_tbl_admissions
+			// 		   WHERE sex='m' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 60 year))
+			// 		   AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 5 year))
+			// 		   AND date_format(encounter_date,'%d.%m.%y') != date_format(date_reg,'%d.%m.%y')";
+			// if ($rs_ptr = $db->Execute($sql)) {
+			// 	$row_m = $rs_ptr->FetchRow();
+			// }
 
-			$sql = "SELECT count(*) as age_f FROM $tmp_tbl_admissions
-					   WHERE sex='f' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 60 year))
-					    AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 5 year))
-						AND date_format(encounter_date,'%d.%m.%y') != date_format(date_reg,'%d.%m.%y')";
-			if ($rs_ptr = $db->Execute($sql)) {
-				$row_f = $rs_ptr->FetchRow();
-			}
+			// $sql = "SELECT count(*) as age_f FROM $tmp_tbl_admissions
+			// 		   WHERE sex='f' AND UNIX_TIMESTAMP(date_birth) > UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 60 year))
+			// 		    AND UNIX_TIMESTAMP(date_birth) <= UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 5 year))
+			// 			AND date_format(encounter_date,'%d.%m.%y') != date_format(date_reg,'%d.%m.%y')";
+			// if ($rs_ptr = $db->Execute($sql)) {
+			// 	$row_f = $rs_ptr->FetchRow();
+			// }
 
-			$arr_ret['under60']['male'] = $row_m['age_m'];
-			$arr_ret['under60']['female'] = $row_f['age_f'];
-			$arr_ret['under60']['total'] = $row_m['age_m'] + $row_f['age_f'];
+			
+
+			$arr_ret['under60']['male'] = $rowReturn['ReturnSixtyYearsAndAboveMale'];
+			$arr_ret['under60']['female'] = $rowReturn['ReturnSixtyYearsAndAboveFemale'];
+			$arr_ret['under60']['total'] = $rowReturn['ReturnSixtyYearsAndAboveMale'] + $rowReturn['ReturnSixtyYearsAndAboveFemale'];
 
 			$arr_ret['total'] = $arr_ret['underage']['total'] + $arr_ret['underyr']['total'] + $arr_ret['under5']['total'] + $arr_ret['over60']['total'] + $arr_ret['under60']['total'];
 

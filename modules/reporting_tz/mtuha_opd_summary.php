@@ -23,6 +23,7 @@ $year = array_search(1, $ARR_SELECT_YEAR);
 if ($printout) {
     $start = $_GET['start'];
     $end = $_GET['end'];
+    $_POST['in_out']=$_GET['in_out'];
 } else {
     $start = mktime(0, 0, 0, $month, 1, $year);
     $end = mktime(0, 0, 0, $month + 1, 1, $year);
@@ -30,6 +31,7 @@ if ($printout) {
 
 $tmp_tbl_admissions = $rep_obj->SetReportingLink_Admissions("care_encounter", "pid", "encounter_date", "care_person", "pid", $start, $end, "2");
 
+//print_r($_POST);die;
 
 $arr_reg = $rep_obj->Get_Visits_Count();
 $arr_new = $rep_obj->Get_FirstTime_Reg_Count();

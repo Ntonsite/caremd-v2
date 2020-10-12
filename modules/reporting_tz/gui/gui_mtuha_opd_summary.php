@@ -171,7 +171,7 @@ if ($printout) {
             }
             function printOut()
             {
-                urlholder = "./mtuha_opd_summary.php?printout=TRUE&start=<?php echo $start; ?>&end=<?php echo $end; ?>";
+                urlholder = "./mtuha_opd_summary.php?printout=TRUE&start=<?php echo $start; ?>&end=<?php echo $end; ?>&in_out=<?php echo $_POST['in_out']?>";
                 testprintout = window.open(urlholder, "printout", "width=800,height=600,menubar=no,resizable=yes,scrollbars=yes");
                 window.testprintout.moveTo(0, 0);
             }
@@ -268,6 +268,16 @@ if ($printout) {
 
                                 </tr>
                                 <tr>
+                                    <?php 
+                                    if ($_POST['in_out']==2) {
+                                        $LDOPDVisits='OPD visits';
+                                    }elseif ($_POST['in_out']==1) {
+                                        $LDOPDVisits='IPD visits';
+                                    }else{
+                                        $LDOPDVisits=$LDOPDVisits;
+                                    }
+                                     ?>
+                                    
                                     <td width="100"><?php echo $LDOPDVisits; ?></b> </td>
                                     <td align="center"  bgcolor="#ffffaa"><?php echo $arr_reg['underage']['male']; ?></td>
                                     <td align="center"  bgcolor="#ffffaa"><?php echo $arr_reg['underage']['female']; ?></td>
