@@ -16,8 +16,8 @@ require  $root_path.'vendor/autoload.php';
 $nhifPrices =  json_decode($_POST['formdata']);
 
 
-//$sql = "TRUNCATE TABLE care_tz_drugsandservices_nhifschemes";
-//$db->Execute($sql);
+$sql = "TRUNCATE TABLE care_tz_drugsandservices_nhifschemes";
+$db->Execute($sql);
 
 $nhifPricesArray = [];
 foreach ($nhifPrices as $nhifPrice) {
@@ -42,7 +42,7 @@ foreach ($nhifPrices as $nhifPrice) {
 		$IsActive = ($nhifPrice->IsActive)?1:0;
 	
 	$schemeAddSQL = "INSERT INTO care_tz_drugsandservices_nhifschemes (ItemCode, PriceCode, LevelPriceCode, OldItemCode, ItemName, Strength, PackageID, SchemeID, FacilityLevelCode, UnitPrice, IsRestricted, Dosage, ItemTypeID, MaximumQuantity, AvailableInLevels, PractitionerQualifications, IsActive) VALUES('$ItemCode','$PriceCode', '$LevelPriceCode', '$OldItemCode', '$ItemName', '$Strength', '$PackageID', '$SchemeID', '$FacilityLevelCode', '$UnitPrice', '$IsRestricted', '$Dosage', '$ItemTypeID', '$MaximumQuantity', '$AvailableInLevels', '$PractitionerQualifications', '$IsActive')";
-			//$db->Execute($schemeAddSQL);
+			$db->Execute($schemeAddSQL);
 }
 
 

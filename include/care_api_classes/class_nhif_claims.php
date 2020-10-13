@@ -784,6 +784,8 @@ class Nhif_claims extends Nhif {
 
 		$sql .= " GROUP BY care_encounter.encounter_nr " . $sort;
 		$result_encounter = $db->Execute($sql);
+
+		
 //        while ($row = $result_encounter->FetchRow()) {
 		//            echo $row['encounter_nr'].' Yes <br>';
 		//        }

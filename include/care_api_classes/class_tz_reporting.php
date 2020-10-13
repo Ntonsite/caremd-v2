@@ -444,7 +444,7 @@ class selianreport extends report
 			global $db;
 			global $PRINTOUT;
 			global $LDNoDiagnosticsResults, $LDhf;
-			$diseases = array();
+			$datas = array();
 			$diagnosises = array();
 			$debug = false;
 			($debug) ? $db->debug = TRUE : $db->debug = FALSE;
@@ -509,173 +509,133 @@ class selianreport extends report
 						break;
 
 					default:
-						$hf = "AND insurance_ID=" . $insurance;
-						$this->sql = "SELECT name FROM care_tz_company WHERE id=" . $insurance;
-						$this->result = $db->Execute($this->sql);
-						$LDhf = $this->result->FetchRow();
-						$LDhf = $LDhf['name'];
+						// $hf = "AND insurance_ID=" . $insurance;
+						// $this->sql = "SELECT name FROM care_tz_company WHERE id=" . $insurance;
+						// $this->result = $db->Execute($this->sql);
+						// $LDhf = $this->result->FetchRow();
+						// $LDhf = $LDhf['name'];
 
 						break;
 				}
 			}
 
-			$diseasesSQL = "SELECT DISTINCT opd_series, opd_name FROM care_icd10_en WHERE opd_series > 0 ORDER BY opd_series ASC";
+			// $datasSQL = "SELECT DISTINCT opd_series, opd_name FROM care_icd10_en WHERE opd_series > 0 ORDER BY opd_series ASC";
 
 
-			$diseasesResult = $db->Execute($diseasesSQL);
-			if (@$diseasesResult && $diseasesResult->RecordCount()) {
-				$diseases = $diseasesResult->GetArray();
-				//echo "<pre>"; print_r($diseases); echo "</pre>";
-			}
+			// $datasResult = $db->Execute($datasSQL);
+			// if (@$datasResult && $datasResult->RecordCount()) {
+			// 	$datas = $datasResult->GetArray();
+			// 	//echo "<pre>"; print_r($datas); echo "</pre>";
+			// }
 
-			$diagnosisesSQL = "SELECT
-                diag.ICD_10_code as code, diag.opd_series,  diag.opd_name, cp.date_birth, cp.sex, cp.pid
-                FROM care_tz_diagnosis AS diag
-                INNER JOIN care_person AS cp
-                    ON diag.PID = cp.pid
-                INNER JOIN care_encounter ce
-                    ON ce.encounter_nr = diag.encounter_nr
-                WHERE diagnosis_type = 'final'
-                AND $sql_timeframe $hf $idara ";
+
+
+			// $diagnosisesSQL = "SELECT
+   //              diag.ICD_10_code as code, diag.opd_series,  diag.opd_name, cp.date_birth, cp.sex, cp.pid
+   //              FROM care_tz_diagnosis AS diag
+   //              INNER JOIN care_person AS cp
+   //                  ON diag.PID = cp.pid
+   //              INNER JOIN care_encounter ce
+   //                  ON ce.encounter_nr = diag.encounter_nr
+   //              WHERE diagnosis_type = 'final'
+   //              AND $sql_timeframe $hf $idara ";
+
+			    $endOfThisMonth = date('Y-m-t');
+			    $endOfThisMonthArray = explode("-", $endOfThisMonth);
+			    $endDay = $endOfThisMonthArray[2];
+
+
+			    
+
+			   $lessOneMonthMale = "DATEDIFF(curdate(),cp.date_birth)<$endDay&&cp.sex='m'";
+			   $lessOneMonthFemale = "DATEDIFF(curdate(),cp.date_birth)<$endDay&&cp.sex='f'";
+			   $betweenOneMonthAndYearMale = "DATEDIFF(curdate(),cp.date_birth) BETWEEN $endDay AND 364 &&cp.sex='m'";
+			   $betweenOneMonthAndYearFemale = "DATEDIFF(curdate(),cp.date_birth) BETWEEN $endDay AND 364 &&cp.sex='f'";
+			   $betweenOneYearAndFiveYearsMale = "DATEDIFF(curdate(),cp.date_birth) BETWEEN 365 AND 1824 &&cp.sex='m'";
+			   $betweenOneYearAndFiveYearsFemale = "DATEDIFF(curdate(),cp.date_birth) BETWEEN 365 AND 1824 &&cp.sex='f'";
+			   $betweenFiveYearsAndSixtyYearsMale = "DATEDIFF(curdate(),cp.date_birth) BETWEEN 1825 AND 21899 &&cp.sex='m'";
+			   $betweenFiveYearsAndSixtyYearsFemale = "DATEDIFF(curdate(),cp.date_birth) BETWEEN 1825 AND 21899 &&cp.sex='f'";
+			   $aboveSixtyYearsMale = "DATEDIFF(curdate(),cp.date_birth) > 21900 &&cp.sex='m'";
+               $aboveSixtyYearsFemale = "DATEDIFF(curdate(),cp.date_birth) > 21900 &&cp.sex='f'";
+
+
+
+             $diagnosisesSQL="SELECT dx.opd_series,dx.opd_name,dx.ICD_10_description,
+                    SUM(IF($lessOneMonthMale,1,0)) AS lessOneMonthMale,
+                    SUM(IF($lessOneMonthFemale,1,0)) AS lessOneMonthFemale,
+                    SUM(IF($betweenOneMonthAndYearMale,1,0)) AS betweenOneMonthAndYearMale,
+                    SUM(IF($betweenOneMonthAndYearFemale,1,0)) AS betweenOneMonthAndYearFemale,
+                    SUM(IF($betweenOneYearAndFiveYearsMale,1,0)) AS betweenOneYearAndFiveYearsMale,
+                    SUM(IF($betweenOneYearAndFiveYearsFemale,1,0)) AS betweenOneYearAndFiveYearsFemale,
+                    SUM(IF($betweenFiveYearsAndSixtyYearsMale,1,0)) AS betweenFiveYearsAndSixtyYearsMale,
+                    SUM(IF($betweenFiveYearsAndSixtyYearsFemale,1,0)) AS betweenFiveYearsAndSixtyYearsFemale,
+                    SUM(IF($aboveSixtyYearsMale,1,0)) AS aboveSixtyYearsMale,
+                    SUM(IF($aboveSixtyYearsFemale,1,0)) AS aboveSixtyYearsFemale
+                             
+            FROM care_tz_diagnosis AS dx
+                INNER JOIN care_person AS cp   ON dx.PID = cp.pid
+                INNER JOIN care_encounter ce   ON ce.encounter_nr = dx.encounter_nr
+            WHERE diagnosis_type = 'final' AND $sql_timeframe $hf $idara  GROUP BY 	ICD_10_code ORDER BY opd_series ";
+
+            //echo $diagnosisesSQL;die;
+
+
+
+            
+                
+               
+
+
+
+                              
+
 
                 
 
                 
 
 			$diagnosisesResult = $db->Execute($diagnosisesSQL);
-			if (@$diagnosisesResult && $diagnosisesResult->RecordCount()) {
-				$diagnosises = $diagnosisesResult->GetArray();
-			}
-			$lessOneMonthTotal = 0;
-			$betweenOneMonthAndYearTotal = 0;
-			$betweenOneYearAndFiveYearsTotal = 0;
-			$betweenFiveYearsAndSixtyYearsTotal = 0;
-			$aboveSixtyYearsTotal = 0;
+			
 
-			foreach ($diseases as $keydisease => $disease) {
-				$diseases[$keydisease]['lessOneMonthMale'] = 0;
-				$diseases[$keydisease]['lessOneMonthFemale'] = 0;
-				$diseases[$keydisease]['lessOneMonthTotal'] = 0;
-				$diseases[$keydisease]['betweenOneMonthAndYearMale'] = 0;
-				$diseases[$keydisease]['betweenOneMonthAndYearFemale'] = 0;
-				$diseases[$keydisease]['betweenOneMonthAndYearTotal'] = 0;
-				$diseases[$keydisease]['betweenOneYearAndFiveYearsMale'] = 0;
-				$diseases[$keydisease]['betweenOneYearAndFiveYearsFemale'] = 0;
-				$diseases[$keydisease]['betweenOneYearAndFiveYearsTotal'] = 0;
-				$diseases[$keydisease]['betweenFiveYearsAndSixtyYearsMale'] = 0;
-				$diseases[$keydisease]['betweenFiveYearsAndSixtyYearsFemale'] = 0;
-				$diseases[$keydisease]['betweenFiveYearsAndSixtyYearsTotal'] = 0;
-				$diseases[$keydisease]['aboveSixtyYearsMale'] = 0;
-				$diseases[$keydisease]['aboveSixtyYearsFemale'] = 0;
-				$diseases[$keydisease]['aboveSixtyYearsTotal'] = 0;
 
-				foreach ($diagnosises as $diagnosis) {
-
-					if ($disease['opd_series'] == $diagnosis['opd_series']) {
-
-						// < 1 Month
-						$thisMonthDays = strtotime("-" . $d . " days");
-						// echo date("Y-m-d", $thisMonthDays);
-						if (strtotime($diagnosis['date_birth']) > $thisMonthDays) {
-							if ($diagnosis['sex'] == 'm') {
-								$diseases[$keydisease]['lessOneMonthMale'] += 1;
-							}
-							if ($diagnosis['sex'] == 'f') {
-								$diseases[$keydisease]['lessOneMonthFemale'] += 1;
-							}
-							$diseases[$keydisease]['lessOneMonthTotal'] += 1;
-							$lessOneMonthTotal += 1;
-						}
-
-						// 1month < 1 Year
-						$oneYear = strtotime("-12 months");
-						// echo date("Y-m-d", $oneYear);
-						if (strtotime($diagnosis['date_birth']) <= $thisMonthDays && strtotime($diagnosis['date_birth']) > $oneYear) {
-							if ($diagnosis['sex'] == 'm') {
-								$diseases[$keydisease]['betweenOneMonthAndYearMale'] += 1;
-							}
-							if ($diagnosis['sex'] == 'f') {
-								$diseases[$keydisease]['betweenOneMonthAndYearFemale'] += 1;
-							}
-							$diseases[$keydisease]['betweenOneMonthAndYearTotal'] += 1;
-							$betweenOneMonthAndYearTotal += 1;
-						}
-
-						// 1 Year < 5 Years
-						$fiveYears = strtotime("-5 years");
-						// echo date("Y-m-d", $fiveYears);
-						if (strtotime($diagnosis['date_birth']) <= $oneYear && strtotime($diagnosis['date_birth']) > $fiveYears) {
-							if ($diagnosis['sex'] == 'm') {
-								$diseases[$keydisease]['betweenOneYearAndFiveYearsMale'] += 1;
-							}
-							if ($diagnosis['sex'] == 'f') {
-								$diseases[$keydisease]['betweenOneYearAndFiveYearsFemale'] += 1;
-							}
-							$diseases[$keydisease]['betweenOneYearAndFiveYearsTotal'] += 1;
-							$betweenOneYearAndFiveYearsTotal += 1;
-						}
-
-						// 5 Years < 60 Years
-						$sixtyYears = strtotime("-60 years");
-						// echo date("Y-m-d", $sixtyYears);
-						if (strtotime($diagnosis['date_birth']) <= $fiveYears && strtotime($diagnosis['date_birth']) > $sixtyYears) {
-							if ($diagnosis['sex'] == 'm') {
-								$diseases[$keydisease]['betweenFiveYearsAndSixtyYearsMale'] += 1;
-							}
-							if ($diagnosis['sex'] == 'f') {
-								$diseases[$keydisease]['betweenFiveYearsAndSixtyYearsFemale'] += 1;
-							}
-							$diseases[$keydisease]['betweenFiveYearsAndSixtyYearsTotal'] += 1;
-							$betweenFiveYearsAndSixtyYearsTotal += 1;
-						}
-
-						// above 60
-						if (strtotime($diagnosis['date_birth']) <= $sixtyYears) {
-							if ($diagnosis['sex'] == 'm') {
-								$diseases[$keydisease]['aboveSixtyYearsMale'] += 1;
-							}
-							if ($diagnosis['sex'] == 'f') {
-								$diseases[$keydisease]['aboveSixtyYearsFemale'] += 1;
-							}
-							$diseases[$keydisease]['aboveSixtyYearsTotal'] += 1;
-							$aboveSixtyYearsTotal += 1;
-						}
-					}
-				}
-			}
+			
+			
 			?>
-			<?php foreach ($diseases as $disease) : ?>
+			<?php while ($data=$diagnosisesResult->FetchRow()) {
+				# code...
+			 ?>
 			<tr class="table-row">
-				<td width="10"><?php echo $disease['opd_series']; ?></td>
-				<td width="50"><?php echo $disease['opd_name']; ?></td>
+				<td width="10"><?php echo $data['opd_series']; ?></td>
+				<td width="50"><?php echo $data['ICD_10_description']; ?></td>
 
-				<td width="50" align="right" class="mr-sm"><?php echo number_format($disease['lessOneMonthMale']); ?></td>
-				<td width="50" align="right" class="mr-sm"><?php echo number_format($disease['lessOneMonthFemale']); ?></td>
-				<td width="50" align="right" class="mr-sm"><?php echo number_format($disease['lessOneMonthTotal']); ?></td>
+				 <td bgcolor="grey" width="50" align="right" class="mr-sm"><?php echo $data['lessOneMonthMale']; ?></td>
+				<td bgcolor="grey" width="50" align="right" class="mr-sm"><?php echo $data['lessOneMonthFemale']; ?></td>
+				<td bgcolor="lightgrey" width="50" align="right" class="mr-sm"><?php echo $data['lessOneMonthTotal']=$data['lessOneMonthMale']+$data['lessOneMonthFemale']; ?></td>
 
-				<td width="50" align="right" class="mr-sm"><?php echo number_format($disease['betweenOneMonthAndYearMale']); ?></td>
-				<td width="50" align="right" class="mr-sm"><?php echo number_format($disease['betweenOneMonthAndYearFemale']); ?></td>
-				<td width="50" align="right" class="mr-sm"><?php echo number_format($disease['betweenOneMonthAndYearTotal']); ?></td>
+				<td width="50" align="right" class="mr-sm"><?php echo $data['betweenOneMonthAndYearMale']; ?></td>
+				<td width="50" align="right" class="mr-sm"><?php echo $data['betweenOneMonthAndYearFemale']; ?></td>
+				<td width="50" align="right" class="mr-sm"><?php echo $data['betweenOneMonthAndYearTotal']=$data['betweenOneMonthAndYearMale']+$data['betweenOneMonthAndYearFemale']; ?></td>
 
-				<td width="50" align="right" class="mr-sm"><?php echo number_format($disease['betweenOneYearAndFiveYearsMale']); ?></td>
-				<td width="50" align="right" class="mr-sm"><?php echo number_format($disease['betweenOneYearAndFiveYearsFemale']); ?></td>
-				<td width="50" align="right" class="mr-sm"><?php echo number_format($disease['betweenOneYearAndFiveYearsTotal']); ?></td>
+				<td bgcolor="grey" width="50" align="right" class="mr-sm"><?php echo $data['betweenOneYearAndFiveYearsMale']; ?></td>
+				<td bgcolor="grey" width="50" align="right" class="mr-sm"><?php echo $data['betweenOneYearAndFiveYearsFemale']; ?></td>
+				<td bgcolor="lightgrey" width="50" align="right" class="mr-sm"><?php echo $data['betweenOneYearAndFiveYearsTotal']=$data['betweenOneYearAndFiveYearsMale']+$data['betweenOneYearAndFiveYearsFemale']; ?></td>
 
-				<td width="50" align="right" class="mr-sm"><?php echo number_format($disease['betweenFiveYearsAndSixtyYearsMale']); ?></td>
-				<td width="50" align="right" class="mr-sm"><?php echo number_format($disease['betweenFiveYearsAndSixtyYearsFemale']); ?></td>
-				<td width="50" align="right" class="mr-sm"><?php echo number_format($disease['betweenFiveYearsAndSixtyYearsTotal']); ?></td>
+				<td width="50" align="right" class="mr-sm"><?php echo $data['betweenFiveYearsAndSixtyYearsMale']; ?></td>
+				<td width="50" align="right" class="mr-sm"><?php echo $data['betweenFiveYearsAndSixtyYearsFemale']; ?></td>
+				<td width="50" align="right" class="mr-sm"><?php echo $data['betweenFiveYearsAndSixtyYearsTotal']=$data['betweenFiveYearsAndSixtyYearsMale']+$data['betweenFiveYearsAndSixtyYearsFemale']; ?></td>
 
-				<td width="50" align="right" class="mr-sm"><?php echo number_format($disease['aboveSixtyYearsMale']); ?></td>
-				<td width="50" align="right" class="mr-sm"><?php echo number_format($disease['aboveSixtyYearsFemale']); ?></td>
-				<td width="50" align="right" class="mr-sm"><?php echo number_format($disease['aboveSixtyYearsTotal']); ?></td>
+				<td bgcolor="grey" width="50" align="right" class="mr-sm"><?php echo $data['aboveSixtyYearsMale']; ?></td>
+				<td bgcolor="grey" width="50" align="right" class="mr-sm"><?php echo $data['aboveSixtyYearsFemale']; ?></td>
+				<td bgcolor="lightgrey" width="50" align="right" class="mr-sm"><?php echo $data['aboveSixtyYearsTotal']=$data['aboveSixtyYearsMale']+$data['aboveSixtyYearsFemale']; ?></td>
 
-				<td width="50" align="right" class="mr-sm"><?php echo number_format($disease['lessOneMonthMale'] + $disease['betweenOneMonthAndYearMale'] + $disease['betweenOneYearAndFiveYearsMale'] + $disease['betweenFiveYearsAndSixtyYearsMale'] + $disease['aboveSixtyYearsMale']); ?></td>
+				<td  width="50" align="right" class="mr-sm"><?php echo $data['lessOneMonthMale'] + $data['betweenOneMonthAndYearMale'] + $data['betweenOneYearAndFiveYearsMale'] + $data['betweenFiveYearsAndSixtyYearsMale'] + $data['aboveSixtyYearsMale']; ?></td>
 
-				<td width="50" align="right" class="mr-sm"><?php echo number_format($disease['lessOneMonthFemale'] + $disease['betweenOneMonthAndYearFemale'] + $disease['betweenOneYearAndFiveYearsFemale'] + $disease['betweenFiveYearsAndSixtyYearsFemale'] + $disease['aboveSixtyYearsFemale']); ?></td>
+				<td width="50" align="right" class="mr-sm"><?php echo $data['lessOneMonthFemale'] + $data['betweenOneMonthAndYearFemale'] + $data['betweenOneYearAndFiveYearsFemale'] + $data['betweenFiveYearsAndSixtyYearsFemale'] + $data['aboveSixtyYearsFemale']; ?></td>
 
-				<td width="50" align="right" class="mr-sm"><?php echo number_format($disease['lessOneMonthTotal'] + $disease['betweenOneMonthAndYearTotal'] + $disease['betweenOneYearAndFiveYearsTotal'] + $disease['betweenFiveYearsAndSixtyYearsTotal'] + $disease['aboveSixtyYearsTotal']); ?></td>
+				<td bgcolor="lightgrey" width="50" align="right" class="mr-sm"><?php echo $data['lessOneMonthTotal'] + $data['betweenOneMonthAndYearTotal'] + $data['betweenOneYearAndFiveYearsTotal'] + $data['betweenFiveYearsAndSixtyYearsTotal'] + $data['aboveSixtyYearsTotal']; ?></td> 
+
 			</tr>
-		<?php endforeach ?>
+		<?php } ?>
 
 	<?php
 
