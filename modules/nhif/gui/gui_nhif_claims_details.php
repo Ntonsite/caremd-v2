@@ -69,6 +69,8 @@ $claims_obj->Display_Header($LDNewQuotation, $enc_obj->ShowPID($bat_nr), '');
     <?php
 
 if ($page_action == 'approve') {
+
+    
 	echo $claims_obj->add_nhif_claim(array('encounter_nr' => $encounter_nr));
 }
 
@@ -170,17 +172,26 @@ $nhif_claims_query = $claims_obj->get_nhif_claimes_claimed(array('encounter_nr' 
 
 	if (!is_null($nhif_claims_query)) {
 		?>
-                    <a href="../../modules/nhif/nhif_pass.php<?=URL_APPEND?> &patient=<?=$in_outpatient?> &lang=en&target=send&encounter_nr=<?=$encounter_nr?>&date_from=<?=$date_from?>&date_to=<?=$date_to?>" title="Send Claim to NHIF"><input type="submit" class="btn btn-info btn-block" name="show" value="Submit Claim"></a>
+                          <button class="btn btn-info btn-block" onclick="submitNHIFClaim('<?php echo $in_outpatient ?>', '<?php echo $encounter_nr ?>', '../../modules/nhif/nhif_pass.php<?=URL_APPEND?> &patient=<?=$in_outpatient?> &lang=en&target=send&encounter_nr=<?=$encounter_nr?>&type=<?=$in_outpatient?>&save=1')" >Submit</button>
+
+
+                    <!-- <a href="../../modules/nhif/nhif_pass.php<?=URL_APPEND?> &patient=<?=$in_outpatient?> &lang=en&target=send&encounter_nr=<?=$encounter_nr?>&date_from=<?=$date_from?>&date_to=<?=$date_to?>" title="Send Claim to NHIF"><input type="submit" class="btn btn-info btn-block" name="show" value="Submit Claim"></a> -->
                     <?php
 } else {
 		?>
-                    <a href="../../modules/nhif/nhif_pass.php<?=URL_APPEND?> &patient=<?=$in_outpatient?> &lang=en&target=claimsdetails&page_action=approve&encounter_nr=<?=$encounter_nr?>&date_from=<?=$date_from?>&date_to=<?=$date_to?>" title="Approve Claim"><input type="submit" class="btn btn-info btn-block" name="show" value="Approve"></a>
+
+                 <button class="btn btn-info btn-block" onclick="CreateNhifForm('<?php echo $in_outpatient ?>', '<?php echo $encounter_nr ?>', '../../modules/nhif/nhif_pass.php<?=URL_APPEND?> &patient=<?=$in_outpatient?> &lang=en&target=claimsdetails&page_action=approve&encounter_nr=<?=$encounter_nr?>&date_from=<?=$date_from?>&date_to=<?=$date_to?>')" >Create NHIF Form</button>
+
+
+
+                    <!-- <a href="../../modules/nhif/nhif_pass.php<?=URL_APPEND?> &patient=<?=$in_outpatient?> &lang=en&target=claimsdetails&page_action=approve&encounter_nr=<?=$encounter_nr?>&date_from=<?=$date_from?>&date_to=<?=$date_to?>" title="Approve Claim"><input type="submit" class="btn btn-info btn-block" name="show" value="Approve"></a> -->
                     <?php
 }
 	?>
 
             </div>
         </div>
+        
         <div class="row">
             <table border="0" width="100%" cellspacing="1" cellpadding="1" style="background-color: azure; margin-left: 15px;" >
                 <tr>
@@ -360,6 +371,11 @@ echo date("d/m/Y", strtotime($claims_details['date_birth']))
                                             <td>12. Card No:</td>
                                             <td>
                                                 <strong><?php echo $claims_details['membership_nr'] ?></strong>
+
+                                               
+
+                                          
+
                                             </td>
                                         </tr>
                                     </table>
@@ -538,7 +554,7 @@ $procedure_total_cost = 0;
 
                                  <?php
 $supplies_total_cost = 0;
-	$supplies = $claims_obj->GetSupplies($encounter_nr);
+	$supplies = $claims_obj->GetSupplies($encounter_nr);    
 	foreach ($supplies as $supply) {
 		$supplies_total_cost += $supply['row_amount'];
 	}
@@ -546,7 +562,7 @@ $supplies_total_cost = 0;
 
                                 <?php if ($supplies_total_cost > 0): ?>
                                     <tr class="shade-light">
-                                        <td  colspan="5">SUPPLIES</td>
+                                        <td  colspan="5">SUPPLIES/SERVICES</td>
                                     </tr>
                                     <?php foreach ($supplies as $supply): ?>
                                         <tr class="h-md">
@@ -745,6 +761,19 @@ $doctor = $claims_obj->GetDignosisDocName($encounter_nr);
                 </tr>
             </table>
         </div>
+        <?php 
+        $contents='<table border="0" width="100%" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <th>NB:</th>
+                                <th>Fill in Triplicate and please submit the original form on monthly basis, and the claim be attached with Monthly Report.<br>Any falsified information may subject you to prosecution in accordance with NHIF Act No. 8 of 1999.</th>
+                            </tr>
+                        </table>';
+        //echo $contents;
+
+
+        
+        ?>
+
         <div class="row">
             <div class="col-3">
                   <a target="_blank" href="../../modules/nhif/printPatientFile.php?type=<?=$in_outpatient?>&encounter_nr=<?=$encounter_nr?>" title="Print Patient File"><input type="submit" class="btn btn-info btn-block" name="show" value="Print Patient File"></a>
@@ -767,7 +796,8 @@ $nhif_claims_query = $claims_obj->get_nhif_claimes_claimed($filter_data = array(
                     <?php
 } else {
 		?>
-                    <a href="../../modules/nhif/nhif_pass.php<?=URL_APPEND?> &patient=<?=$in_outpatient?> &lang=en&target=claimsdetails&page_action=approve&encounter_nr= <?=$encounter_nr?>" title="Send Claim to NHIF"><input type="submit" class="btn btn-info btn-block" name="show" value="Approve"></a>
+                    
+                    <button class="btn btn-info btn-block" onclick="CreateNhifForm('<?php echo $in_outpatient ?>', '<?php echo $encounter_nr ?>', '../../modules/nhif/nhif_pass.php<?=URL_APPEND?> &patient=<?=$in_outpatient?> &lang=en&target=claimsdetails&page_action=approve&encounter_nr=<?=$encounter_nr?>&date_from=<?=$date_from?>&date_to=<?=$date_to?>')" >Create NHIF Form</button>
                         <?php
 }
 	?>

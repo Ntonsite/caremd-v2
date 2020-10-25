@@ -1018,7 +1018,9 @@ if (!isset($pid) || !$pid) {
 	$cTemp='';
     $cTemp = isset($cTemp) ? $cTemp : null; 	
 
-	$patNHIFSQL = "SELECT nhif_authorization_details FROM care_person where pid = '$pid'";
+	$patNHIFSQL = "SELECT nhif_authorization_details, care_tz_company.company_code FROM care_person INNER JOIN care_tz_company ON care_tz_company.id=care_person.insurance_ID where pid = '$pid' AND care_tz_company.company_code='NHIF' ";
+
+	
 	$patNHIFResult = $db->Execute($patNHIFSQL);
 
 	if (@$patNHIFResult && $patNHIFResult->RecordCount() > 0) {

@@ -2532,6 +2532,8 @@ class Encounter extends Notes {
 					$sql = "UPDATE care_encounter SET nhif_full_name = '$nhif_full_name', nhif_card_status = '$nhif_card_status', nhif_authorization_status = '$nhif_authorization_status', nhif_authorization_number = '$nhif_authorization_number', nhif_latest_authorization = '$nhif_latest_authorization', nhif_remarks = '$nhif_remarks', nhif_dob = '$nhif_dob', nhif_scheme_id = '$nhif_scheme_id',nhif_scheme_name='$nhif_scheme_name',nhif_product_code='$nhif_product_code',nhif_product_name='$nhif_product_name' where encounter_nr = '$encounter_nr'";
 					$db->Execute($sql);
 
+					
+
 					$patNHIFSQL = "UPDATE care_person SET nhif_authorization_details = ''  where pid = '$pid'";
 					$patNHIFResult = $db->Execute($patNHIFSQL);
 				}

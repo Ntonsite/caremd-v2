@@ -469,6 +469,8 @@ function closeModal(modalname) {
 
 function submitNHIFClaim(type, encounter_nr, submitURL) {
 
+
+
   $.get("<?php echo $root_path ?>modules/nhif/printPatientFile.php?type="+type+"&encounter_nr="+encounter_nr+"&save=1", function(printed) {
 
     window.location.href = submitURL;
@@ -945,6 +947,27 @@ if (nhifPatient&&allowVerification=="") {
   });
 
   }
+</script>
+<script type="text/javascript">
+  function CreateNhifForm(type, encounter_nr, submitURL) {
+
+  $.get("<?php echo $root_path ?>modules/nhif/createNhifForm.php?type="+type+"&encounter_nr="+encounter_nr+"&save=1", function(created) { 
+
+   if (created == "no file") {
+     alert("NHIF FORM IS NOT CREATED OR FILE CORRUPTED, PLEASE TRY AGAIN");
+     return false;
+
+   }
+
+    
+    window.location.href = submitURL;
+
+  }).fail( function(data, textStatus, error) {
+      alert('Unable to save patient file. Please try again')
+       console.log(error);
+  });
+
+}
 </script>
 
 

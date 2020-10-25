@@ -110,12 +110,33 @@ class Nhif_claims extends Nhif {
 		global $db;
 		$user = array();
 
-		$sql = "SELECT * FROM care_users WHERE login_id = '$name' LIMIT 1";
+		$sql = "SELECT * FROM care_users WHERE name = '$name' LIMIT 1";
 		$result = $db->Execute($sql);
 		if (@$result && $result->RecordCount() > 0) {
 			$user = $result->FetchRow();
 		}
 		return $user;
+
+	}
+
+	public function GetqualificationDetails($name){
+		global $db;
+		$user = array();
+
+		$userTableDetails=$this->GetDocUser($name);
+		$sqlQdetails="SELECT * FROM care_role_person WHERE nr=".$userTableDetails['nhif_qualification_id'];
+		$resultDetails=$db->Execute($sqlQdetails);
+
+		if (@$resultDetails && $resultDetails->RecordCount() > 0) {
+			$qDetails = $resultDetails->FetchRow();
+			
+		}
+
+		return $qDetails;
+
+
+
+
 
 	}
 
@@ -170,7 +191,7 @@ class Nhif_claims extends Nhif {
 		$items = array();
 		$drugs = array();
 
-		$sql = "SELECT item_id FROM care_tz_drugsandservices WHERE purchasing_class = 'service' AND item_number NOT LIKE 'cons%'";
+		$sql = "SELECT item_id FROM care_tz_drugsandservices WHERE (purchasing_class LIKE '%service%' OR purchasing_class LIKE '%supplies%' )  AND item_number NOT LIKE 'cons%'";
 		$result = $db->Execute($sql);
 		if (@$result && $result->RecordCount() > 0) {
 			$drugs = $result->GetArray();
@@ -221,7 +242,7 @@ class Nhif_claims extends Nhif {
 	public function GetBedItems() {
 		$items = array();
 		$drugs = CareTzDrugsandservicesQuery::create()
-			->where('CareTzDrugsandservices.ItemNumber LIKE ?', 'B0%')
+			->where('CareTzDrugsandservices.ItemNumber LIKE ?', 'BED0%')
 			->find()
 			->toArray();
 
@@ -239,8 +260,9 @@ class Nhif_claims extends Nhif {
 		$items = array();
 
 		$sql = "SELECT *
-            FROM  care_tz_billing_archive_elem
-            WHERE nr IN (SELECT nr FROM care_tz_billing_archive WHERE encounter_nr = '$encounterNumber')
+            FROM  care_tz_billing_archive_elem INNER JOIN care_tz_company 
+            ON care_tz_company.id=care_tz_billing_archive_elem.insurance_id
+            WHERE care_tz_company.company_code='NHIF' AND nr IN (SELECT nr FROM care_tz_billing_archive WHERE encounter_nr = '$encounterNumber')
             AND item_number IN ($itemNumbers)";
 
 		$result = $db->Execute($sql);
@@ -266,9 +288,12 @@ class Nhif_claims extends Nhif {
 
 		if (@$itemNumbers) {
 			$sql = "SELECT *
-                FROM  care_tz_billing_archive_elem
-                WHERE nr IN (SELECT nr FROM care_tz_billing_archive WHERE encounter_nr = '$encounterNumber')
+                FROM  care_tz_billing_archive_elem INNER JOIN care_tz_company
+                ON care_tz_company.id=care_tz_billing_archive_elem.insurance_id
+                WHERE care_tz_company.company_code='NHIF' AND nr IN (SELECT nr FROM care_tz_billing_archive WHERE encounter_nr = '$encounterNumber')
                 AND item_number IN ($itemNumbers)";
+
+
 
 			$result = $db->Execute($sql);
 			if (@$result && $result->RecordCount() > 0) {
@@ -293,9 +318,17 @@ class Nhif_claims extends Nhif {
 
 		if (@$itemNumbers) {
 			$sql = "SELECT *
-                FROM  care_tz_billing_archive_elem
-                WHERE nr IN (SELECT nr FROM care_tz_billing_archive WHERE encounter_nr = '$encounterNumber')
+                FROM  care_tz_billing_archive_elem INNER JOIN care_tz_company
+                ON care_tz_company.id=care_tz_billing_archive_elem.insurance_id
+                WHERE care_tz_company.company_code='NHIF' AND nr IN (SELECT nr FROM care_tz_billing_archive WHERE encounter_nr = '$encounterNumber')
                 AND item_number IN ($itemNumbers)";
+
+
+
+
+
+
+
 
 			$result = $db->Execute($sql);
 			if (@$result && $result->RecordCount() > 0) {
@@ -332,8 +365,9 @@ class Nhif_claims extends Nhif {
 		if (@$itemNumbers) {
 
 			$sql = "SELECT *
-                FROM  care_tz_billing_archive_elem
-                WHERE nr IN (SELECT nr FROM care_tz_billing_archive WHERE encounter_nr = '$encounterNumber')
+                FROM  care_tz_billing_archive_elem INNER JOIN care_tz_company 
+                ON care_tz_company.id=care_tz_billing_archive_elem.insurance_id
+                WHERE  care_tz_company.company_code='NHIF' AND nr IN (SELECT nr FROM care_tz_billing_archive WHERE encounter_nr = '$encounterNumber')
                 AND item_number IN ($itemNumbers)";
 
 			$result = $db->Execute($sql);
@@ -360,8 +394,9 @@ class Nhif_claims extends Nhif {
 		if (@$itemNumbers) {
 
 			$sql = "SELECT *
-                FROM  care_tz_billing_archive_elem
-                WHERE nr IN (SELECT nr FROM care_tz_billing_archive WHERE encounter_nr = '$encounterNumber')
+                FROM  care_tz_billing_archive_elem INNER JOIN care_tz_company
+                ON care_tz_company.id=care_tz_billing_archive_elem.insurance_id
+                WHERE care_tz_company.company_code='NHIF' AND nr IN (SELECT nr FROM care_tz_billing_archive WHERE encounter_nr = '$encounterNumber')
                 AND item_number IN ($itemNumbers)";
 
 			$result = $db->Execute($sql);
@@ -1032,6 +1067,7 @@ class Nhif_claims extends Nhif {
 				if (is_null($nhif_claims_query)) {
 					if ($this->insertDataFromInternalArray($this->data_array)) {
 						return '<div id="success-alert" class="alert alert-success alert-dismissable fade show"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Successiful Approved!</strong> </div>';
+
 					} else {
 						return '<div class="alert alert-danger alert-dismissable fade show"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Error in Approving Claim</strong> </div>';
 					}
@@ -1124,8 +1160,10 @@ class Nhif_claims extends Nhif {
 		global $db;
 		$items = [];
 		$sql = "SELECT date_change, nr, amount, price, description, User_id, item_number, nhif_item_code, nhif_approval_no
-            FROM care_tz_billing_archive_elem
-            WHERE nr IN (SELECT nr FROM care_tz_billing_archive WHERE encounter_nr = '$encounter_nr') ";
+            FROM care_tz_billing_archive_elem INNER JOIN care_tz_company ON care_tz_company.id=care_tz_billing_archive_elem.insurance_id
+            WHERE care_tz_company.company_code='NHIF' AND  nr IN (SELECT nr FROM care_tz_billing_archive WHERE encounter_nr = '$encounter_nr') ";
+
+
 
 		$result = $db->Execute($sql);
 		if (@$result && $result->RecordCount() > 0) {
@@ -1177,6 +1215,10 @@ class Nhif_claims extends Nhif {
 		return $data;
 	}
 
+
+
+
+
 	function claims_json($filter_data = array()) {
 		$claims_details_query = $this->getPendingClaimsDetail($filter_data);
 		$encounter_nr = $filter_data['encounter_nr'];
@@ -1223,6 +1265,12 @@ class Nhif_claims extends Nhif {
 				);
 			}
 
+  $doctor = $this->GetDignosisDocName($encounter_nr);
+  $docUser = $this->GetDocUser($doctor);
+  $qDetailsRow = $this->GetqualificationDetails($doctor); 
+  $doctorQualificationName = $qDetailsRow['sname'];
+  $doctorQualificationID = $qDetailsRow['group_nr'];
+
 			$patientNHIFDetails = $this->getPatientNHIFDetails($filter_data['encounter_nr']);
 			$FacilityCode = $this->getFacilityCode();
 			$practitioner = $this->getPractitioner($nhif_claims_details['CreatedBy']);
@@ -1231,7 +1279,12 @@ class Nhif_claims extends Nhif {
 			$serialNumber = $FacilityCode . "\\" . $claimMonth . "\\" . $claimYear . "\\" . $patientNHIFDetails['nhif_serial_number'];
 			$patientFile = $root_path . "../../modules/nhif/uploads/patientFile" . $encounter_nr . ".pdf";
 			$patientFileContents = base64_encode(file_get_contents($patientFile));
-			// unlink($patientFile);
+			// unlink($patientFile);			
+			$nhifForm = $root_path . "../../modules/nhif/uploads/nhifForm" . $encounter_nr . ".pdf";
+
+			$nhifFormContents = base64_encode(file_get_contents($nhifForm));
+			
+
 
 			$folio_details = array(
 				"FacilityCode" => $FacilityCode,
@@ -1248,6 +1301,7 @@ class Nhif_claims extends Nhif {
 				"TelephoneNo" => $claims_details['phone_1_nr'],
 				"PatientFileNo" => $claims_details['selian_pid'],
 				"PatientFile" => $patientFileContents,
+				"ClaimFile"=>$nhifFormContents,
 				"AuthorizationNo" => $patientNHIFDetails['nhif_authorization_number'],
 				"AttendanceDate" => date('Y-m-d', strtotime($claims_details['encounter_date'])),
 				"PatientTypeCode" => $in_outpatient == 1 ? 'IN' : 'OUT',
@@ -1255,7 +1309,7 @@ class Nhif_claims extends Nhif {
 				"DateDischarged" => $in_outpatient == 1 ? date('Y-m-d', strtotime($claims_details['discharge_date'])) : NULL,
 				"PractitionerNo" => $practitioner['practitionerNo'],
 				"PractitionerName" => $nhif_claims_details['CreatedBy'],
-				"QualificationID" => (int) $practitioner['qualificationID'],
+				"QualificationID" => (int) $doctorQualificationID,
 				"FolioDiseases" => $claims_diagnosis,
 				"FolioItems" => $claims_items,
 				"CreatedBy" => $nhif_claims_details['CreatedBy'],
@@ -1266,6 +1320,8 @@ class Nhif_claims extends Nhif {
 
 			$json_folio_details = array('entities' => array($folio_details));
 
+			//print_r($json_folio_details);die;
+
 			return json_encode($json_folio_details);
 		} else {
 			return NULL;
@@ -1273,6 +1329,15 @@ class Nhif_claims extends Nhif {
 	}
 
 	function submit_claims($filter_data = array()) {
+          //debugging purpose only
+		/*
+		$data_string = $this->claims_json($filter_data);
+		echo "<pre>";print_r($data_string);echo "</pre>";die;
+		*/
+		 //end debugging
+
+
+
 		$token = '';
 		$_SESSION['nhif_claims_token'] = '';
 		if ($this->check_claims_token()) {
@@ -1283,6 +1348,9 @@ class Nhif_claims extends Nhif {
 		}
 		$request = $this->service_url;
 		$data_string = $this->claims_json($filter_data);
+
+
+		
 		
 
 		if (!is_null($data_string)) {

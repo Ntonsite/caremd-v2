@@ -102,6 +102,8 @@ class Nhif extends Core {
 		// decode the response from sts using json decoder
 		$decoded = json_decode($output);
 		$status = curl_getinfo($curl);
+        //debug claim submision 
+		//print_r($status);die;
 		// close curl resource to free up system resources
 		curl_close($curl);
 

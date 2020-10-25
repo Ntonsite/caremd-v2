@@ -14,8 +14,15 @@ require $root_path . 'include/inc_environment_global.php';
 require_once $root_path . 'include/care_api_classes/class_encounter.php';
 require_once $root_path . 'include/care_api_classes/class_tz_billing.php';
 require_once $root_path . 'include/care_api_classes/class_nhif_claims.php';
+require_once $root_path . 'tcpdf/tcpdf.php';
+require_once $root_path . 'tcpdf/tcpdf_autoconfig.php';
 //require_once($root_path.'include/care_api_classes/class_tz_insurance.php');
 //$insurance_tz = New Insurance_tz;
+
+
+
+//add page
+//$pdf->AddPage();
 $enc_obj = new Encounter;
 $claims_obj = new Nhif_claims;
 

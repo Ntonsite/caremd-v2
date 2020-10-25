@@ -298,23 +298,30 @@ class Prescription extends Core {
 		$this->sql .= $query_string . ' ' . $query;
 		if ($this->isNHIFMember()) {
 
-			$this->sql .= "  AND nhif_item_code > 0 ";
-			$this->sql .= "  AND nhif_item_code IN(SELECT ItemCode FROM ".$this->tb_dsn_nhifscheme.") ";
-			
 			$patientEncounter = $_SESSION['sess_en'];
 			$schemeID = "";
 
 			if (@$patientEncounter) {
-			    $sql = "SELECT nhif_scheme_id FROM care_encounter WHERE encounter_nr = '$patientEncounter'";
-			    $patEncResult = $db->Execute($sql);
+			    $sqlScheme = "SELECT nhif_scheme_id FROM care_encounter WHERE encounter_nr = '$patientEncounter'";
+			    $patEncResult = $db->Execute($sqlScheme);
 			    if (@$patEncResult && $patEncResult->RecordCount() > 0) {
 			        $patEncRow = $patEncResult->FetchRow();
 			        $schemeID = $patEncRow['nhif_scheme_id'];
 			    }
 			}
 			if (@$schemeID) {
-			    $this->sql .= " AND  ".$schemeID." IN(SELECT SchemeID FROM ".$this->tb_dsn_nhifscheme.")";
+				$PatientScheme=$schemeID;			    
 			}
+
+
+
+			$this->sql .= "  AND nhif_item_code > 0 ";
+			$this->sql .= "  AND nhif_item_code IN(SELECT ItemCode FROM ".$this->tb_dsn_nhifscheme." WHERE SchemeID=".$PatientScheme.") ";
+			
+			
+
+
+
 
 			
 
@@ -322,7 +329,8 @@ class Prescription extends Core {
 		} else {
 			$this->sql .= ' AND purchasing_class LIKE "' . $class . '%"';
 		}
-        
+
+
 
 
 		if (@$_GET['prescrSubCat'] && $_GET['prescrSubCat'] == 'meals' && $class == 'service') {
@@ -330,6 +338,8 @@ class Prescription extends Core {
 		}
 
 		$this->sql .= '  ORDER BY item_description';
+
+        //echo $this->sql;die;
 		 
 		$this->result = $db->Execute($this->sql);
 		$typeno = substr($is_enabled, strlen($is_enabled) - 1, 1);
@@ -356,12 +366,16 @@ class Prescription extends Core {
 			return $itemlist;
 		} else {
 
+
+                
 			// webERP is not available
 			if ($this->result = $db->Execute($this->sql)) {
 
 				if ($this->result->RecordCount()) {
 
 					$items = $this->result->GetArray();
+
+
 
 					return $items;
 				} else {

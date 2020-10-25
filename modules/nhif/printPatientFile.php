@@ -248,6 +248,8 @@ EOD;
 
 //Close and output PDF document
 
+
+
 $save = @$_GET['save'] ? $_GET['save'] : "";
 
 if (@$save) {
