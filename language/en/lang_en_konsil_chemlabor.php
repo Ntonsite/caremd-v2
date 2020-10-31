@@ -98,11 +98,15 @@ if (IS_TANZANIAN) {
 					$insurance_ID = 0;
 
                     $patientID=isset($_SESSION['sess_pid']) ? $_SESSION['sess_pid'] : ""; 
-                    $encounter_nr=isset($_SESSION['sess_en'])? $_SESSION['sess_en'] : "";                    
+
+                    $encounter_nr=isset($encounter_nr) ? $encounter_nr : $_SESSION['sess_en'];
+                    //$encounter_nr=isset($_SESSION['sess_en'])? $_SESSION['sess_en'] : "";                    
 					
 					$isNHIFMember = 0;
 
 					$patientSQL = "SELECT cp.insurance_ID,ce.nhif_scheme_id FROM care_person cp INNER JOIN care_encounter ce ON ce.pid=cp.pid WHERE cp.pid = '$patientID' AND ce.encounter_nr='$encounter_nr'";
+
+					
 
 
 					$patientResult = $db->Execute($patientSQL);
