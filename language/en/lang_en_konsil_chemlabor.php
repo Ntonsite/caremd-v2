@@ -1,5 +1,4 @@
 <?php
-
 $LDDiagnosticTest = 'Diagnostic Test Order';
 $LDHospitalName = 'CARE 2X';
 $LDCentralLab = 'Central Laboratory';
@@ -96,6 +95,8 @@ if (IS_TANZANIAN) {
 					// check if Is NHIF Member
 
 					$insurance_ID = 0;
+
+					$_SESSION['sess_en']=isset($_SESSION['sess_en'])? $_SESSION['sess_en'] : null;
 
                     $patientID=isset($_SESSION['sess_pid']) ? $_SESSION['sess_pid'] : ""; 
 

@@ -3,6 +3,7 @@
 require './roots.php';
 require $root_path . 'include/inc_environment_global.php';
 require $root_path . 'language/en/lang_en_aufnahme.php';
+require_once $root_path . 'include/care_api_classes/class_encounter.php';
 
 /**
  * CARE2X Integrated Hospital Information System beta 2.0.0 - 2004-05-16
@@ -30,6 +31,8 @@ $admissionfile = 'aufnahme_pass.php' . URL_APPEND;
 if ((!isset($pid) || !$pid) && $_SESSION['sess_pid']) {
 	$pid = $_SESSION['sess_pid'];
 }
+
+$enc_obj = new Encounter;
 
 # Save session data
 $_SESSION['sess_path_referer'] = $top_dir . $thisfile;

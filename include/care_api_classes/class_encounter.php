@@ -3589,6 +3589,36 @@ class Encounter extends Notes {
 	//    }
 	//
 
+	public function getUserRole($loginID){
+		global $db;
+		$userRoles = array();
+		$roleID = "SELECT role_id FROM care_users WHERE login_id='$loginID'";
+		$resultRoleID = $db->Execute($roleID);
+		if(@$resultRoleID && $resultRoleID->RecordCount()>0){
+			$userRoles = $resultRoleID->GetArray();
+            //echo "<pre>";print_r($userRoles);echo "</pre>";die;
+            $roleID = $userRoles[0]['role_id'];
+
+            //Get permissions for role id
+            $permission=array();
+            $userPermissionArray=array();
+            $sqlPermission = "SELECT permission FROM care_user_roles WHERE role_id='$roleID'"; 
+            $resultPermission = $db->Execute($sqlPermission);
+            if (@$resultPermission && $resultPermission->RecordCount()>0) {
+            	$permission = $resultPermission->GetArray();            	
+            	$userPermission = $permission[0]['permission'];
+            	$userPermissionArray = explode(" ", $userPermission);
+            	//echo "<pre>";print_r($userPermissionArray);echo "</pre>";
+
+            }
+
+
+		}
+		return $userPermissionArray;
+	}
+
+
+
 }
 
 ?>

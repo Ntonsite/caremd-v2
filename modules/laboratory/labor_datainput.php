@@ -622,10 +622,12 @@ if (@($_FILES)) {
 		$reader = IOFactory::createReader($inputFileType);
 		$spreadsheet = $reader->load($filePath);
 
+
 		$labResults = [];
 		$reqTests = $_COOKIE['testMeasures'];
 
 		require_once $root_path . "modules/laboratory/ms4Machine.php";
+		require_once $root_path . "modules/laboratory/mythic22.php";
 		require_once $root_path . "modules/laboratory/dh76Machine.php";
 
 

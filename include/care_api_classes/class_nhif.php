@@ -86,6 +86,10 @@ class Nhif extends Core {
 		$curl = curl_init();
 		// set url
 
+		//echo $this->token_url;die; 
+
+		//print_r($curl_post_data);die;
+
 		curl_setopt($curl, CURLOPT_URL, $this->token_url);
 		// Get the response back as a string
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
@@ -97,7 +101,11 @@ class Nhif extends Core {
 		// By default, HTTPS does not work with curl.
 		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 		// read the output from the post request
+
+
 		$output = curl_exec($curl);
+
+		//print_r($output);die;
 
 		// decode the response from sts using json decoder
 		$decoded = json_decode($output);
@@ -106,6 +114,8 @@ class Nhif extends Core {
 		//print_r($status);die;
 		// close curl resource to free up system resources
 		curl_close($curl);
+
+		//echo "<pre>";print_r($status);echo "</pre>";die;
 
 		if ($status['http_code'] === 200) {
 			//Update session variable $_SESSION['nhif_access_token']

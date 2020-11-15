@@ -50,6 +50,7 @@ class Product extends Core {
 		'unit_price_11',
 		'nhif_item_code',
 		'nhif_is_restricted',
+		'restrict_over_dose',
 	);
 
 	var $fields_tbl_price = array(
@@ -267,7 +268,7 @@ class Product extends Core {
 		}
 
 		if (true) {
-			$sql = "SELECT `item_id`, `partcode`, 100 as plausibility, `item_description`,`not_in_use`,`min_level`, nhif_item_code, nhif_is_restricted FROM " . $this->tbl_product_items . " WHERE item_id > 0 ";
+			$sql = "SELECT `item_id`, `partcode`, 100 as plausibility, `item_description`,`not_in_use`,`min_level`, nhif_item_code, nhif_is_restricted,restrict_over_dose FROM " . $this->tbl_product_items . " WHERE item_id > 0 ";
 			if (@$keyword && $keyword != '*') {
 				$sql .= " AND lower(item_description) LIKE '%$keyword%'";
 			}
@@ -597,6 +598,17 @@ class Product extends Core {
 	function get_items_nhif_is_restricted($item_id) {
 		global $db;
 		$this->sql = "SELECT nhif_is_restricted FROM care_tz_drugsandservices WHERE item_id='" . $item_id . "'";
+		$this->rs = $db->Execute($this->sql);
+		if ($this->rs->RecordCount()) {
+			$this->elem = $this->rs->FetchRow();
+			return $this->elem[0];
+		}
+		return "";
+	}
+
+	function restrict_over_dose($item_id) {
+		global $db;
+		$this->sql = "SELECT restrict_over_dose FROM care_tz_drugsandservices WHERE item_id='" . $item_id . "'";
 		$this->rs = $db->Execute($this->sql);
 		if ($this->rs->RecordCount()) {
 			$this->elem = $this->rs->FetchRow();

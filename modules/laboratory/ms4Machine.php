@@ -4,6 +4,8 @@ $sheetData->getCell('A1')->setValue('');
 $rows = $sheetData->toArray();
 $values = $rows[1][0];
 
+//echo "<pre>";print_r($rows);echo "</pre>";die;
+
 
 if ($rows[10][0] > 0) {
 

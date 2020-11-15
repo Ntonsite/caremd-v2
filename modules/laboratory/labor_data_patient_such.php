@@ -1,5 +1,5 @@
 <?php
-error_reporting(E_COMPILE_ERROR | E_ERROR | E_CORE_ERROR);
+//error_reporting(E_COMPILE_ERROR | E_ERROR | E_CORE_ERROR);
 require './roots.php';
 require $root_path . 'include/inc_environment_global.php';
 $pageName = "Laboratories";
@@ -36,7 +36,7 @@ if (!isset($mode)) {
 }
 
 //$db->debug=1;
-
+$keyword=isset($keyword)? $keyword : null;
 $keyword = trim($keyword);
 $toggle = 0;
 
@@ -62,6 +62,7 @@ if ($mode == 'paginate') {
 		$keyword = strtr($keyword, '*&', '%_');
 	}
 }
+$search=isset($search)? $search : null;
 
 if ($search && !empty($keyword)) {
 
@@ -153,6 +154,7 @@ require $root_path . 'include/inc_css_a_hilitebu.php';
 
     <img <?php echo createComIcon($root_path, 'micros.gif', '0', 'absmiddle') ?>><FONT  COLOR="<?php echo $cfg[top_txtcolor] ?>"  SIZE=5> <b><?php
 echo "$LDMedLab - ";
+$editmode=isset($editmode)? $editmode : null;
 if ($editmode) {
 	echo "$LDNewData";
 } else {
@@ -200,6 +202,8 @@ if ($search || $mode == 'paginate') {
 	}
 
 }
+
+$linecount=isset($linecount)? $linecount : null;
 
 if ($linecount) {
 

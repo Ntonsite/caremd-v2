@@ -165,6 +165,7 @@ function popPic(pid,nm){
             <td nowrap class="b r" width="10%"><?php echo $LDPartCode; ?></td>
             <td nowrap class="b r" width="10%">NHIF Item Code</td>
 	      	  <td nowrap class="b r" width="10%">NHIF Is Restricted</td>
+            <td nowrap class="b r" width="10%">Restrict Over Dose</td>
               <td nowrap class="b r" width="30%"><?php echo $LDItemDesc; ?></td>
               <td nowrap class="b r" width="10%"><?php echo $LDItemClass; ?>n</td>
               <td nowrap class="b r" width="8%"><?php echo $LDUnitPrice; ?></td>

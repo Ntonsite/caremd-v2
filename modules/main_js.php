@@ -931,6 +931,8 @@ if (nhifPatient&&allowVerification=="") {
       async: false
 
     }).done(function (data) {
+      // alert(data);
+      // return false;
       console.log(data);
        $("#consultation_fee").empty();
        $("#consultation_fee").append(data);

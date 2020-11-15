@@ -104,6 +104,12 @@ echo setCharSet();
                         type: "POST",
                         data: data,
                         timeout: 10000
+                }).done(function (data) {
+
+                    console.log(data);
+
+                    //alert(data);
+
                 })
                 
                 $('#nhif_full_name').text(data.FullName);
@@ -349,7 +355,36 @@ $person->display($pid);
                             </td>
                             <td>
                                 <?php
-require './gui_bridge/default/gui_patient_reg_options.php';
+//We need to check permission for viewing patient options
+$userID=$_SESSION['sess_login_userid'];
+
+$permission = $enc_obj->getUserRole($userID);
+
+foreach ( $permission as $userPermission) {
+    switch ($userPermission) {
+        case '_a_2_options_patient':
+            $allowOptions=TRUE;
+            break;
+
+        case 'System_Admin':
+            $systemAdmin=TRUE;
+            break;
+            
+        case '_a_0_all':
+            $allAreas=TRUE;
+            break;        
+        
+        default:
+            $noPermission=TRUE;
+            break;
+    }
+}
+
+if ($allowOptions || $systemAdmin || $allAreas) {
+    require './gui_bridge/default/gui_patient_reg_options.php';
+}
+
+
 $sTemp = ob_get_contents();
 # Load and display the options table
 if (@$current_encounter)

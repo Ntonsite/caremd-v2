@@ -6,9 +6,14 @@ global $db;
 
 
 $pid = $_POST['pid'];
+$_POST = str_replace("'", '', $_POST);
 $authorization_details = json_encode($_POST);
 
+
+
 $sql = "UPDATE care_person SET nhif_authorization_details = '$authorization_details' where pid = '$pid'";
+
+
 
 $db->Execute($sql);
 

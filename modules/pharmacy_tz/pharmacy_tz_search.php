@@ -86,6 +86,10 @@ if (!empty($keyword) || !empty($category)) {
         $check = ($inuse == 1) ? 'checked=\"checked\"' : '';
         $nhif_item_code=$search_element['nhif_item_code'];
         $nhif_is_restricted = $search_element['nhif_is_restricted'];
+        $restrict_over_dose = $search_element['restrict_over_dose'];
+
+
+
 
         // $schemes = $product_obj->getProductNHIFSchemes($item_id);
 
@@ -106,6 +110,14 @@ if (!empty($keyword) || !empty($category)) {
         }
         $isNHIFRestrictedRow = "<select style='width: 50px;' id='nhif_is_restricted".$item_id."' onchange='updateDrugRow(".$item_id.",\"nhif_is_restricted\", \"nhif_is_restricted\")' ><option ".$notRestricted."value='0'>No</option><option ".$isRestricted." value='1'>Yes</option></select>";
 
+        $notRestrictedOverDose = $isRestrictedOverDose = "";
+        if ($restrict_over_dose == 1) {
+            $isRestrictedOverDose = " selected ";
+        }else {
+            $notRestrictedOverDose = " selected ";
+        }
+        $isRestrictedOverDoseRow = "<select style='width: 50px;' id='restrict_over_dose".$item_id."' onchange='updateDrugRow(".$item_id.",\"restrict_over_dose\", \"restrict_over_dose\")' ><option ".$notRestrictedOverDose."value='0'>No</option><option ".$isRestrictedOverDose." value='1'>Yes</option></select>";
+
         $http_buffer.=" <td class=\"b r\">" . $item_number . "</td>
                     <td class=\"b r\">" . $part_code . "&nbsp;</td>
 
@@ -115,6 +127,9 @@ if (!empty($keyword) || !empty($category)) {
 
                     <td class=\"b r\">
                         ".$isNHIFRestrictedRow."
+                    </td>
+                    <td class=\"b r\">
+                        ".$isRestrictedOverDoseRow."
                     </td>
 
                     <td class=\"b r\">" . str_replace(strtolower(trim($keyword)), "<b>" . trim($keyword) . "</b>", strtolower($item_description)) . "</td>

@@ -345,14 +345,14 @@ echo '<TR  height=1>
 // $dateSQL = substr($prescr_date, 6, 4) . '-' . substr($prescr_date, 3, 2) . '-' . substr($prescr_date, 0, 2);
 
 echo '<tr height=1>';
-$SQL_TOTALDOSE = "SELECT *, SUM(total_dosage) AS totaldosage,(CASE WHEN sub_class='syrup' THEN '1' WHEN sub_class='suspension' THEN '1' WHEN sub_class='bottle' THEN '1' ELSE SUM(dosage*times_per_day) END ) AS today_dose  FROM care_encounter_prescription INNER JOIN care_tz_drugsandservices ON care_tz_drugsandservices.item_id=care_encounter_prescription.article_item_number INNER JOIN care_encounter ON care_encounter.encounter_nr=care_encounter_prescription.encounter_nr where current_ward_nr='" . $ward_nr . "' and purchasing_class IN ('drug_list','supplies') and care_encounter.is_discharged=0 and is_disabled<>1 group by article_item_number order by article";
+$SQL_TOTALDOSE = "SELECT *, SUM(total_dosage) AS totaldosage,SUM((CASE WHEN sub_class='syrup' THEN '1' WHEN sub_class='suspension' THEN '1' WHEN sub_class='bottle' THEN '1' ELSE (dosage*times_per_day) END )) AS today_dose  FROM care_encounter_prescription INNER JOIN care_tz_drugsandservices ON care_tz_drugsandservices.item_id=care_encounter_prescription.article_item_number INNER JOIN care_encounter ON care_encounter.encounter_nr=care_encounter_prescription.encounter_nr WHERE current_ward_nr='" . $ward_nr . "' and purchasing_class IN ('drug_list','supplies') and care_encounter.is_discharged=0 and is_disabled<>1 group by article_item_number order by article";
+
+
+//echo $SQL_TOTALDOSE; die;
+
+
+
 $RESULT_TOTALDOSE = $db->Execute($SQL_TOTALDOSE);
-
-
-
-
-
-
 while ($rows = $RESULT_TOTALDOSE->FetchRow()) {
     $issued=0;
     $given=0;
@@ -370,7 +370,8 @@ while ($rows = $RESULT_TOTALDOSE->FetchRow()) {
      $bal=$rows['totaldosage']-$issued;
      $given=$issued-$rows['today_dose'];
 
-     $today=date('Y-m-d');
+     //$today = date('Y-m-d');
+     $today = '2020-11-15';
 
 
      $sqlIsIssued="SELECT *,wd.issuer as issuerID FROM care_tz_ward_dispensed wd INNER JOIN care_encounter_prescription cep ON cep.nr=wd.prescriptionNr  WHERE wd.is_issued='1' AND dateIssued='".$today."' AND cep.article_item_number='".$rows['article_item_number']."' AND wd.wardNr='".$ward_nr."'";
@@ -410,7 +411,7 @@ while ($rows = $RESULT_TOTALDOSE->FetchRow()) {
 
 
 
-     $rows['is_issued']=$rows['is_issued'] ?? "";
+     $rows['is_issued']=isset($rows['is_issued']) ? $rows['is_issued'] : null;
      echo '<td>' . $rows['article'] . '</td>';
      echo '<td>' . $rows['totaldosage']. '</td>';
      echo '<td>' . $issued. '</td>';
@@ -430,6 +431,19 @@ while ($rows = $RESULT_TOTALDOSE->FetchRow()) {
         echo '<td>'.'<input type="text" size="5" placeholder="qty" name="supply_'.$rows['nr'].'">'.'</td>';
 
      }else{
+    //$rows['today_dose']=($bal<$rows['today_dose']) ? $bal : $rows['today_dose'];
+
+        if ($bal<$rows['today_dose']) {//will result into negative
+            $rows['today_dose']=$bal;
+            echo '<input type="hidden" name="lastDose_'.$rows['nr'].'" value="'.$rows['today_dose'].'">';
+            
+        }else{
+            $rows['today_dose']=$rows['today_dose'];
+
+        }
+
+        
+        
         echo '<td>' . $rows['today_dose']. '</td>';
      }
      

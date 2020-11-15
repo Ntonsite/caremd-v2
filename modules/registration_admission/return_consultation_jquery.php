@@ -23,13 +23,17 @@ if (isset($_POST['id'])) {
 		 }
 
 		 $cons=null;
+		 $cons_other=null;
 
 		 if($new){
-		 	$cons='cons0'.$_POST['id']; 	
+		 	$cons='cons0'.$_POST['id']; 
+            $cons_other='cons10';
+
 		 	
-		 	$sqlConsNew="SELECT item_description FROM care_tz_drugsandservices WHERE item_number='".$cons."' AND purchasing_class='service'";
+		 	$sqlConsNew="SELECT item_description FROM care_tz_drugsandservices WHERE (item_number='".$cons."' OR  item_number LIKE '".$cons_other."%') AND purchasing_class='service'";
+
 		 	$consNewResult=$db->Execute($sqlConsNew);
-		 	if ($rows=$consNewResult->FetchRow()) {
+		 	while ($rows=$consNewResult->FetchRow()) {
 		 		$description=$rows['item_description'];	
 		 		 $cTemp = $cTemp . '<option value="' . $description . '" ';
 		         $cTemp = $cTemp . '>';
@@ -58,6 +62,7 @@ if (isset($_POST['id'])) {
 		  }	
 
 		  echo ($cTemp);
+		  //echo $sqlConsNew;
 
 		
 		}

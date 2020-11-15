@@ -193,6 +193,7 @@ if (!empty($mode)) {
             $selians_item_price_11 = $product_obj->get_selians_item_alt_price($item_id, 11);
             $selians_item_nhif_item_code = $product_obj->get_items_nhif_item_code($item_id);
             $selians_item_nhif_is_restricted = $product_obj->get_items_nhif_is_restricted($item_id);
+            $restrict_over_dose = $product_obj->restrict_over_dose($item_id);
         }
     }
 }
@@ -287,6 +288,10 @@ if (!empty($mode) && !$ERROR) {
     $db_buffer['unit_price_11'] = $selians_item_price_11;
     $db_buffer['nhif_item_code'] = $selians_item_nhif_item_code;
     $db_buffer['nhif_is_restricted'] = $selians_item_nhif_is_restricted;
+    $db_buffer['restrict_over_dose'] = $restrict_over_dose;
+
+    
+
 
     $product_obj->useProductTable();
 

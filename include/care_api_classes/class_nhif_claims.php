@@ -1371,6 +1371,12 @@ class Nhif_claims extends Nhif {
 			// printing returned respose
 
 			$StatusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+			
+
+
+
+
 			if ($StatusCode === 200) {
 				//Update session variable $_SESSION['nhif_access_token']
 				$header_data = 'Authorization:' . $decoded->token_type . ' ' . $decoded->access_token;

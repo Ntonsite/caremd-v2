@@ -274,7 +274,7 @@ function CheckCategory(){
 
               <?php
               //code for read only will stay here
-
+                   
               
               ?>
 
@@ -341,6 +341,13 @@ function CheckCategory(){
                           <option <?php if($selians_item_nhif_is_restricted == 1){echo 'selected'; } ?> value="1">Yes</option>
                         </select>
                         NHIF Is Restricted
+                      </p>
+                      <p>
+                        <select name="restrict_over_dose" style="width: 130px;">
+                          <option <?php if($restrict_over_dose == 0){echo 'selected'; } ?> value="0">No</option>
+                          <option <?php if($restrict_over_dose == 1){echo 'selected'; } ?> value="1">Yes</option>
+                        </select>
+                        Restrict Over Dose
                       </p>
 
                          
