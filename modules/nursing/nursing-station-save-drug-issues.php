@@ -24,8 +24,7 @@ if (isset($_POST['issue'])) {//issue button is pressed
       $todayDose=$_POST['todayDose_'.$presc_nr['nr']];
       $_POST['nr_'.$presc_nr['nr']]=isset($_POST['nr_'.$presc_nr['nr']]) ? $_POST['nr_'.$presc_nr['nr']] : null;
       $prescriptionNr=$_POST['nr_'.$presc_nr['nr']];
-      //$today=date('Y-m-d');
-      $today = '2020-11-15';
+      $today=date('Y-m-d');      
       $article_item_number=$_POST['article_'.$presc_nr['nr']];
       $_POST['supply_'.$presc_nr['nr']]=isset($_POST['supply_'.$presc_nr['nr']])? $_POST['supply_'.$presc_nr['nr']] : null;
       $supply=$_POST['supply_'.$presc_nr['nr']];

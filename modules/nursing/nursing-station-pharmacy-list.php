@@ -370,8 +370,8 @@ while ($rows = $RESULT_TOTALDOSE->FetchRow()) {
      $bal=$rows['totaldosage']-$issued;
      $given=$issued-$rows['today_dose'];
 
-     //$today = date('Y-m-d');
-     $today = '2020-11-15';
+     $today = date('Y-m-d');
+     
 
 
      $sqlIsIssued="SELECT *,wd.issuer as issuerID FROM care_tz_ward_dispensed wd INNER JOIN care_encounter_prescription cep ON cep.nr=wd.prescriptionNr  WHERE wd.is_issued='1' AND dateIssued='".$today."' AND cep.article_item_number='".$rows['article_item_number']."' AND wd.wardNr='".$ward_nr."'";
