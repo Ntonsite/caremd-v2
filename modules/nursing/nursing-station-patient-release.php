@@ -87,7 +87,7 @@ if ($enc_obj->loadEncounterData($pn)) {
     $glob_obj->getConfig('patient_%');
     $glob_obj->getConfig('person_%');
 
-    $result = &$enc_obj->encounter;
+    $result = $enc_obj->encounter;
     /* Check whether config foto path exists, else use default path */
     $default_photo_path = 'fotos/registration';
     $photo_filename = $result['photo_filename'];

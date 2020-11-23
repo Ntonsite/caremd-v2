@@ -612,8 +612,17 @@ if ($rows) {
 				$insurance_name = $ins_obj->GetName_insurance_from_id($patient['insurance_ID']);
 			}
 
-			 if ($insurance_name=='NHIF') {
-			 	$insurance_name=$enc_obj->nhifSchemeName();
+
+
+			 if (substr($insurance_name, 0,4)=='NHIF') {
+			 	if ($enc_obj->nhifProductName()) {
+			 		$insurance_name=$enc_obj->nhifProductName();
+			 		
+			 	}else{
+			 		$insurance_name=$enc_obj->nhifSchemeName();
+
+			 	}
+			 	
 			 }
 
 			$smarty->assign('sInsuranceType', substr($insurance_name, 0, 14));

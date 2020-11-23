@@ -1013,6 +1013,21 @@ class Encounter extends Notes {
 		}
 	}
 
+
+	function nhifProductName($enr = 0) {
+		if ($this->is_loaded) {
+			//print_r($this->encounter);
+			return $this->encounter['nhif_product_name'].' NHIF';
+		} else {
+			if ($enr) {
+				return $this->getValue('nhif_scheme_name', $enr);
+			} else {
+				return FALSE;
+			}
+
+		}
+	}
+
 	/**
 	 * Returns encounter or admission class.
 	 *

@@ -383,6 +383,7 @@ $LDPlannedEncType = 'Planned admission type';
 $LDListEncounters = 'Encounters\' list';
 $LDDischarged = 'Discharged';
 $LDDischargeDate = 'Discharge date';
+$LDDischargeSummary = 'Discharge Summary';
 # 2003-08-04 EL
 $LDCancelThisAdmission = 'Cancel this admission';
 $LDInsShortID[1] = 'PRIV';  // privately paid insurance

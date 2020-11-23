@@ -596,19 +596,21 @@ if ($encounter_class_nr) {
                 alert("<?php echo $LDPlsSelectDept; ?>");
                 d.current_dept_nr.focus();
                 return false;
+               } else if (!d.consultation_fee.value) {
+                alert(" PLS SELECT CONSULTATION");
+                d.consultation_fee.focus();
+                return false;
+
+              }else if(document.getElementById("pharmacy").value==""){
+                alert("SELECT PHARMACY");
+                document.getElementById("pharmacy").focus();
+                return false;             
+            
             }else if(!d.qualification.value){
             	alert("PLS SELECT  QUALIFICATION");
             	d.qualification.focus();
             	return false;
-            } else if (!d.consultation_fee.value) {
-                alert(" PLS SELECT CONSULTATION");
-                d.consultation_fee.focus();
-                return false;
-            }else if(document.getElementById("pharmacy").value==""){
-                alert("SELECT PHARMACY");
-                document.getElementById("pharmacy").focus();
-                return false;
-            }
+            } 
             //else if(!d.form_nr.value){
             //  alert("PLEASE ENTER FORM NUMBER, OR PUT ZERO FOR CASH PATIENT");
             //      d.form_nr.focus();

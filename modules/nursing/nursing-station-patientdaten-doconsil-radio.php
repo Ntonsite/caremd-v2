@@ -94,7 +94,38 @@ if (isset($pn) && $pn) {
 			          default: $full_en = ($pn + $GLOBAL_CONFIG['patient_inpatient_nr_adder']);
 			          }
 		*/$full_en = $pn;
+
+	
 		$result = $enc_obj->encounter;
+		//echo $result['nhif_scheme_id']; 
+
+		//echo "<pre>";print_r($result);echo "</pre>";die;
+
+		if ($result['nhif_scheme_id']) {
+			$sqlPrescribeWithoutDx="SELECT prescribe_without_diagnosis FROM care_person WHERE pid=".$result['pid'];			
+			$resultPrescribeWithoutDx=$db->Execute($sqlPrescribeWithoutDx);
+			$rowPrescribeWithoutDx=$resultPrescribeWithoutDx->FetchRow();
+
+			if ($rowPrescribeWithoutDx['prescribe_without_diagnosis']=='1') {
+				$allowRequest=true;
+			}else{
+				$sqlCheckDx="SELECT encounter_nr FROM `care_tz_diagnosis` WHERE encounter_nr='".$result['encounter_nr']."' AND 	diagnosis_type='preliminary' ";
+				$resultCheckDx=$db->Execute($sqlCheckDx);
+				if ($resultCheckDx->RecordCount()>0) {
+					$allowRequest=true;								
+							}else{
+								$allowRequest=false;
+							}			
+
+				
+			}
+		}else{
+			$allowRequest=true;
+		}
+
+
+
+
 		include_once $root_path . 'include/care_api_classes/class_diagnostics.php';
 		$diag_obj_rad = new Diagnostics;
 		$diag_obj_rad->useRadioRequestTable();
@@ -545,6 +576,8 @@ ob_start();
 require_once $root_path . 'main_theme/head.inc.php';
 require_once $root_path . 'main_theme/header.inc.php';
 require_once $root_path . 'main_theme/topHeader.inc.php';
+
+
 ?>
 
 <ul>
@@ -621,6 +654,8 @@ echo "<img src='".$root_path."classes/barcode/image.php?code=".$batch_nr."&style
                                             <table border=0 cellpadding=1 cellspacing=1 width=100%>
 
                                                 <?php
+
+                                              
 
 echo '<tr><td colspan=2><div class=fva2_ml10 style="padding-top: 10px;padding-bottom: 10px;">' . $LDReqTest . ':<br>';
 echo '<select name="test_request" id="testRequest">';

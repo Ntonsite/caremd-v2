@@ -10,6 +10,7 @@ if($rows){
     <td><?php echo $LDAdmitType; ?></td>
     <td><?php echo $LDStatus; ?></td>
     <td><?php echo $LDDischargeDate; ?></td>
+    <td><?php echo $LDDischargeSummary; ?></td>
   </tr>
 <?php
 		while($row=$list_obj->FetchRow()){
@@ -30,7 +31,14 @@ if($rows){
 	</td>
     <td><?php if($row['is_discharged']) echo $LDDischarged; ?></td>
     <td><?php if($row['discharge_date']&&$row['discharge_date']!='0000-00-00') echo @formatDate2Local($row['discharge_date'],$date_format); ?></td>
+    <td>
+  <a href="discharge_summary.php<?php echo URL_APPEND ?>&encounter_nr=<?php echo $row['encounter_nr']; ?>&origin=patreg_reg"><?php echo '<img '.createComIcon($root_path,'icon_acro.gif','0','',TRUE).'>';?></a>
+   
+    
+
+  </td>
     <td></td>
+
   </tr>
 
 <?php

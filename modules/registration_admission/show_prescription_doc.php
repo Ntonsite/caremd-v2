@@ -200,6 +200,8 @@ require_once $root_path . 'include/care_api_classes/class_multi.php';
 $multi = new multi;
 $v = $multi->__read_hospno();
 $val = explode('|', $v);
+
+
 if (@$val[13] && $val[13] == 1) {
 	$prescribewithoutdiagnosis = 1;
 }

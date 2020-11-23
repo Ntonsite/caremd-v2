@@ -31,11 +31,13 @@ include_once($root_path.'include/inc_t1ps_ar2uni.php');
 
 
 # Get the encouter data
-$enc_obj=& new Encounter($enc);
+$enc_obj= new Encounter($enc);
 if($enc_obj->loadEncounterData()){
 	$encounter=$enc_obj->getLoadedEncounterData();
 	//extract($encounter);
 }
+
+
 
 # Fetch insurance and encounter classes
 $encounter_class=$enc_obj->getEncounterClassInfo($encounter['encounter_class_nr']);
@@ -75,7 +77,7 @@ $classpath=$root_path.'classes/phppdf/';
 $fontpath=$classpath.'fonts/';
 # Load and create pdf object
 include($classpath.'class.ezpdf.php');
-$pdf=& new Cezpdf();
+$pdf= new Cezpdf();
 
 
 $logo=$root_path.'gui/img/logos/lopo/care_logo.png';
