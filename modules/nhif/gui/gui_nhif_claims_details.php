@@ -647,6 +647,7 @@ $supplies_total_cost = 0;
                                         </tr>
                                     </table>
                                 </td>
+                                <?php //$patientSignature = '<img src="../../modules/nhif/signatures/signature'.$encounter_nr.'.png"  width="223"   height="46" style="vertical-align:top;float:left" >';?>
                                 <td><table class="table-lebel" ><tr><td>Signature:</td> <td></td></tr></table></td>
                                 <td><table class="table-lebel" ><tr><td>Tel. No:</td> <td></td></tr></table></td>
                             </tr>
@@ -665,7 +666,12 @@ $supplies_total_cost = 0;
                 <?php else: ?>
                 <?php
 $doctor = $claims_obj->GetDignosisDocName($encounter_nr);
-	$docUser = $claims_obj->GetDocUser($doctor);
+$docUser = $claims_obj->GetDocUser($doctor);
+$qDetailsRow=$claims_obj->GetqualificationDetails($doctor);  
+$doctorQualificationName=$qDetailsRow['sname'];
+
+$login_id = $docUser['login_id'];
+
 	// $patientId = $claims_obj->GetPersonel($personelNumber);
 	// $person = $claims_obj->GetPerson($patientId);
 	?>
@@ -686,16 +692,17 @@ $doctor = $claims_obj->GetDignosisDocName($encounter_nr);
                                     <table class="table-lebel" >
                                         <tr>
                                             <td>Qualification:</td>
-                                            <td><strong><?php echo ($docUser) ? ucfirst($docUser['occupation']) : "" ?></strong></td>
+                                            <td><strong><?php echo $doctorQualificationName;?></strong></td>
                                         </tr>
                                     </table>
                                 </td>
 
                                 <td>
-                                    <table class="table-lebel" >
+                                    <table class="" >
                                         <tr>
+                                            <?php $doctorSignature = '<img src="../../modules/nhif/signatures/'.$login_id.'.png"  width="29" height="16">';?>
                                             <td>Signature:</td>
-                                            <td></td>
+                                            <td><?php echo $doctorSignature;?></td>
                                         </tr>
                                     </table>
                                 </td>
@@ -715,12 +722,17 @@ $doctor = $claims_obj->GetDignosisDocName($encounter_nr);
                                 <td>
                                     <table class="table-lebel" >
                                         <tr>
-                                            <td>I certify that I received the above named services. Name:</td>
-                                            <td><strong><?php echo ucfirst($doctor) ?></strong></td>
+                                            <td>
+                                                <strong><?=strtoupper($claims_details['name_first'])?> <?=strtoupper($claims_details['name_middle'])?> <?=strtoupper($claims_details['name_last'])?></strong>
+                                            </td>
                                         </tr>
                                     </table>
                                 </td>
-                                <td><table class="table-lebel" ><tr><td>Signature:</td> <td></td></tr></table></td>
+                                <?php
+                                $patientSignature = '<img src="../../modules/nhif/signatures/signature'.$encounter_nr.'.png"  width="223"   height="46" style="vertical-align:top;float:left" >';
+                                ?>
+
+                                <td><table class="" ><tr><td>Signature:</td> <td><?php echo $patientSignature; ?></td></tr></table></td>
                                 <td><table class="table-lebel" ><tr><td>Tel. No:</td> <td><strong><?=($docUser) ? $docUser['tel_no'] : ""?></strong></td></tr></table></td>
                             </tr>
                         </table>
@@ -736,13 +748,15 @@ $doctor = $claims_obj->GetDignosisDocName($encounter_nr);
                 </tr>
 
                 <?php endif?>
+                <?php $muhuri_file = '<img src="../../gui/img/common/default/'.'muhuri.png"  width="61" height="36">';?>
                 <tr>
                     <td>
                         <table border="0" width="100%" cellspacing="0" cellpadding="0">
                             <tr>
                                 <td><table class="table-lebel" ><tr><td>I certify that I provided the above service.  Name:</td> <td><?=ucfirst($doctor)?></td></tr></table></td>
-                                <td><table class="table-lebel" ><tr><td>Signature:</td> <td</td></tr></table></td>
-                                <td><table class="table-lebel" ><tr><td>Official Stamp:</td> <td></td></tr></table></td>
+                                <td><table class="table-lebel" ><tr><td>Signature:</td> <td><?php echo $doctorSignature; ?>
+                                </td></tr></table></td>
+                                <td><table class="" ><tr><td>Official Stamp:</td> <td><?php echo $muhuri_file;?></td></tr></table></td>
                             </tr>
                         </table>
 

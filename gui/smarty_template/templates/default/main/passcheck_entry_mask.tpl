@@ -14,8 +14,8 @@
 <div class="container-fluid d-flex justify-content-center">
     <div class="row col-md-4">
         <div class="card ">
-            <div class="card-header bg-light">
-                CareMD ~ Login
+            <div class="card-header bg-info" align="center">
+                CareMD Version: 4.0
             </div>
             <div class="card-body">
 

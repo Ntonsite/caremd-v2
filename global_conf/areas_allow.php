@@ -15,6 +15,7 @@ $allow_area = array(
 	'outp_read' => array('_a_2_outpread'),
 	'report_all' => array('_a_1_allreportingread', '_a_2_reportingread', '_a_2_clinicreportingread', '_a_2_financialreportingread', '_a_2_systemreportingread'),
 	'report' => array('_a_2_reportingread'),
+	'nhif_read' => array('_a_2_nhif_claims'),
 	'report_clinical' => array('_a_2_clinicreportingread'),
 	'report_financial' => array('_a_2_financialreportingread'),
 	'report_system' => array('_a_2_systemreportingread'),

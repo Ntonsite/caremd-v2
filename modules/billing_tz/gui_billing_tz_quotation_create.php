@@ -184,7 +184,7 @@ $v = $y;
                                         <td>
                                             <input type="button" value="<?php echo $LDCalculateTotalSum; ?>" onClick="javascript:sum_all();">
                                         </td>
-                                        <td>
+                                                                                <td>
                                             <div id="totalsum" width="400">
 <?php echo $LDTotalSumnotcalculated; ?>
 <?php

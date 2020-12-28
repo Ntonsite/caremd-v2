@@ -1,3 +1,4 @@
+
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3.0//EN" "html.dtd">
 <HTML>
     <HEAD>
@@ -95,8 +96,13 @@ require $root_path . 'include/inc_pharmacy_pending_lister_fx.php';
                             <td width="100%">
                                 <?php
 
+
+
 if (!isset($NO_PENDING_PRESCRIPTIONS)) {
 	//PENDING PRESCRIPTION EXISTS
+
+
+
 	echo '
                       <a href="javascript:printOut()"><img src="../../gui/img/control/default/en/en_printout.gif" border=0 align="absmiddle" width="99" height="24" alt="Print this form"></a>
                       <a href="pharmacy_tz_pending_prescriptions.php?&mode=done&pn=' . $pn . '&admission=' . $admission . '&prescription_date=' . $prescription_date . '"><img src="../../gui/img/control/default/en/en_done.gif" border=0 align="absmiddle" width="75" height="24" alt="It�s done! Move the form to the archive"></a>
@@ -112,10 +118,14 @@ if (isset($NO_PENDING_PRESCRIPTIONS)) {
 		echo '<br><br><br><br>&nbsp;&nbsp;&nbsp;&nbsp;no pending prescriptions...<br>';
 	}
 } else {
+
+
 	$task = (isset($task) ? $task : null);
 	if ($task == "newprescription") {
+
 		echo '<iframe name="prescription" src="' . $root_path . 'modules/registration_admission/aufnahme_daten_such.php' . URL_APPEND . '&target=search&task=newprescription&prescrServ=' . $prescrServ . '&back_path=' . $back_path . '&pharmacy=yes" width="100%" height="90%" align="left" marginheight="0" marginwidth="0" hspace="0" vspace="0" scrolling="auto" frameborder="0" noresize></iframe> ';
 	} else {
+
 		$back_path = (isset($back_path) ? $back_path : null);
 		echo '<iframe name="prescription" src="' . $root_path . '/modules/registration_admission/show_prescription.php?prescription_date=' . $prescription_date . '&externalcall=TRUE&disablebuttons=true&target=search&pn=' . $pn . '&back_path=' . $back_path . '&sid=' . $sid . '&help_site=' . $comming_from . '&prescrServ=' . $prescrServ . '&ShowOnlyPharmacy=TRUE" width="100%" height="94%" align="left" marginheight="0" marginwidth="0" hspace="0" vspace="0" scrolling="auto" frameborder="0" noresize></iframe> ';
 	}

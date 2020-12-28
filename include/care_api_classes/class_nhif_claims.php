@@ -62,7 +62,9 @@ class Nhif_claims extends Nhif {
 		$dignosises = array();
 		$name = "";
 
-		$sql = "SELECT ICD_10_code FROM care_tz_diagnosis WHERE encounter_nr = '$encounterNumber' AND diagnosis_type = '$type'";
+		$sql = "SELECT ICD_10_code FROM care_tz_diagnosis WHERE encounter_nr = '$encounterNumber' AND diagnosis_type = '$type' AND is_deleted='0'";
+
+		//echo $sql;die;
 		$result = $db->Execute($sql);
 		if (@$result && $result->RecordCount() > 0) {
 			$dignosises = $result->GetArray();
@@ -448,10 +450,25 @@ class Nhif_claims extends Nhif {
 		global $db;
 		$this->debug = false;
 		($this->debug) ? $db->debug = true : $db->debug = FALSE;
-		$date_from = date('Y-m-d', strtotime(str_replace('/', '-', $filter_data['date_from'])));
-		$date_to = date('Y-m-d', strtotime(str_replace('/', '-', $filter_data['date_to'])));
+
+		$date_from = date('Y-m-d 00:00:00', strtotime(str_replace('/', '-', $filter_data['date_from'])));
+		$date_to = date('Y-m-d 23:59:59', strtotime(str_replace('/', '-', $filter_data['date_to'])));
 		if ($this->debug) {
 			echo "<br><b>Method class_nhif_claims::ShowPendingClaims()</b><br>";
+		}
+
+		 
+
+
+
+		
+
+			if(array_key_exists('is_discharged',$filter_data))  {
+			$discharged="AND care_encounter.is_discharged=0 AND care_encounter.nhif_approved=0";
+			$showDischargeDate=false;
+		}else{
+			$discharged="AND care_encounter.is_discharged=1";
+			$showDischargeDate=true;
 		}
 
 //        $globalconfig_obj = new Globalconfig();
@@ -462,21 +479,28 @@ class Nhif_claims extends Nhif {
 			. " AND care_encounter.pid = care_person.pid "
 			. " AND care_person.insurance_ID = care_tz_company.id  "
 			. " AND care_tz_company.company_code like '%NHIF%'  "
-			. " AND is_discharged= '1' ";
+			. "$discharged";
 		if (isset($filter_data['in_outpatient'])) {
 			$sql .= " AND care_encounter.encounter_class_nr = '" . $filter_data['in_outpatient'] . "'";
 		}
-		if (isset($filter_data['date_from'])) {
+		if (isset($filter_data['date_from']) && $showDischargeDate) {
 			$sql .= " AND discharge_date >= '" . $date_from . "'";
+		}else{
+			$sql .= " AND encounter_date >= '" . $date_from . "'";
+
 		}
-		if (isset($filter_data['date_to'])) {
+		if (isset($filter_data['date_to']) && $showDischargeDate) {
 			$sql .= " AND discharge_date <= '" . $date_to . "'";
+		}else{
+			$sql .= " AND encounter_date <= '" . $date_to . "'";
 		}
-		$sql .= 'GROUP BY care_encounter.encounter_nr';
+		$sql .= ' GROUP BY care_encounter.encounter_nr';
 
 		if (isset($filter_data['sort'])) {
 			$sql .= " " . $filter_data['sort'];
 		}
+
+		//echo $sql;die;
 
 		$result = $db->Execute($sql);
 		if ($this->debug) {
@@ -807,17 +831,29 @@ class Nhif_claims extends Nhif {
 		}
 		$globalconfig_obj = new Globalconfig();
 
+		if ($filter_data['finalreview'] == 'finalreview') {
+			$discharged = " AND is_discharged='0'";
+			
+		}else{
+			$discharged = " AND is_discharged='1'";
+		}
+
+
+
 		$sql = "SELECT *,if(care_encounter.encounter_class_nr = 1,'IN','OUT') as PatientTypeCode,care_encounter.encounter_nr as visit_no,care_tz_diagnosis.timestamp as DateCreated, min(care_tz_diagnosis.timestamp) FROM care_person,care_tz_company,care_encounter "
 			. " LEFT OUTER JOIN care_tz_diagnosis ON care_encounter.encounter_nr =  care_tz_diagnosis.encounter_nr "
 			. " WHERE care_encounter.pid = care_person.pid  AND"
 			. " care_person.insurance_ID = care_tz_company.id  AND "
-			. " care_tz_company.company_code like '%NHIF'  AND"
-			. " is_discharged= '1' ";
+			. " care_tz_company.company_code LIKE '%NHIF'  $discharged ";
 		if (isset($filter_data['encounter_nr'])) {
 			$sql .= " AND care_encounter.encounter_nr = '" . $filter_data['encounter_nr'] . "' ";
 		}
 
 		$sql .= " GROUP BY care_encounter.encounter_nr " . $sort;
+
+		//echo $sql;
+
+		
 		$result_encounter = $db->Execute($sql);
 
 		
@@ -880,7 +916,7 @@ class Nhif_claims extends Nhif {
 			$sql_diagnosis .= " AND care_tz_diagnosis.PID = '" . $filter_data['pid'] . "' ";
 		}
 		if (isset($filter_data['encounter_nr'])) {
-			$sql_diagnosis .= " AND care_tz_diagnosis.encounter_nr = '" . $filter_data['encounter_nr'] . "' ";
+			$sql_diagnosis .= " AND care_tz_diagnosis.encounter_nr = '" . $filter_data['encounter_nr'] . "' AND is_deleted = 0 ";
 		}
 		$result_diagnosis = $db->Execute($sql_diagnosis);
 		if ($result_diagnosis->RecordCount() > 0) {
@@ -1024,6 +1060,7 @@ class Nhif_claims extends Nhif {
 		$result = $db->Execute($sql);
 		if ($result->RecordCount() > 0) {
 			return $result;
+			//return NULL;
 		} else {
 			return NULL;
 		}
@@ -1157,11 +1194,27 @@ class Nhif_claims extends Nhif {
 	}
 
 	function getClaimsItems($encounter_nr) {
-		global $db;
+		global $db; 
 		$items = [];
-		$sql = "SELECT date_change, nr, amount, price, description, User_id, item_number, nhif_item_code, nhif_approval_no
+         
+         $sqlEncounterClass = "SELECT encounter_class_nr FROM care_encounter WHERE encounter_nr = '".$encounter_nr."'";
+         $resultEncounterClass = $db->Execute($sqlEncounterClass);
+         $encounterClass = $resultEncounterClass->FetchRow();
+         $encounterClass = $encounterClass['encounter_class_nr'];
+
+         if ($encounterClass == 1) {
+
+         	$sql = "SELECT date_change, nr, sum(amount) AS amount, price, description, User_id, item_number, nhif_item_code, nhif_approval_no
             FROM care_tz_billing_archive_elem INNER JOIN care_tz_company ON care_tz_company.id=care_tz_billing_archive_elem.insurance_id
-            WHERE care_tz_company.company_code='NHIF' AND  nr IN (SELECT nr FROM care_tz_billing_archive WHERE encounter_nr = '$encounter_nr') ";
+            WHERE price > 0 AND care_tz_company.company_code='NHIF' AND  nr IN (SELECT nr FROM care_tz_billing_archive WHERE encounter_nr = '$encounter_nr') GROUP BY item_number ";
+         	
+         }else{
+
+         	$sql = "SELECT date_change, nr, amount, price, description, User_id, item_number, nhif_item_code, nhif_approval_no
+            FROM care_tz_billing_archive_elem INNER JOIN care_tz_company ON care_tz_company.id=care_tz_billing_archive_elem.insurance_id
+            WHERE price > 0 AND care_tz_company.company_code='NHIF' AND  nr IN (SELECT nr FROM care_tz_billing_archive WHERE encounter_nr = '$encounter_nr') ";
+
+         }
 
 
 
@@ -1348,6 +1401,8 @@ class Nhif_claims extends Nhif {
 		}
 		$request = $this->service_url;
 		$data_string = $this->claims_json($filter_data);
+
+		// echo "<pre>";print_r($data_string);echo "</pre>";die;
 
 
 		

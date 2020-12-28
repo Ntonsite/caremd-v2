@@ -83,7 +83,7 @@ if (empty($back_path)) {
 
 }
 
-$mode = $mode ?? "";
+$mode = isset($mode) ? $mode : "";
 if ($mode == "done" && isset($pn) && isset($prescription_date)) {
 	require_once $root_path . 'include/care_api_classes/class_tz_insurance.php';
 
@@ -289,6 +289,7 @@ if (empty($mode)) /* Get the pending test requests */ {
 		INNER JOIN care_tz_drugsandservices ON care_encounter_prescription.article_item_number=care_tz_drugsandservices.item_id  
 		WHERE  care_encounter_prescription.mark_os='0' AND (care_encounter_prescription.status='pending' OR care_encounter_prescription.status='') and care_encounter.pharmacy='$locationcode' $and_admission_class and ( care_tz_drugsandservices.purchasing_class = 'drug_list' OR care_tz_drugsandservices.purchasing_class ='supplies' ) 
 		GROUP by care_encounter_prescription.prescribe_date, care_encounter_prescription.encounter_nr, care_person.pid, care_person.selian_pid, name_first, name_last ORDER BY care_encounter_prescription.prescribe_date DESC";
+		
 
 	 
 

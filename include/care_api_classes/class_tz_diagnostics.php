@@ -268,7 +268,7 @@ class Diagnostics extends Encounter {
 		$debug = FALSE;
 		($debug) ? $db->debug = TRUE : $db->debug = FALSE;
 
-		$this->sql = "SELECT ICD_10_code, case_nr FROM " . $this->tbl_diagnosis . " WHERE pid='" . $pid . "' ORDER BY Timestamp DESC";
+		$this->sql = "SELECT ICD_10_code, case_nr FROM " . $this->tbl_diagnosis . " WHERE pid='" . $pid . "' AND is_deleted=0 ORDER BY Timestamp DESC";
 		$d_rs = $db->Execute($this->sql);
 		while ($d_row = $d_rs->FetchRow()) {
 			$returnarray[$d_row['case_nr']] = $d_row['ICD_10_code'];
@@ -876,7 +876,7 @@ class Diagnostics extends Encounter {
 	//------------------------------------------------------------------------------
 	function Display_Archived_Diagnoses($pid) {
 		global $db;
-		global $LDDate, $LDCase, $LDDiagnoses, $LDType, $LDComment, $LDNoComment, $LDRevisitOfCase, $LDfrom, $LDSHOW;
+		global $LDDate, $LDCase, $LDDiagnoses, $LDType, $LDComment, $LDNoComment, $LDRevisitOfCase, $LDfrom, $LDSHOW,$LDDelete;
 		$this->icd_old_array = $this->GetAllCasesFromPIDbyDate($pid);
 		echo '<form action="" method="post">
 				<table width="100%" border="1" cellpadding="1" cellspacing="1">
@@ -887,6 +887,7 @@ class Diagnostics extends Encounter {
             <td width="5%"><div align="center">Code</div></td>
             <td width="38%">' . $LDDiagnoses . '</td>
             <td width="7%"><div align="center">' . $LDType . '</div></td>
+            <td width="7%"><div align="center">' . $LDDelete . '</div></td>
             <td width="30%"><div align="center">' . $LDComment . '</div></td>
 			<td width="30%"><div align="center">Doctor Name</div></td>
           </tr>';
@@ -903,6 +904,8 @@ class Diagnostics extends Encounter {
 				$oldcase_code = "";
 			}
 
+			//echo "<pre>";print_r($case_arr);echo "</pre>";
+
 			$revisit = "checked";
 			$new = "";
 			echo '
@@ -914,9 +917,49 @@ class Diagnostics extends Encounter {
             <td><div align="center">' . $case_arr['ICD_10_code'] . '</div></td>
             <td>' . $case_arr['ICD_10_description'] . $oldcase_code . '</td>
             <td><div align="center">
-              ' . $case_arr['type'] . '
-            </div></td>
-            <td>';
+              ' . $case_arr['type'].' ('.$case_arr['diagnosis_type'].')'. '
+            </div></td>';
+
+            //Calculate number of hours to allow deletion  
+            $dateTime1 = strtotime(date('Y-m-d H:i:s',$case_arr['timestamp']));
+            $dateTime2 = strtotime(date('Y-m-d H:i:s'));
+            $hours = abs($dateTime2 - $dateTime1)/(60*60);
+
+            if($hours<=24){
+            	$enableDelete = true;
+
+            }else{
+            	$enableDelete = false;
+            }
+
+
+
+
+
+
+             
+
+
+
+
+
+
+
+            ?>
+
+            <?php if($enableDelete == true){?>
+            <td  class="j"><font color="#000">&nbsp; <button class="btn btn-sm btn-danger" onclick="return deleteDx(<?php echo $case_arr['case_nr']; ?>)" >Delete</button> </td>
+
+            	<?php
+            	}else{
+            		?>
+            		<td  class="j"><font color="#000">&nbsp; <button class="btn btn-primary disabled" onclick="#" >Del Disabled</button> </td>
+            			<?php
+            	} 
+            	?>
+
+            <?php
+            echo '<td>';
 
 			if (!$case_arr['comment']) {
 				echo $LDNoComment;
@@ -924,10 +967,11 @@ class Diagnostics extends Encounter {
 				echo $case_arr['comment'];
 			}
 
-			echo '</td>
-			 <td><div align="center">' . $case_arr['doctor_name'] . '</div></td>
+			echo '</td>';
 
-          </tr>';
+			 echo '<td><div align="center">' . $case_arr['doctor_name'] . '</div></td>';
+
+          echo '</tr>';
 		}
 		echo '
   		    <tr bgcolor="#99ccff">
@@ -1003,6 +1047,9 @@ class Diagnostics extends Encounter {
  	  </form>';
 	}
 	//------------------------------------------------------------------------------
+
+   
+
 }
 
 ?>

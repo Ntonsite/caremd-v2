@@ -11,7 +11,7 @@
                     <TABLE cellSpacing=1 cellPadding=3 width=600 valign="middle">
                         <TBODY class="submenu" valign="middle">
                             <TR valign="middle">
-                                <td align=center><img src="../../gui/img/common/default/showdata.gif" border=0></td>
+                                <td align=center><img style="height: 30px;" src="../../gui/img/logos/nhif-logo.png" border=0></td>
                                 <TD class="submenu_item"><nobr><a href="nhif_pass.php?patient=2&sid=<?php echo "$sid&target=review&lang=$lang" ?>"><?php echo $LDPendingClaimsOutp; ?></a></nobr></TD>
                 <td><?php echo $LDPendingClaimsOutp; ?></td>
             </tr>
@@ -19,16 +19,32 @@
                 <TD colSpan=3 class="vspace"><IMG height=1 src="../../gui/img/common/default/pixel.gif" width=5></TD>
             </TR>
             <tr valign="middle">
-                <td align=center><img src="../../gui/img/common/default/showdata.gif" border=0></td>
+                <td align=center><img style="height: 30px;" src="../../gui/img/logos/nhif-logo.png" border=0></td>
                 <TD class="submenu_item"><nobr><a href="nhif_pass.php?patient=1&sid=<?php echo "$sid&target=review&lang=$lang" ?>"><?php echo $LDPendingClaimsInp; ?></a></nobr></TD>
     <TD><?php echo $LDPendingClaimsInp; ?></TD>
+</tr>
+<TR  height=1>
+                <TD colSpan=3 class="vspace"><IMG height=1 src="../../gui/img/common/default/pixel.gif" width=5></TD>
+            </TR>
+            <tr valign="middle">
+                <td align=center><img style="height: 30px;" src="../../gui/img/logos/nhif-logo.png" border=0></td>
+                <TD class="submenu_item"><nobr><a href="<?php echo $root_path ?>modules/nhif/nhif_pass.php?patient=2&sid=<?php echo "$sid&target=BeforeBill&lang=$lang" ?>"><?php echo $LDReviewBeforeSubmissionOutp; ?></a></nobr></TD>
+    <TD><?php echo $LDReviewClaimsOutp; ?></TD>
+</tr>
+<TR  height=1>
+                <TD colSpan=3 class="vspace"><IMG height=1 src="../../gui/img/common/default/pixel.gif" width=5></TD>
+            </TR>
+            <tr valign="middle">
+                <td align=center><img style="height: 30px;" src="../../gui/img/logos/nhif-logo.png" border=0></td>
+                <TD class="submenu_item"><nobr><a href="<?php echo $root_path ?>modules/nhif/nhif_pass.php?patient=1&sid=<?php echo "$sid&target=BeforeBill&lang=$lang" ?>"><?php echo $LDReviewBeforeSubmissionInp; ?></a></nobr></TD>
+    <TD><?php echo $LDReviewClaimsInp; ?></TD>
 </tr>
 <TR  height=1>
     <TD colSpan=3 class="vspace"><IMG height=1 src="../../gui/img/common/default/pixel.gif" width=5></TD>
 </TR>
 
 <TR>
-    <td align=center><img src="../../gui/img/common/default/showdata.gif" border=0></td>
+    <td align=center><img style="height: 30px;" src="../../gui/img/logos/nhif-logo.png" border=0></td>
     <TD class="submenu_item"><nobr><a href="nhif_pass.php?patient=2&sid=<?php echo "$sid&target=report&lang=$lang" ?>"><?php echo $LDClaimsReport; ?></a></nobr></TD>
 <TD><?php echo $LDClaimsReport; ?></TD>
 </tr>

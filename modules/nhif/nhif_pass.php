@@ -32,16 +32,44 @@ $page_action = $_REQUEST['page_action'];
 $date_from = $_REQUEST['date_from'];
 $date_to = $_REQUEST['date_to'];
 
+if (empty($date_from) || empty($date_to)) {
+    $date_from = date('Y-m-01');
+    $date_to = date('Y-m-t');
+    $date_from = date('d/m/Y', strtotime(str_replace('-', '/', $date_from)));
+    $date_to = date('d/m/Y', strtotime(str_replace('-', '/', $date_to)));    
+    
+}else{
+    $date_from = $date_from;
+    $date_to   = $date_to; 
+}
+
+
+
+//print_r($_REQUEST);die;
+$sorttype = isset($_REQUEST['sorttyp'])? $_REQUEST['sorttyp'] : '';
+$sort = isset($_REQUEST['sort']) ? $_REQUEST['sort'] : '';
+
+
+
+
+
+
+
 
 
 //      echo "<pre>"; print_r($target);echo "</pre>";
 // die();
 switch ($target) {
     case 'review':
-        $allowedarea = $allow_area['nhif_write'];
+        $allowedarea = $allow_area['nhif_read'];
         $fileforward = "nhif_claims_review.php" . $append . "&sid=$sid&target=review&lang=$lang&patient=$patient&date_from=$date_from&date_to=$date_to";
         $lognow = 'NHIF login ok';
         break;
+    case 'BeforeBill':
+        $allowedarea = $allow_area['nhif_read'];
+        $fileforward = "nhif_claims_review_Before_Bill.php" . $append . "&sid=$sid&target=BeforeBill&lang=$lang&patient=$patient&date_from=$date_from&date_to=$date_to";
+        $lognow = 'NHIF login ok';
+        break;    
     case 'read':
         $allowedarea = $allow_area['nhif_read'];
         $fileforward = "nhif_claims.php" . $append . "&sid=$sid&target=read&lang=$lang";
@@ -53,10 +81,15 @@ switch ($target) {
         $lognow = 'NHIF login ok';
         break;
     case 'claimsdetails':
-        $allowedarea = $allow_area['nhif_write'];
+        $allowedarea = $allow_area['nhif_read'];
         $fileforward = "nhif_claims_details.php" . $append . "&sid=$sid&target=claimsdetails&patient=$patient&lang=$lang&encounter_nr=$encounter_nr&page_action=$page_action&date_from=$date_from&date_to=$date_to";
         $lognow = 'NHIF login ok';
         break;
+    case 'claimsreview':
+        $allowedarea = $allow_area['nhif_read'];
+        $fileforward = "nhif_final_review.php" . $append . "&sid=$sid&target=finalreview&patient=$patient&lang=$lang&encounter_nr=$encounter_nr&page_action=$page_action&date_from=$date_from&date_to=$date_to";
+        $lognow = 'NHIF login ok';
+        break;    
      case 'report':
         $allowedarea = $allow_area['nhif_read'];
         $fileforward = "nhif_claims_report.php" . $append . "&sid=$sid&target=claimsdetails&patient=$patient&lang=$lang&encounter_nr=$encounter_nr&page_action=$page_action&date_from=$date_from&date_to=$date_to";

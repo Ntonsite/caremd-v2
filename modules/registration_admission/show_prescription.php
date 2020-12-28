@@ -1,5 +1,7 @@
 <?php
 
+
+
 //error_reporting(E_COMPILE_ERROR|E_ERROR|E_CORE_ERROR);
 require './roots.php';
 //require($root_path.'include/inc_environment_global.php');
@@ -157,6 +159,7 @@ if ($parent_admit) {
                       OR purchasing_class ='supplies' OR purchasing_class ='special_others_list'
                       OR purchasing_class ='drug_list_ctc' OR purchasing_class='drug_list_nhif') AND pr.status IN('pending','') AND pr.encounter_nr=" . $pn . " 
           ORDER BY pr.prescribe_date DESC";
+          
 
 		} else {
 			$sql = "SELECT pr.*, e.encounter_class_nr FROM care_encounter AS e, care_person AS p, care_encounter_prescription AS pr, care_tz_drugsandservices

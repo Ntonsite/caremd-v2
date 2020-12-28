@@ -38,6 +38,7 @@ function validarea(&$zeile2, $permit_type_all = 1) {
 		return 1;
 	} else {
 		// else scan the permission
+		
 		for ($j = 0; $j < sizeof($allowedarea); $j++) {
 			if (preg_match('/' . $allowedarea[$j] . '/i', $zeile2)) {
 				return 1;

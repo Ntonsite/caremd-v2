@@ -162,3 +162,17 @@ echo '</form>';
         })
 	}
 </script>
+<script>
+
+	function deleteRadTest(batch) {
+		$.getJSON("./deleteRadTest.php?batch_nr="+batch).done(function(data){
+
+        if (data.deleted) {
+            window.location.reload();
+        }
+
+        }).fail(function(data){
+          alert('Unable to delete Lab Test. Please try again');
+        })
+	}
+</script>

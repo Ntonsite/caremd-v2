@@ -157,6 +157,67 @@ $data = array();
 
 $formtitle = "";
 define('_BATCH_NR_INIT_', 10000000);
+
+//print_r($_REQUEST);die;
+
+//check if preliminary dx is entered
+
+$sqlSchemeId="SELECT nhif_scheme_id,pid FROM care_encounter WHERE encounter_nr = '".$pn."'";
+$resultSchemeId = $db->Execute($sqlSchemeId); 
+if ($rowSchemeId = $resultSchemeId->FetchRow() ) {
+	$schemeId = $rowSchemeId['nhif_scheme_id'];	
+
+}
+
+
+
+if ($schemeId) {
+			$sqlPrescribeWithoutDx="SELECT prescribe_without_diagnosis FROM care_person WHERE pid=".$rowSchemeId['pid'];
+
+
+			$resultPrescribeWithoutDx=$db->Execute($sqlPrescribeWithoutDx);
+			$rowPrescribeWithoutDx=$resultPrescribeWithoutDx->FetchRow();
+
+			if ($rowPrescribeWithoutDx['prescribe_without_diagnosis']=='1') {
+				$allowRequest=true;
+			}else{
+				$sqlCheckDx="SELECT encounter_nr FROM `care_tz_diagnosis` WHERE encounter_nr='".$pn."' AND 	diagnosis_type='preliminary' ";
+				
+				$resultCheckDx=$db->Execute($sqlCheckDx);
+				if ($resultCheckDx->RecordCount()>0) {
+					$allowRequest=true;								
+							}else{
+								$allowRequest=false;
+							}			
+
+				
+			}
+		}else{
+			$allowRequest=true;
+		}
+
+
+
+        if ($allowRequest == false) {
+        	$day=date('d');
+        	$month=date('m');
+        	$year=date('Y');
+                 
+        	echo ("<script LANGUAGE='JavaScript'>
+              window.alert('PLEASE ENTER PRELIMINARY DIAGNOSIS');
+               window.location.href='../../modules/nursing/nursing-station-patientdaten.php?lang=en&sid=$sid&pn=$pn&pday=$day&pmonth=$month&pyear=$year&edit=1&station=';
+             </script>");
+        }
+
+
+
+
+
+
+
+
+
+
 /*
  *  The following are  batch nr inits for each type of test request
  *   chemlabor = 10000000; patho = 20000000; baclabor = 30000000; blood = 40000000; generic = 50000000;

@@ -109,7 +109,9 @@ if (!$mode) {
 	$sql = "SELECT care_person.selian_pid AS selian_pid,CONCAT(name_first,' ', name_2) AS name_first, UPPER(name_last) as name_last, batch_nr,care_encounter.encounter_nr,send_date,dept_nr FROM care_test_request_" . $db_request_table . "
                 LEFT JOIN care_encounter ON care_test_request_" . $db_request_table . ".encounter_nr=care_encounter.encounter_nr
                 LEFT JOIN care_person ON care_encounter.pid=care_person.pid
-    WHERE care_test_request_" . $db_request_table . ".status='pending' OR care_test_request_" . $db_request_table . ".status='received' ORDER BY  send_date DESC";
+    WHERE care_test_request_" . $db_request_table . ".is_deleted=0 AND  (care_test_request_" . $db_request_table . ".status='pending' OR care_test_request_" . $db_request_table . ".status='received') ORDER BY  send_date DESC";
+
+    //echo $sql;die;
 
 	if ($requests = $db->Execute($sql)) {
 		$batchrows = $requests->RecordCount();

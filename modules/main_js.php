@@ -470,15 +470,18 @@ function closeModal(modalname) {
 function submitNHIFClaim(type, encounter_nr, submitURL) {
 
 
+// alert(submitURL);
+// return false;
 
-  $.get("<?php echo $root_path ?>modules/nhif/printPatientFile.php?type="+type+"&encounter_nr="+encounter_nr+"&save=1", function(printed) {
+
+  // $.get("<?php //echo $root_path ?>modules/nhif/printPatientFile.php?type="+type+"&encounter_nr="+encounter_nr+"&save=1", function(printed) {
 
     window.location.href = submitURL;
 
-  }).fail( function(data, textStatus, error) {
-      alert('Unable to save patient file. Please try again')
-       console.log(error);
-  });
+  // }).fail( function(data, textStatus, error) {
+  //     alert('Unable to save patient file. Please try again')
+  //      console.log(error);
+  // });
 
 }
 
@@ -951,15 +954,43 @@ if (nhifPatient&&allowVerification=="") {
   }
 </script>
 <script type="text/javascript">
-  function CreateNhifForm(type, encounter_nr, submitURL) {
+  function CreateNhifForm(type, encounter_nr, submitURL) {   
+    
+     var fileStatus="";
+
+     //create file
+     $.get("<?php echo $root_path ?>modules/nhif/printPatientFile.php?type="+type+"&encounter_nr="+encounter_nr+"&save=1", function(printed) {
+
+        if (printed == "file_created") {
+          fileStatus="Created";
+
+        }else{
+
+          fileStatus="file_not_created";
+
+        }
+
+
+    //window.location.href = submitURL;
+
+  }).fail( function(data, textStatus, error) {
+      alert('Unable to save patient file. Please try again')
+       console.log(error);
+       return false;
+  });
+     //end create file
+
+    
 
   $.get("<?php echo $root_path ?>modules/nhif/createNhifForm.php?type="+type+"&encounter_nr="+encounter_nr+"&save=1", function(created) { 
 
-   if (created == "no file") {
+   if (created == "no file" || fileStatus == "file_not_created") {
      alert("NHIF FORM IS NOT CREATED OR FILE CORRUPTED, PLEASE TRY AGAIN");
      return false;
 
    }
+
+
 
     
     window.location.href = submitURL;
@@ -971,6 +1002,87 @@ if (nhifPatient&&allowVerification=="") {
 
 }
 </script>
+
+<script>
+  function finalApproval(type, encounter_nr, submitURL) {     
+    
+    window.location.href = submitURL;
+
+ 
+
+}
+  
+</script>
+
+<script>
+  function undoApproval(type, encounter_nr, submitURL) {     
+    
+    window.location.href = submitURL;
+
+ 
+
+}
+  
+</script>
+<script type="text/javascript">
+   function getinfo(pn) {
+<?php
+/* if($edit) */ {
+    echo '
+        urlholder="' . $root_path . 'modules/nursing/nursing-station-patientdaten.php' . URL_REDIRECT_APPEND;
+    echo '&pn=" + pn + "';
+    echo "&pday=$pday&pmonth=$pmonth&pyear=$pyear&edit=$edit&station=$station";
+    echo '";';
+    echo 'patientwin=window.open(urlholder, "_self");';
+}
+/* else echo '
+  window.location.href=\'nursing-station-pass.php'.URL_APPEND.'&rt=pflege&edit=1&station='.$station.'\''; */
+?>
+            }
+  
+</script>
+<script>
+
+  function deleteDx(caseNumber) {
+           var result = confirm("Are you sure You want to delete this diagnosis?");
+                 if (result == true) {                                 
+
+
+                  $.getJSON("./deleteDx.php?caseId="+caseNumber, function(data){          
+
+
+
+                    if (data.updated == 1) {
+                      alert(caseNumber+ " Is is deleted Successfully");
+                    }
+                    
+                   
+
+
+
+                  }).fail( function(data, textStatus, error) {
+                    console.log(error);
+                     });
+
+                  
+                  
+                  
+
+      }else{
+        return false;
+      }
+    }
+                
+                    
+                 
+        
+
+
+
+    
+  
+</script>
+
 
 
 </body>

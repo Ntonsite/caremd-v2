@@ -217,7 +217,7 @@ if ($prescribewithoutdiagnosis == 1) {
 		if ($patientRow['prescribe_without_diagnosis'] == 1) {
 			$notDiagnosed = false;
 		} else {
-			$dianosisSQL = "SELECT encounter_nr FROM care_tz_diagnosis WHERE encounter_nr = $patientNr";
+			$dianosisSQL = "SELECT encounter_nr FROM care_tz_diagnosis WHERE diagnosis_type='final' AND encounter_nr = $patientNr";
 			$diagnosisResult = $db->Execute($dianosisSQL);
 			if ($diagnosisResult->RecordCount() > 0) {
 				$notDiagnosed = false;

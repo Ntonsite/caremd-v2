@@ -699,8 +699,11 @@ class Bill extends Encounter {
 		//}
 		// --- end of RM comment
 		// get the price of this element:
-		if (substr($_REQUEST['insrname'], 0,4)=='NHIF') {
+          
+		if (strpos($_REQUEST['insrname'],'NHIF')!==false) {
             $sqlScheme="SELECT nhif_scheme_id FROM care_encounter WHERE encounter_nr=".$_REQUEST['encounter_nr'];
+
+
             $SchemeResult=$db->Execute($sqlScheme);
             $Scheme=$SchemeResult->FetchRow();
             $NhifScheme=$Scheme['nhif_scheme_id']; 
@@ -848,7 +851,7 @@ class Bill extends Encounter {
 			//$this->chemlab_testname = $this->GetNameOfLAboratoryFromID($this->records['item_number']);
 			//$this->price = $this->GetPriceOfLAboratoryItemFromID($this->records['id']);
 
-			if (substr($_REQUEST['insrname'], 0,4)=='NHIF') {				
+			if (strpos($_REQUEST['insrname'],'NHIF')!==false) {				
             $sqlScheme="SELECT nhif_scheme_id FROM care_encounter WHERE encounter_nr=".$_REQUEST['encounter_nr'];
             $SchemeResult=$db->Execute($sqlScheme);
             $Scheme=$SchemeResult->FetchRow();
@@ -1034,7 +1037,7 @@ class Bill extends Encounter {
 
 
 			
-			if (substr($_REQUEST['insrname'], 0,4)=='NHIF') {
+			if (strpos($_REQUEST['insrname'],'NHIF')!==false) {
             $sqlScheme="SELECT nhif_scheme_id FROM care_encounter WHERE encounter_nr=".$_REQUEST['encounter_nr'];
             $SchemeResult=$db->Execute($sqlScheme);
             $Scheme=$SchemeResult->FetchRow();
@@ -5524,6 +5527,7 @@ A:visited:hover {color: #cc0033;}
                                         care_encounter.encounter_class_nr,
                                      	care_encounter.current_dept_nr,
                                      	care_encounter.current_ward_nr,
+                                     	care_encounter.nhif_approved,
                                      	CASE WHEN isnull(care_tz_drugsandservices.item_description)=1 THEN 'not available' ELSE care_tz_drugsandservices.item_description END as article,
                                      	CASE WHEN isnull(care_tz_drugsandservices.unit_price)=1 THEN 0 ELSE care_tz_drugsandservices.unit_price END as unit_price,
                                      	CASE WHEN isnull(care_tz_drugsandservices.unit_price_1)=1 THEN 0 ELSE care_tz_drugsandservices.unit_price_1 END as unit_price_1,
@@ -5568,6 +5572,7 @@ A:visited:hover {color: #cc0033;}
                                     ,       care_person.date_birth
                                     , 	care_person.insurance_ID
                                     ,       care_encounter.encounter_date
+                                    ,       care_encounter.nhif_approved
                                     ,       care_encounter.encounter_class_nr
                                     ,       care_encounter.current_dept_nr
                                     ,       care_encounter.current_ward_nr
@@ -5613,6 +5618,7 @@ A:visited:hover {color: #cc0033;}
                                     ,   care_encounter.encounter_class_nr
                                     , 	care_encounter.current_dept_nr
                                     , 	care_encounter.current_ward_nr
+                                    , 	care_encounter.nhif_approved
                                     , 	care_encounter_prescription.article
                                     , 	care_tz_drugsandservices.unit_price
                                     , 	care_tz_drugsandservices.unit_price_1
@@ -5681,12 +5687,12 @@ A:visited:hover {color: #cc0033;}
 		}
 
 		$this->sql = "SELECT
-                                    count(*) as anzahl, encounter_nr,current_dept_nr, current_ward_nr, pid, selian_pid,name_first, UPPER(name_last) as name_last,
+                                    count(*) as anzahl,nhif_approved, encounter_nr,current_dept_nr, current_ward_nr, pid, selian_pid,name_first, UPPER(name_last) as name_last,
                                     date_birth, encounter_date , encounter_class_nr, insurance_ID
 
                                     FROM quotation_temporary WHERE encounter_date BETWEEN '$date_from' AND '$date_to'
 
-                                    GROUP BY pid, selian_pid, name_first, name_last, date_birth, encounter_date,encounter_nr,current_dept_nr,current_ward_nr,insurance_ID,encounter_class_nr order by encounter_date DESC";
+                                    GROUP BY pid, selian_pid, name_first, name_last, date_birth, encounter_date,encounter_nr,insurance_ID order by encounter_date DESC";
 
 
 		if ($this->debug) {
@@ -5752,6 +5758,7 @@ A:visited:hover {color: #cc0033;}
 				"							care_encounter.encounter_date," .
 				"							care_encounter.current_dept_nr," .
 				"							care_encounter.current_ward_nr," .
+				"							care_encounter.nhif_scheme_id," .
 				"							care_encounter_prescription.article," .
 				"							care_tz_drugsandservices.unit_price," .
 				"							care_tz_drugsandservices.unit_price_1," .
@@ -5765,6 +5772,7 @@ A:visited:hover {color: #cc0033;}
 				"                           care_tz_drugsandservices.unit_price_9," .
 				"                           care_tz_drugsandservices.unit_price_10," .
 				"                           care_tz_drugsandservices.unit_price_11," .
+				"                           care_tz_drugsandservices.item_number," .
 				"                           care_tz_drugsandservices.nhif_item_code nhifItemCode," .
 				"							care_tz_drugsandservices.purchasing_class" .
 				"							from care_encounter_prescription
@@ -5790,6 +5798,7 @@ A:visited:hover {color: #cc0033;}
 				"							care_encounter.encounter_date," .
 				"							care_encounter.current_dept_nr," .
 				"							care_encounter.current_ward_nr," .
+				"							care_encounter.nhif_scheme_id," .
 				"							care_encounter_prescription.article," .
 				"							care_tz_drugsandservices.unit_price," .
 				"							care_tz_drugsandservices.unit_price_1," .
@@ -5803,6 +5812,7 @@ A:visited:hover {color: #cc0033;}
 				"                           care_tz_drugsandservices.unit_price_9," .
 				"                           care_tz_drugsandservices.unit_price_10," .
 				"                           care_tz_drugsandservices.unit_price_11," .
+				"                           care_tz_drugsandservices.item_number," .
 				"                           care_tz_drugsandservices.nhif_item_code nhifItemCode," .
 				"							care_tz_drugsandservices.purchasing_class" .
 				"							from care_encounter_prescription
@@ -5860,6 +5870,7 @@ A:visited:hover {color: #cc0033;}
 				"							care_person.name_last, " .
 				"							care_person.date_birth," .
 				"							care_encounter.encounter_date," .
+				"							care_encounter.nhif_scheme_id," .
 				"                           care_tz_drugsandservices.item_id," .
 				"                           care_tz_drugsandservices.item_description," .
 				"							care_tz_drugsandservices.unit_price," .
@@ -5884,7 +5895,7 @@ A:visited:hover {color: #cc0033;}
                                     ON care_person.pid=care_encounter.pid
                                     INNER JOIN care_tz_drugsandservices
                                     ON care_test_request_radio.test_request=care_tz_drugsandservices.item_id
-                                    WHERE care_test_request_radio.bill_number = 0	$and_in_outpatient
+                                    WHERE care_test_request_radio.is_deleted = 0 AND  care_test_request_radio.bill_number = 0	$and_in_outpatient
                                     AND (isnull(care_test_request_radio.is_disabled)
                                     OR care_test_request_radio.is_disabled='')
                                     $where_encounter
@@ -5899,6 +5910,7 @@ A:visited:hover {color: #cc0033;}
 				"							care_person.name_last, " .
 				"							care_person.date_birth," .
 				"							care_encounter.encounter_date," .
+				"							care_encounter.nhif_scheme_id," .
 				"                           care_tz_drugsandservices.item_id," .
 				"                           care_tz_drugsandservices.item_description," .
 				"							care_tz_drugsandservices.unit_price," .
@@ -5922,7 +5934,7 @@ A:visited:hover {color: #cc0033;}
                                     ON care_person.pid=care_encounter.pid
                                     INNER JOIN care_tz_drugsandservices
                                     ON care_test_request_radio.test_request=care_tz_drugsandservices.item_id
-                                    WHERE care_test_request_radio.bill_number = 0 $and_in_outpatient
+                                    WHERE care_test_request_radio.is_deleted = 0 AND care_test_request_radio.bill_number = 0 $and_in_outpatient
                                     AND (isnull(care_test_request_radio.is_disabled)
                                     OR care_test_request_radio.is_disabled='')
                                     $where_encounter
@@ -5976,6 +5988,7 @@ A:visited:hover {color: #cc0033;}
 				"							care_person.name_last, " .
 				"							care_person.date_birth," .
 				"							care_encounter.encounter_date," .
+				"							care_encounter.nhif_scheme_id," .
 				"							care_tz_drugsandservices.unit_price," .
 				"							care_tz_drugsandservices.unit_price_1," .
 				"							care_tz_drugsandservices.unit_price_2," .
@@ -6017,6 +6030,7 @@ A:visited:hover {color: #cc0033;}
 				"							care_person.name_last, " .
 				"							care_person.date_birth," .
 				"							care_encounter.encounter_date," .
+				"							care_encounter.nhif_scheme_id," .
 				"							care_tz_drugsandservices.unit_price," .
 				"							care_tz_drugsandservices.unit_price_1," .
 				"							care_tz_drugsandservices.unit_price_2," .
@@ -6336,6 +6350,7 @@ A:visited:hover {color: #cc0033;}
 
 				if (($in_outpatient == 'outpatient') || ($in_outpatient == 'artndental')) {
 					$sql = 'SELECT name_formal from care_department where nr=' . $row['current_dept_nr'];
+					//echo $sql;die;
 					$deptresult = $db->Execute($sql);
 					if ($row['current_dept_nr'] == 0) {
 						$deptname = 'Admissions';
@@ -6353,11 +6368,50 @@ A:visited:hover {color: #cc0033;}
 						$deptname = $deptrow[0];
 					}
 				}
-
+                   $img_reviewed='';
 				if ($row['insurance_ID'] > 0) {
 
 					if ($ins_obj->CheckCurrentContractValidity($row['insurance_ID'])) {
 						$ins_name = $ins_obj->GetName_insurance_from_id($row['insurance_ID']);
+
+						if ( strpos($ins_name, 'NHIF')!==false) {
+
+	                           if ($row['nhif_approved']>0 && strpos($ins_name, 'NHIF')!==false) {
+	                           	$img_reviewed = '<img src="../../gui/img/common/default/check1.gif" alt="Riviewed Claim " width="20" border="0" height="20">';
+	                           }else{
+	                           	if ($row['nhif_approved']<1 && strpos($ins_name, 'NHIF')!==false) {
+	                           			$img_reviewed = '<img src="../../gui/img/common/default/warn.gif" alt="This claim is not reviewed" width="20" border="0" height="20">';
+
+
+	                           	}else{
+	                           		$img_reviewed='';
+	                           	}
+	                           
+	                           }
+
+
+							
+							
+
+							// if ($row['nhif_approved'] == 1 && substr($ins_name, 0,4) == 'NHIF'  ) {
+
+							// 	$img_reviewed = '<img src="../../gui/img/common/default/check1.gif" alt="Riviewed Claim " width="20" border="0" height="20">';
+							// }else{
+							// 	if ($row['nhif_approved'] == 0 && substr($ins_name, 0,4) == 'NHIF') {
+							// 		$img_reviewed = '<img src="../../gui/img/common/default/warn.gif" alt="This claim is not reviewed" width="20" border="0" height="20">';
+							// 	}
+							// }
+
+							$sqlNhifProductName = "SELECT nhif_product_name FROM care_encounter WHERE encounter_nr='".$row['encounter_nr']."'";
+							$resultProductName = $db->Execute($sqlNhifProductName);
+							if ($rowProductName = $resultProductName->FetchRow() ) {
+								$ins_name = $rowProductName['nhif_product_name'].' NHIF';
+
+
+							}else{
+								$ins_name = $ins_name;
+							}
+						}
 					} else {
 						$ins_name = 'Invalid/expired Contract';
 					}
@@ -6368,6 +6422,9 @@ A:visited:hover {color: #cc0033;}
 				if ($ins_name == 'cash-Patient') {
 					$row['insurance_ID'] = "0";
 				}
+
+
+
 
 				// echo 'tuone sasa'. $this->ShowPID($row['pid']);
 
@@ -6383,6 +6440,7 @@ A:visited:hover {color: #cc0033;}
                                         <td ' . $BGCOLOR . ' class="td_content"><div align="center">' . $row['name_last'] . ', ' . ucwords($row['name_first']) . '</div></td>
                                         <td ' . $BGCOLOR . ' class="td_content"><div align="center">' . $row['date_birth'] . '</div></td>
                                         <td ' . $BGCOLOR . ' class="td_content"><div align="center">' . $ins_name . '</div></td>
+                                        <td ' . $BGCOLOR . ' class="td_content"><div align="center">' . $img_reviewed . '</div></td>
                                         <td ' . $BGCOLOR . ' class="td_content"><div align="center">' . $total_count . '</div></td>
                                         <td ' . $BGCOLOR . ' class="td_content"><div align="center">' . $deptname . '</div></td>
 

@@ -50,17 +50,38 @@ $pdf->Ln();
 
 
 
+$doctor = $claims_obj->GetDignosisDocName($encounter_nr);
+$docUser = $claims_obj->GetDocUser($doctor);
+$qDetailsRow=$claims_obj->GetqualificationDetails($doctor);  
+$doctorQualificationName=$qDetailsRow['sname'];
 
+
+$login_id = $docUser['login_id'];
 
 
 $image_file = '../../modules/nhif/images/' . 'NHIF_logo.jpg';
 $pdf->Image($image_file,10,10,20);
 
+$muhuri_file = '<img src="../../gui/img/common/default/'.'muhuri.png"  width="61" height="36">';
+
+$doctorSignature = '<img src="../../modules/nhif/signatures/'.$login_id.'.png"  width="29" height="16">';
+//$patientSignature = '<img src="../../modules/nhif/signatures/signature'.$encounter_nr.'.png"  width="726"   height="134" style="vertical-align:top" >';
+$patientSignature = '<img src="../../modules/nhif/signatures/signature'.$encounter_nr.'.png"  width="223"   height="46" style="vertical-align:top;float:left" >';
+
+
+
+
+
+//$pdf->writeHTML($doctorSignature, true, 0, true, 0);
+
+
+
+
 
 $pdf->SetFont('Helvetica','B',14);
 $pdf->Cell('','',"CONFIDENTIAL",'','','C');
 $pdf->SetFont('Helvetica','',8);
-$pdf->Cell('','',"Form NHIF 2A&B",'','','R');
+$pdf->Cell('','',"Form NHIF 2A",'','','R');
 $pdf->Ln();
 $pdf->SetFont('Helvetica','',8);
 $pdf->Cell('','',"Regulation 18(1)",'','','R');
@@ -204,10 +225,10 @@ $pdf->SetFont('Helvetica','B',8);
 $pdf->Cell(60,5,$companyAddress,'','','');
 //$pdf->Cell(25,5,'Morogoro','','','',$fill);
 
-$pdf->SetFont('Helvetica','',8);
-$pdf->Cell(21,5,'3.Consultation','','','');
-$pdf->SetFont('Helvetica','B',8);
-$pdf->Cell(20,5,number_format($consultation_total_cost),'','','');
+// $pdf->SetFont('Helvetica','',8);
+// $pdf->Cell(21,5,'3.Consultation','','','');
+// $pdf->SetFont('Helvetica','B',8);
+// $pdf->Cell(20,5,number_format($consultation_total_cost),'','','');
 
 $pdf->Ln();
 $pdf->SetFont('Helvetica','',8);
@@ -268,7 +289,7 @@ $pdf->Cell(20,5,'','','C');
 $pdf->SetFont('Helvetica','',8);
 $pdf->Cell(40,5,'14.Preliminary Diagnosis Code');
 $pdf->SetFont('Helvetica','B',8);
-$pdf->Cell(33,5,'',$preliminaryDX,'C');
+$pdf->Cell(45,5,$preliminaryDX,'C');
 
 $pdf->SetFont('Helvetica','',8);
 $pdf->Cell(33,5,'15.Final Diagnosis Code');
@@ -456,44 +477,134 @@ $pdf->Ln();
 
      //echo $encounter_nr; die;
 
-  $doctor = $claims_obj->GetDignosisDocName($encounter_nr);
-  $docUser = $claims_obj->GetDocUser($doctor);
-  $qDetailsRow=$claims_obj->GetqualificationDetails($doctor);  
-  $doctorQualificationName=$qDetailsRow['sname'];
+  
+
+//function writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true)
+
+// function Cell($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='', $stretch=0, $ignore_min_height=false, $calign='T', $valign='M')
 
 
 
 
+//****************************************************************  
 
-$pdf->SetFont('Helvetica','',8);
-$pdf->Cell(41,5,'C: Name of attending clinician','','','');
 $pdf->SetFont('Helvetica','B',8);
+$pdf->Cell(43,10,'C: Name of attending clinician:','','','');
+$pdf->SetFont('Helvetica','',8);
 $pdf->Cell(34,5,$doctor,'B','C','');
 
-$pdf->SetFont('Helvetica','',8);
-$pdf->Cell(20,5,'Qualification','','','');
+//****************************************************************
+
+
+
+//****************************************************************
 $pdf->SetFont('Helvetica','B',8);
-$pdf->Cell(34,5,$doctorQualificationName,'B','C','');
+$pdf->Cell(24,10,'Qualifications:','','','');
 $pdf->SetFont('Helvetica','',8);
-$pdf->Cell(20,5,'Signature','','','');
-$pdf->Cell(34,5,'','B','C','');
+$pdf->Cell(40,5,$doctorQualificationName,'B','C','');
+//****************************************************************
+
+//****************************************************************
+$pdf->SetFont('Helvetica','B',8);
+$pdf->Cell(21,10,'MCT Reg. No:','','','');
+$pdf->SetFont('Helvetica','',8);
+$pdf->Cell(28,10,$docUser['practitioner_nr'],'B','C','');
+
+//****************************************************************
+
+
 $pdf->Ln();
+
+$pdf->SetFont('Helvetica','B',8);
+$pdf->Cell(15,10,'Mob. No:','','','');
+$pdf->SetFont('Helvetica','',8);
+$pdf->Cell(25,10,$docUser[' tel_no'],'','C','');
+
+
+//****************************************************************
+$pdf->SetFont('Helvetica','B',8);
+$pdf->Cell(18,10,'Signature:','','','');
+$pdf->writeHTMLCell('','','','',$doctorSignature);
+//****************************************************************
+  $pdf->Ln();
+
+//****************************************************************
+
 $pdf->SetFont('Helvetica','B',10);
-$pdf->Cell(160,'','D: Claimant Certification:','','','L');
+$pdf->Cell(160,'','D: Uthibitisho wa mgonjwa/Patient Certification:','','','L');
 $pdf->Ln();
 $pdf->SetFont('Helvetica','',8);
-$pdf->Cell(75,5,'I certify that I received the above named services. Name:','','','L');
+$pdf->Cell(75,5,'Nathibitisha kuwa nimepokea huduma zilizoanishwa hapo juu na natambua kwamba ni kosa kisheria kukiri kupata matibabu ambayo hayajatolewa.','','','L');
+$pdf->Ln();
+
+$pdf->Cell(75,5,'I certify that I received the above mentioned services as witnessed by my signature hereunder and I understand that it is illegal to provide false testimony.','','','L');
+
+$pdf->Ln();
 $pdf->SetFont('Helvetica','B',8);
-$pdf->Cell(50,5,$rowDetails['name_first'].' '.$rowDetails['name_last'],'B','C');
+$pdf->Cell(24,10,'Jina/Name:','','','');
+//$pdf->Cell(35,10,$rowDetails['name_first'].' '.$rowDetails['name_last'],'B','C');
+$pdf->Cell(35,10,$rowDetails['name_first'].' '.$rowDetails['name_last'],'B','C');
+
+$pdf->SetFont('Helvetica','B',8);
+$pdf->Cell(24,10,'Tarehe(Date)','','','');
+$pdf->Cell(35,10,date('d-m-Y'),'B','C');
+$pdf->Cell(40,10,'Namba ya Simu(Mobile No.)','','','');
+$pdf->Cell(28,10,$rowDetails['phone_1_nr'],'B','C');
+
+$pdf->Ln();
+
+
+$pdf->SetFont('Helvetica','B',8);
+$pdf->Cell(18,30,'Signature:','','','');
+$pdf->writeHTMLCell('','','','',$patientSignature);
+$pdf->Ln();
+
+$pdf->Cell(75,5,'Hakikisha unasaini fomu baada ya kupatiwa huduma na kupatiwa nakala ya fomu hii iliyojazwa huduma ulizopatiwa.','','','L');
+$pdf->Ln();
+$pdf->Cell(75,5,'Make sure you receive a copy of the form you signed.','','','L');
+
+$pdf->Ln();
+$pdf->SetFont('Helvetica','B',8);
+$pdf->Cell(75,5,'E: Description of In/Out-patient Management/any other additional Information(a separate sheet of paper can be used):.','','','L');
+$pdf->Ln();
+$pdf->Ln();
+$pdf->SetFont('Helvetica','B',8);
+$pdf->Cell(175,5,'','B','','L');
+$pdf->Ln();
+$pdf->SetFont('Helvetica','B',8);
+$pdf->Cell(18,5,'E: Claimant Certification:','','','');
+$pdf->Ln();
 $pdf->SetFont('Helvetica','',8);
-$pdf->Cell(20,5,'Signature','','','');
-$pdf->Cell(20,5,'','B','','');
+$pdf->Cell(75,5,'I Certify that I provided the above services.','','','L');
 $pdf->Ln();
+
+
 $pdf->SetFont('Helvetica','B',8);
-$pdf->Cell(8,5,'NB:','','','');
-$pdf->Cell(160,5,'Fill in Triplicate and please submit the original form on monthly basis, and the claim be attached with Monthly Report.','','','L');
+$pdf->Cell(10,5,'Name:','','','');
+$pdf->SetFont('Helvetica','',8);
+$pdf->Cell(40,5,$docUser['name'],'','C','');
+
+$pdf->SetFont('Helvetica','B',8);
+$pdf->Cell(15,5,'Signature:','','','');
+$pdf->writeHTMLCell('','','','',$doctorSignature);
+
 $pdf->Ln();
-$pdf->Cell(160,5,'Any falsified information may subject you to prosecution in accordance with NHIF Act No. 8 of 1999.','','','L');
+
+$pdf->Cell(20,20,'Official Stamp:','','','');
+
+$pdf->writeHTMLCell('','','','',$muhuri_file);
+
+$pdf->Ln();
+$pdf->SetFont('Helvetica','',8);
+$pdf->Cell(90,5,'Patient should sign the form after completion of service.','','','L');
+$pdf->Ln();
+$pdf->Cell(160,5,'Before reffering the patient to another facility. The prescriber should be satisfied for the missing item and its alternative within the facility.','','','L');
+$pdf->Ln();
+$pdf->Cell(160,5,'Any falsified information may subject you to prosecution in accordance with NHIF Act Cap 395.','','','L');
+
+
+
+
 
 
 

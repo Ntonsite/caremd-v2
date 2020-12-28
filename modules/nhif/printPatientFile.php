@@ -258,3 +258,36 @@ if (@$save) {
 } else {
 	$pdf->Output('patientFile.pdf', 'I');
 }
+
+
+ $filePath='./uploads/patientFile' . $encounter_nr . '.pdf';
+
+
+
+
+    $file = file($filePath);
+
+
+
+
+    $endfile= trim($file[count($file) - 1]);
+
+    $n="%%EOF";
+
+
+    if ($endfile === $n) {
+      $status="good";
+    } else {
+      $status="corrupted";
+   }
+
+
+
+
+
+    if (file_exists($filePath) && $status === "good") {
+      echo "file_created";
+      
+   }else{
+     echo "file_not_created";
+    }

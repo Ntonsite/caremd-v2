@@ -3,7 +3,9 @@
 <table border=1 cellpadding=4 cellspacing=1 width=100% class="frame">
 <?php
 
-//echo $sql;
+
+
+
 
 $bgc = (isset($bgc) ? $bgc : null);
 ?>
@@ -125,7 +127,10 @@ echo $row['total_dosage'];
             </td>
             <?php
 $transmit_to_weberp_enabled = $glob_obj->getConfigValue('transmit_to_weberp_enabled');
+
 	if ($transmit_to_weberp_enabled == 1) {
+
+
 
 		require_once $root_path . 'include/care_api_classes/class_weberp_c2x.php';
 		if (!isset($weberp_obj)) {
@@ -138,9 +143,12 @@ $transmit_to_weberp_enabled = $glob_obj->getConfigValue('transmit_to_weberp_enab
 
 		if (isset($_SESSION['loccode'])) {
 
-			$stockid = $row['partcode'];
 
+			$stockid = $row['partcode'];
+			
 			$item = $weberp_obj->get_stock_item_from_webERP($stockid);
+
+
 
 			// $stockid=trim($stockid);
 			// $item_id=trim($item['stockid']);

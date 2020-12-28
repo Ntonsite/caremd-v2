@@ -17,6 +17,10 @@ if (!isset($pres_obj)) {
 	$pres_obj = new Prescription;
 }
 
+
+//Check if prelinary dx is entered
+
+
 include_once $root_path . 'include/care_api_classes/class_core.php';
 
 /* We need to differentiate from where the user is coming:
@@ -35,9 +39,9 @@ if (@$user_origin && $user_origin == 'lab') {
 
 } else {
 	$local_user = 'ck_pflege_user';
-	$station = $station ?? "";
-	$edit = $edit ?? "";
-	$pn = $pn ?? "";
+	$station = isset($station) ? $station :  "";
+	$edit = isset($edit) ? $edit : "";
+	$pn = isset($pn)? $pn : "";
 
 	$breakfile = "nursing-station-patientdaten.php" . URL_APPEND . "&edit=$edit&station=$station&pn=$pn";
 }
@@ -125,6 +129,28 @@ if (isset($pn) && $pn) {
 
 
 
+        if ($allowRequest == false) {
+        	$day=date('d');
+        	$month=date('m');
+        	$year=date('Y');
+                 
+        	echo ("<script LANGUAGE='JavaScript'>
+              window.alert('PLEASE ENTER PRELIMINARY DIAGNOSIS');
+               window.location.href='../../modules/nursing/nursing-station-patientdaten.php?lang=en&sid=$sid&pn=$pn&pday=$day&pmonth=$month&pyear=$year&edit=1&station=';
+             </script>");
+        }
+		
+
+
+
+
+
+
+
+
+
+
+
 
 		include_once $root_path . 'include/care_api_classes/class_diagnostics.php';
 		$diag_obj_rad = new Diagnostics;
@@ -136,8 +162,10 @@ if (isset($pn) && $pn) {
 	}
 }
 
+
+
 if (!isset($dept_nr) or $dept_nr == '') {
-	$dept_nr = $data['dept_nr'] ?? "";
+	$dept_nr = isset($data['dept_nr']) ? $data['dept_nr'] : "";
 }
 
 if (!isset($mode)) {
@@ -145,7 +173,9 @@ if (!isset($mode)) {
 }
 
 //Get here patient notes for encounter
-$pn = $pn ?? 0;
+$pn = isset($pn)? $pn : 0;
+
+
 if ($enc_obj->getEncounterNotes($pn)) {
 	$enc_notes = $enc_obj->getEncounterNotes($pn)->FetchRow();
 //    print_r($enc_notes);

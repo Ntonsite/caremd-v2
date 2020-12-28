@@ -237,11 +237,12 @@ if ($countpres > 0 OR $countlab > 0 OR $countrad > 0) {
                                     <table width="600" border="0" align="center" class="table_content">
                                         <?php
                                         //check if patient is NHIF
-                                        if (substr($_REQUEST['insrname'], 0,4)=='NHIF') {
+                                        
+                                        if (strpos($_REQUEST['insrname'],'NHIF')!==false) {
                                             $sqlScheme="SELECT nhif_scheme_id FROM care_encounter WHERE encounter_nr=".$_REQUEST['encounter_nr'];
                                             $SchemeResult=$db->Execute($sqlScheme);
                                             $Scheme=$SchemeResult->FetchRow();
-                                            $NhifScheme=$Scheme['nhif_scheme_id'];                                           
+                                            $NhifScheme=$Scheme['nhif_scheme_id'];
                                         
                                         }
                                             
@@ -340,6 +341,7 @@ echo 'balance=' . $insurancebudget . '-insurancebalance;';
 echo 'if(balance<0) balance = \'<font color="#FF0000">\' + balance + \'</font>\';';
 echo 'document.getElementById(\'totalsum\').innerHTML=\'<td> ' . $LDTotalSum . ' <b>\' + totalsum + \' TSH</b></td><td> Your insurance balance will be:<br> <b>' . $insurancebudget . ' - \' + insurancebalance + \' = \' + balance + \' TSH</b></td>\';';
 
+
 if ($bill_obj->GetAdvanceTotalAmountQuotation($_REQUEST['encounter_nr']) > 0) {
 	echo 'document.getElementById(\'balance\').value=totalsum-' . ($bill_obj->GetAdvanceTotalAmountQuotation($_REQUEST['encounter_nr'])) . '';
 }
@@ -384,12 +386,20 @@ $v = $y;
                                 <table width="600" border="0" align="center">
                                     <tr>
                                         <td>
-                                            <?php echo $LDMarkallitems; ?>
+                                            <?php echo $LDMarkallitems;
+
+
+
+
+             
+                                             ?>
                                         </td>
                                         <td align="right">
                                             <input type="button" value="<?php echo $LDSelect; ?>" onClick="javascript:TriggerAllItems(0);">
                                             <input type="button" value="<?php echo $LDTodo; ?>" onClick="javascript:TriggerAllItems(1);">
                                             <input type="button" value="<?php echo $LDDelete; ?>" onClick="javascript:TriggerAllItems(2);">
+                                            <?php if(stripos($_REQUEST['insrname'], 'NHIF')!==false):?>
+                                            <input type="button" value="Sign" onclick="window.location.href = '<?php print $root_path . 'modules/nhif/patientSignature.php' . URL_APPEND . '&batch_nr=' . $pid . '&encounter_nr=' . $_REQUEST['encounter_nr'] . '&insrname=' . $_REQUEST['insrname'] . '&bank_enabled=' . $bank_enabled . '&patient=' . $patient.'&unit_price='.$_REQUEST['unit_price'].'&sid='.$sid.'&ok='.$_REQUEST['ok'].'&namefirst='.$_REQUEST['namefirst'].'&countpres='.$_REQUEST['countpres'].'&countlab='.$_REQUEST['countlab'].'&insurance_id='.$_REQUEST['insurance_id'].'&bankref='.$_REQUEST['bankref'].'&pid='.$_REQUEST['pid'];?>';"><?php endif?>
                                         </td>
                                     </tr>
 
@@ -402,6 +412,8 @@ $v = $y;
                                         </td>
                                     </tr>
 
+                                    
+
                                 </table>
 
                                 <table width="600" border="0" align="center" id='totalsum'>
@@ -409,18 +421,42 @@ $v = $y;
                                     <tr align="left">
 
 
+
                                         <?php
 echo '<td colspan=2>' . $LDTotalSumnotcalculated . '</td>';
 ?>
-
-
+ 
+                                
                                     </tr>
                                 </table>
+                                
+                                
+<?php if(stripos($_REQUEST['insrname'], 'NHIF')!==false):?>
+
+                                <tr><td>Signature:
+                                    <?php 
+                                    $signature ='../../modules/nhif/signatures/signature'.$encounter_nr.'.png';
+
+
+
+
+
+
+                                    
+                                       ?>
+                                    <img src="<?php echo $signature; ?>" width="220" height="50">
+
+                                </td>
+                                </tr>
+                            <?php endif?>
+
                     </table>
 
                     <table width="600" border="0" align="center">
 
+
                         <tr align="left">
+
                             <td>
                                 TOTAL ADVANCE
                             </td>

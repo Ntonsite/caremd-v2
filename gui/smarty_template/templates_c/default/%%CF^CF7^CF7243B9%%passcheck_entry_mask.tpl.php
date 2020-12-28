@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2018-10-16 15:27:23
+<?php /* Smarty version 2.6.22, created on 2020-12-28 11:47:52
          compiled from main/passcheck_entry_mask.tpl */ ?>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" href="#"><?php echo $this->_tpl_vars['companyName']; ?>
@@ -18,8 +18,8 @@
 <div class="container-fluid d-flex justify-content-center">
     <div class="row col-md-4">
         <div class="card ">
-            <div class="card-header bg-light">
-                CareMD ~ Login
+            <div class="card-header bg-info" align="center">
+                CareMD Version: 4.0
             </div>
             <div class="card-body">
 

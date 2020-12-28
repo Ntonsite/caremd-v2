@@ -1,5 +1,6 @@
 <?php
 
+
 $returnfile = $_SESSION['sess_file_return'];
 
 $_SESSION['sess_file_return'] = $thisfile;
@@ -314,9 +315,12 @@ if (empty($insname)) {
 
 }
 
+
+
 $smarty->assign('sHealthFund', $InsuranceName);
 
 if ($mode == 'show' /* && !isset($externalcall) */) {
+
 	if ($parent_admit) {
 		$bgimg = 'tableHeaderbg3.gif';
 	} else {
@@ -325,11 +329,12 @@ if ($mode == 'show' /* && !isset($externalcall) */) {
 
 	$tbg = 'background="' . $root_path . 'gui/img/common/' . $theme_com_icon . '/' . $bgimg . '"';
 
+
 	if ($rows) {
 		# Buffer the option block
 		ob_start();
 
-//       echo 'gui_'.$thisfile;
+       
 		include './gui_bridge/default/gui_' . $thisfile;
 
 		$sTemp = ob_get_contents();
@@ -362,12 +367,15 @@ if ($mode == 'show' /* && !isset($externalcall) */) {
 
 		$smarty->assign('sOptionBlock', $sTemp);
 	} else {
+
 		if (!empty($externalcall)) {
 
 			if (!isset($printout) && !isset($_GET['ShowOnlyPharmacy'])) {
 
 				$smarty->assign('sPromptLink', '<a href="' . $thisfile . URL_APPEND . '&disablebuttons=' . $disablebuttons . '&pid=' . $_SESSION['sess_pid'] . '&target=' . $target . '&mode=new&prescrServ=' . $prescrServ . '&prescrSubCat=' . $prescrSubCat . '&mode=new&help_site&externalcall=' . $externalcall . '&backpath=' . urlencode($backpath) . '"><img ' . createComIcon($root_path, 'createnew_tz.gif', '0') . ' ></a>');
 			} else {
+
+
 
 				$smarty->assign('sPromptLink', '<a href="' . $thisfile . URL_APPEND . '&disablebuttons=' . $disablebuttons . '&pid=' . $_SESSION['sess_pid'] . '&target=' . $target . '&mode=new&prescrServ=' . $prescrServ . '&prescrSubCat=' . $prescrSubCat . '>' . $LDEnterNewRecord . '</a>');
 			}
@@ -397,6 +405,7 @@ if ($mode == 'show' /* && !isset($externalcall) */) {
 		}
 	}
 } else {
+
 	# Buffer the option input block
 	ob_start();
 	// witch tab sould be activated at first:
@@ -441,7 +450,7 @@ if ($mode == 'show' /* && !isset($externalcall) */) {
 
 	// (by Merotech(RM): Here the main prescription-table-content will be loaded: ;
 	//echo './gui_bridge/default/gui_input_'.$thisfile;
-	// echo 'gui_input_'.$thisfile;
+	 
 
 	include './gui_bridge/default/gui_input_' . "$thisfile"; //gui_input_show_prescription.php
 

@@ -149,6 +149,8 @@ $userPermissions = str_replace('_a_2_', '', $userPermissions);
 $userPermissions = str_replace('_a_3_', '', $userPermissions);
 $userPermissions = str_replace('_a_4_', '', $userPermissions);
 
+//echo "<pre>"; print_r($userPermissions); echo "</pre>";die;
+
 $_SESSION['transfer_nhif_patients'] = 0;
 
 foreach ($userPermissions as $userPermission) {
@@ -156,6 +158,8 @@ foreach ($userPermissions as $userPermission) {
 		$_SESSION['transfer_nhif_patients'] = 1;
 	}
 }
+
+//echo "<pre>"; print_r($navigationMenus); echo "</pre>";die;
 
 if ($userPermissions[0] == "System_Admin" || $userPermissions[0] == "_a_0_all " || $userPermissions[0] == "_a_0_all") {
 	$userNavigationMenus = $navigationMenus;
@@ -269,7 +273,7 @@ if ($userPermissions[0] == "System_Admin" || $userPermissions[0] == "_a_0_all " 
 
 		if ($navigationMenu['name'] == "NHIF Claims") {
 			foreach ($userPermissions as $userPermission) {
-				if ($userPermission == "NHIF Claims") {
+				if ($userPermission == "nhif_claims") {
 					array_push($userNavigationMenus, $navigationMenu);
 				}
 			}

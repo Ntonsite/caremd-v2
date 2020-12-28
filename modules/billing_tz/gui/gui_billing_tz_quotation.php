@@ -210,6 +210,21 @@ if ($_REQUEST['sorttyp'] == 'desc') {
 }
 
 ?> "><u><strong><?php echo $LDBillType; ?></strong></u></a></div></td>
+  <td bgcolor=#ffffdd class="headline"><div align="center"><a href="billing_tz_quotation.php?patient=<?php
+echo $_REQUEST['patient'] . '&sort=count&sorttyp=';
+if (!$_REQUEST['sorttyp']) {
+  echo 'asc';
+}
+
+if ($_REQUEST['sorttyp'] == 'asc') {
+  echo 'desc';
+}
+
+if ($_REQUEST['sorttyp'] == 'desc') {
+  echo 'asc';
+}
+
+?> "><u><strong><?php echo $LDReviewed; ?></strong></u></a></div></td>
                 <td bgcolor=#ffffdd class="headline"><div align="center"><a href="billing_tz_quotation.php?patient=<?php
 echo $_REQUEST['patient'] . '&sort=count&sorttyp=';
 if (!$_REQUEST['sorttyp']) {

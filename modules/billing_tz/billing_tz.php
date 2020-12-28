@@ -59,6 +59,8 @@ $createARTQuotation = false;
 $billingReport = false;
 $nhifClaimsPermission = false;
 
+//nhif_claims
+
 foreach ($userPermissions as $permission) {
 
 	if ($permission == "billquotationsoutp") {
@@ -83,8 +85,8 @@ foreach ($userPermissions as $permission) {
 		$createARTQuotation = true;
 	}
 
-	if ($permission == 'nhifclaims') {
-		$nhifClaimsPermission == true;
+	if ($permission == 'nhif_claims') {
+		$nhifClaimsPermission = true;
 	}
 
 	if ($permission == "billallwrite" || $permission == "billallread" ) {
@@ -94,6 +96,8 @@ foreach ($userPermissions as $permission) {
 		$billingReport = true;
 	}
 }
+
+
 
 
 if ($userPermissions[0] == "System_Admin" || $userPermissions[0] == "_a_0_all " || $userPermissions[0] == "_a_0_all")  {

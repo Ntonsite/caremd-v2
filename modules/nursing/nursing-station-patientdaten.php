@@ -2,6 +2,10 @@
 //$sid = $_REQUEST['sid']; //Get current session id
 //session_id($sid); //Initialize session with current session id
 //session_start();
+
+
+
+
 require './roots.php';
 require $root_path . 'include/inc_environment_global.php';
 
@@ -226,6 +230,8 @@ if ($dblink_ok) {
 			}
 
 			//echo $sql;
+
+
 
 			if (!isset($mode) || ($mode == '') || ($mode == 'changes_saved')) {
 				/* Get the color event signaller data */
@@ -621,6 +627,8 @@ if ($dept_nr == '43') {
 }
 
 echo '<br />';
+
+
 
 // PRESCRIPTIONS
 if ($dept_nr == '43') {
@@ -1045,6 +1053,14 @@ echo '
                             <td width="85%" style="border-top:3px solid red;">
                                 <?php ?>
                                 <?php include './labor_datalist_history.php';?>
+
+                            </td>
+                        </tr>
+                                                <tr>
+                            <td width="15%" bgcolor="#D2DFD0" style="border-top:3px solid red;" valign="top"><strong>Radiology</strong></td>
+                            <td width="85%" style="border-top:3px solid red;">
+                                <?php ?>
+                                <?php include './radiology_datalist_history.php';?>
 
                             </td>
                         </tr>

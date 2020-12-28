@@ -52,9 +52,26 @@
     <td colSpan=3 class="vspace"><IMG height=1 src="../../gui/img/common/default/pixel.gif" width=5></td>
 </tr>
 
-<?php if ($nhifClaimsPermission): ?>
+
+
+<?php if ($nhifClaimsPermission){ ?>
+
+ <tr valign="middle" bgcolor="lightblue">
+    <td align=center><img style="height: 30px;" src="../../gui/img/logos/nhif-logo.png" border=0></td>
+    <td class="submenu_item">
+        <a href="<?php echo $root_path ?>modules/nhif/nhif_pass.php?patient=2&sid=<?php echo "$sid&target=BeforeBill&lang=$lang" ?>"><?php echo $LDReviewBeforeSubmissionOutp; ?></a>
+    </td>
+    <td><?php echo $LDReviewClaimsOutp; ?></td>
+</tr> 
+<tr valign="middle" bgcolor="lightblue">
+    <td align=center><img style="height: 30px;" src="../../gui/img/logos/nhif-logo.png" border=0></td>
+    <td class="submenu_item">
+        <a href="<?php echo $root_path ?>modules/nhif/nhif_pass.php?patient=1&sid=<?php echo "$sid&target=BeforeBill&lang=$lang" ?>"><?php echo $LDReviewBeforeSubmissionInp; ?></a>
+    </td>
+    <td><?php echo $LDReviewClaimsInp; ?></td>
+</tr>  
     
-<tr valign="middle">
+<tr valign="middle" bgcolor="white">
     <td align=center><img style="height: 30px;" src="../../gui/img/logos/nhif-logo.png" border=0></td>
     <td class="submenu_item">
         <a href="<?php echo $root_path ?>modules/nhif/nhif_pass.php?patient=2&sid=<?php echo "$sid&target=review&lang=$lang" ?>"><?php echo $LDPendingClaimsOutp; ?></a>
@@ -62,7 +79,7 @@
     <td><?php echo $LDPendingClaimsOutp; ?></td>
 </tr>
 
-<tr valign="middle">
+<tr valign="middle" bgcolor="white"> 
     <td align=center><img style="height: 30px;" src="../../gui/img/logos/nhif-logo.png" border=0></td>
     <td class="submenu_item">
         <a href="<?php echo $root_path ?>/modules/nhif/nhif_pass.php?patient=1&sid=<?php echo "$sid&target=review&lang=$lang" ?>"><?php echo $LDPendingClaimsInp; ?></a>
@@ -81,7 +98,7 @@
     <td colSpan=3 class="vspace"><img height=1 src="../../gui/img/common/default/pixel.gif" width=5></td>
 </tr>
 
-<?php endif ?>
+<?php } ?>
 
 <TR>
     <td height="26" align=center><img src="../../gui/img/common/default/prescription.gif" border=0 width="16" height="16"></td>
