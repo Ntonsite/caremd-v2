@@ -2640,7 +2640,10 @@ class Encounter extends Notes {
 
 		}
 
+
+
 		$this->sql = "UPDATE $this->tb_enc SET $data WHERE encounter_nr=$enr";
+		
 
 		// echo "<br>_setCurrentAssignment :" . $this->sql . "<br>";die;
 		return $this->Transact($this->sql);
@@ -3361,7 +3364,7 @@ class Encounter extends Notes {
 		}
 
 		//$cond='';
-		$this->sql = "SELECT e.encounter_nr,e.encounter_class_nr, e.encounter_date, e.pid,e.insurance_class_nr,p.selian_pid, CONCAT(p.name_first,' ', p.name_2) AS name_first, CONCAT(UPPER(p.name_last),', ') as name_last, p.date_birth,p.insurance_ID,p.sex, p.photo_filename, p.allergy,
+		$this->sql = "SELECT e.nhif_approved,e.encounter_nr,e.encounter_class_nr, e.encounter_date, e.pid,e.insurance_class_nr,p.selian_pid, CONCAT(p.name_first,' ', p.name_2) AS name_first, CONCAT(UPPER(p.name_last),', ') as name_last, p.date_birth,p.insurance_ID,p.sex, p.photo_filename, p.allergy,
 									a.date, a.time,a.urgency, i.LD_var AS \"LD_var\",i.name AS insurance_name,
 									n.nr AS notes
 							FROM $this->tb_enc AS e

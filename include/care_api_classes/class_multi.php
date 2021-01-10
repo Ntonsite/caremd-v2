@@ -669,7 +669,7 @@ class multi extends Core {
 		function CheckDiagnosis($enc) {
 			global $db;
 			if ($enc != '') {
-				$sql = "SELECT count(*) FROM " . $this->tb_diagnosis . " WHERE encounter_nr=" . $enc;
+				$sql = "SELECT count(*) FROM  $this->tb_diagnosis  WHERE encounter_nr=$enc AND 	diagnosis_type='final'";
 				$o = $db->Execute($sql);
 				if ($v = $o->FetchRow()) {
 					return $v[0];
@@ -682,6 +682,44 @@ class multi extends Core {
 			} else {
 				return 0;
 			}
+
+		}
+
+		function restrictDischargeNhif($enc){
+			global $db;
+			$sqlType = "SELECT type,value FROM care_config_global WHERE type='restrict_discharge_for_unbilled_nhif'";
+			$result = $db->Execute($sqlType);
+			$restrictDischarge = false;
+			if(@$result && $result->RecordCount()>0 ){
+				$row =  $result->FetchRow();
+				if ($row['value'] == 1 ) {
+					$restrictDischarge = true;
+				}else{
+					$restrictDischarge = false;
+				}
+
+			}
+
+			$sqlCheckBill = "SELECT encounter_nr FROM care_tz_billing_archive WHERE encounter_nr=".$enc;
+			$CheckBillResult = $db->Execute($sqlCheckBill); 
+			$Billed = false;
+			if (@$CheckBillResult && $CheckBillResult->RecordCount()>0) {
+				$Billed = true;
+				
+			}else{
+				$Billed = false;
+			}
+
+			//NHIF patient should not be discharged before billing
+			if ($restrictDischarge == true && $Billed == false) {
+
+                     return 1;
+				
+			}else{
+				     return 0;
+			}
+
+
 
 		}
 

@@ -74,7 +74,7 @@ class selianreport extends report
 		($debug) ? $db->debug = TRUE : $db->debug = FALSE;
 		$sql_timeframe = "  ( timestamp>=" . $start . " AND timestamp<=" . $end . ") ";
 
-		$dx_type = "AND diagnosis_type='final'";
+		$dx_type = "AND diagnosis_type='final' AND is_deleted='0'";
 
 		//echo 'PUT INDEX IN THE ICD_10_code IF THIS REPORT IS SLOW';
 		//count all

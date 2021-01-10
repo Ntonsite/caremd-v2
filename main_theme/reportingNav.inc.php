@@ -35,8 +35,8 @@
           <a class="dropdown-item" href="<?php echo $root_path ?>modules/reporting_tz/OPD_new_return.php<?php echo URL_APPEND ?>">New and Return with Gender</a>
           <a class="dropdown-item" href="<?php echo $root_path ?>modules/reporting_tz/OPD_Department_Admissions.php<?php echo URL_APPEND ?>">OPD Departments Admission Summary</a>
           <div class="dropdown-divider"></div>
-          <!-- <a class="dropdown-item" href="<?php echo $root_path ?>modules/reporting_tz/IPD_admissions.php<?php echo URL_APPEND ?>">IPD Admission Summary</a>
-           --><a class="dropdown-item" href="<?php echo $root_path ?>modules/reporting_tz/IPD_discharge.php<?php echo URL_APPEND ?>">IPD Discharge Summary</a>
+           <a class="dropdown-item" href="<?php echo $root_path ?>modules/reporting_tz/IPD_admissions.php<?php echo URL_APPEND ?>">IPD Admission Summary</a>
+           <a class="dropdown-item" href="<?php echo $root_path ?>modules/reporting_tz/IPD_discharge.php<?php echo URL_APPEND ?>">IPD Discharge Summary</a>
           <a class="dropdown-item" href="<?php echo $root_path ?>modules/reporting_tz/IPD_discharge_types.php<?php echo URL_APPEND ?>">IPD Discharge Types Summary</a>
           <div class="dropdown-divider"></div>
 

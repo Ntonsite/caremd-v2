@@ -1202,11 +1202,19 @@ class Nhif_claims extends Nhif {
          $encounterClass = $resultEncounterClass->FetchRow();
          $encounterClass = $encounterClass['encounter_class_nr'];
 
+         
+
          if ($encounterClass == 1) {
+
+
 
          	$sql = "SELECT date_change, nr, sum(amount) AS amount, price, description, User_id, item_number, nhif_item_code, nhif_approval_no
             FROM care_tz_billing_archive_elem INNER JOIN care_tz_company ON care_tz_company.id=care_tz_billing_archive_elem.insurance_id
-            WHERE price > 0 AND care_tz_company.company_code='NHIF' AND  nr IN (SELECT nr FROM care_tz_billing_archive WHERE encounter_nr = '$encounter_nr') GROUP BY item_number ";
+            WHERE price > 0 AND care_tz_company.company_code='NHIF' AND  nr IN (SELECT nr FROM care_tz_billing_archive WHERE encounter_nr = '$encounter_nr') GROUP BY nhif_item_code ";
+
+
+
+
          	
          }else{
 

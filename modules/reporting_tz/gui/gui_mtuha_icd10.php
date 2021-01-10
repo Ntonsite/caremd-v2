@@ -200,12 +200,12 @@ function popPic(pid,nm){
 		  {
 		   $code=$v['category'];
 		
-		 $sql_no_u_age = "SELECT count( * ) as return_underage  , care_tz_mtuha_cat_key.cat_id, care_tz_mtuha_cat.description FROM care_tz_diagnosis, care_tz_mtuha_cat_key, care_tz_mtuha_cat, care_person WHERE care_tz_diagnosis.icd_10_code = care_tz_mtuha_cat_key.icd10_key AND care_tz_mtuha_cat.cat_id = care_tz_mtuha_cat_key.cat_id AND care_person.pid = care_tz_diagnosis.PID AND UNIX_TIMESTAMP(care_person.date_birth) < (UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 5 year)))  AND timestamp>='$start' and timestamp<='$end' AND diagnosis_type='final' GROUP BY care_tz_mtuha_cat_key.cat_id HAVING care_tz_mtuha_cat_key.cat_id ='$code'";
+		 $sql_no_u_age = "SELECT count( * ) as return_underage  , care_tz_mtuha_cat_key.cat_id, care_tz_mtuha_cat.description FROM care_tz_diagnosis, care_tz_mtuha_cat_key, care_tz_mtuha_cat, care_person WHERE care_tz_diagnosis.icd_10_code = care_tz_mtuha_cat_key.icd10_key AND care_tz_mtuha_cat.cat_id = care_tz_mtuha_cat_key.cat_id AND care_person.pid = care_tz_diagnosis.PID AND UNIX_TIMESTAMP(care_person.date_birth) < (UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 5 year)))  AND timestamp>='$start' and timestamp<='$end' AND diagnosis_type='final' AND is_deleted='0' GROUP BY care_tz_mtuha_cat_key.cat_id HAVING care_tz_mtuha_cat_key.cat_id ='$code'";
 					    			  
 			 $db_ptr_no_u_age = $db->Execute($sql_no_u_age);
 			 $db_row_no_u_age=$db_ptr_no_u_age->FetchRow();
 			
-			  $sql_no = "SELECT count( * ) as return_underage , care_tz_mtuha_cat_key.cat_id, care_tz_mtuha_cat.description FROM care_tz_diagnosis, care_tz_mtuha_cat_key, care_tz_mtuha_cat, care_person WHERE care_tz_diagnosis.icd_10_code = care_tz_mtuha_cat_key.icd10_key AND care_tz_mtuha_cat.cat_id = care_tz_mtuha_cat_key.cat_id AND care_person.pid = care_tz_diagnosis.PID AND UNIX_TIMESTAMP(care_person.date_birth) > (UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 5 year)))  AND timestamp>='$start' and timestamp<='$end' AND diagnosis_type='final' GROUP BY care_tz_mtuha_cat_key.cat_id HAVING care_tz_mtuha_cat_key.cat_id ='$code'";			  
+			  $sql_no = "SELECT count( * ) as return_underage , care_tz_mtuha_cat_key.cat_id, care_tz_mtuha_cat.description FROM care_tz_diagnosis, care_tz_mtuha_cat_key, care_tz_mtuha_cat, care_person WHERE care_tz_diagnosis.icd_10_code = care_tz_mtuha_cat_key.icd10_key AND care_tz_mtuha_cat.cat_id = care_tz_mtuha_cat_key.cat_id AND care_person.pid = care_tz_diagnosis.PID AND UNIX_TIMESTAMP(care_person.date_birth) > (UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL 5 year)))  AND timestamp>='$start' and timestamp<='$end' AND diagnosis_type='final' AND is_deleted='0' GROUP BY care_tz_mtuha_cat_key.cat_id HAVING care_tz_mtuha_cat_key.cat_id ='$code'";			  
 			 $db_ptr_no = $db->Execute($sql_no);
 			 $db_row_no=$db_ptr_no->FetchRow();
 			 //$total=$db_row_no['return_underage'];

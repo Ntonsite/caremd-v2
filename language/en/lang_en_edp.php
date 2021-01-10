@@ -406,6 +406,9 @@ $WebERPLinkStock = 'Stock Link Configuration';
 $WebERPLinkInc = 'Income Link Configuration';
 $LDRestrictNotbilled = 'Restrict Not Billed Items';
 $LDRestrictNotbilledCfg = 'Configure Viewing Not Billed Items';
+$LDRistrictDischargeUnbilledNhif = 'Restrict Discharged Unbilled Nhif';
+$LDRistrictDischargeUnbilledNhifCfg = 'Do not Discharge Unbilled Nhif';
+
 $LDUserRoles = 'User Access Roles';
 
 $LDManageAccessRoles = 'User Access Roles';

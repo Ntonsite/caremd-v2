@@ -39,6 +39,8 @@ include_once $root_path . 'include/care_api_classes/class_multi.php';
 $multi_obj = New multi;
 $vct = $multi_obj->__genNumbers();
 
+
+
 /**
  * Set default values if not available from url
  */
@@ -596,6 +598,7 @@ if ($rows) {
 		# discharge without diagnosis
 		$nodischarge = 0;
 
+
 		$kct = $multi_obj->CheckDiagnosis($patient['encounter_nr']);
 		if (($vct[9] == 1) && ($patient['encounter_nr'] != '')) {
 			if ($kct < 1) {
@@ -605,6 +608,12 @@ if ($rows) {
 				$nodischarge = 1;
 			}
 		}
+
+
+         
+		 
+
+
 
 		if (@$patient['date_birth']) {
 
@@ -664,11 +673,16 @@ if ($rows) {
 
 				              $smarty->assign('sTransferIcon','<a href="javascript:Transfer(\''.$patient['encounter_nr'].'\')"><img '.createComIcon($root_path,'xchange.gif','0','',TRUE).' alt="'.$LDTransferPatient.'"></a>');
 			*/
-			$smarty->assign('sDischargeInfoIcon', '<a href="javascript:void(0)" onclick="release_info(\'' . $patient['encounter_nr'] . '\')" title="show info"><img ' . createComIcon($root_path, 'button_info.gif', '0', '', TRUE) . ' alt="show info"></a>');
 
-			$smarty->assign('sDischargeIcon', '<a href="javascript:void(0)" onclick="' . ((($vct[11] == 1) && ($kct == 0)) ? 'alert(\'This Patient has no Diagnosis \n You can not Discharge.\')' : 'release(\'' . $patient['encounter_nr'] . '\')') . '" title="' . $LDReleasePatient . '"><img ' . createComIcon($root_path, 'bestell.gif', '0', '', TRUE) . ' alt="' . $LDReleasePatient . '"></a>');
+	         $restrictDischarge = 0;
+		if (stripos($fundname, 'NHIF')!==false) {
+				$restrictDischarge = $multi_obj->restrictDischargeNhif($patient['encounter_nr']);
+         }			              
+			$smarty->assign('sDischargeInfoIcon', '<a href="javascript:void(0)" onclick="release_info(\'' . $patient['encounter_nr'] . '\')" title="show info">'.$restrictDischarge.'<img ' . createComIcon($root_path, 'button_info.gif', '0', '', TRUE) . ' alt="show info"></a>');
 
-			if ($patient['encounter_class_nr'] == 2) {
+			$smarty->assign('sDischargeIcon', '<a href="javascript:void(0)" onclick="' . ((($vct[11] == 1) && ($kct == 0) || $restrictDischarge == 1) ? 'alert(\'This Patient has no Diagnosis or Not Billed \n You can not Discharge.\')' : 'release(\'' . $patient['encounter_nr'] . '\')') . '" title="' . $LDReleasePatient . '"><img ' . createComIcon($root_path, 'bestell.gif', '0', '', TRUE) . ' alt="' . $LDReleasePatient . '"></a>');
+
+			if ($patient['encounter_class_nr'] == 2 && $restrictDischarge == 0 ) {
 				$smarty->assign('sCheckBox', '<input name="checkbox[]" ' . ((($vct[11] == 1) && ($kct == 0)) ? ' disabled="disabled"' : '') . ' type="checkbox" id="checkbox[]" value="' . $id . '">');
 			}
 		}

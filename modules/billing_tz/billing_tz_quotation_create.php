@@ -309,7 +309,15 @@ if ($task == "insert") {
 			$bill_obj->close_deposit($encounter_nr);
 		}
 
-		// print_r($_POST);
+
+        
+
+		if (stripos($_REQUEST['insrname'], 'NHIF') !== false && $_REQUEST['patient'] == 'outpatient' ) {
+			$date = date('Y-m-d');
+		    $time = date("H:i:s");
+		    $enc_obj->Discharge($encounter_nr, 1, $date, $time);
+		}
+		
 
 		header("location: billing_tz_edit.php" . URL_APPEND . "&batch_nr=" . $batch_nr . "&bill_number=" . $new_bill_number . "&user_origin=quotation&patient=" . $_REQUEST['patient']);
 		exit;

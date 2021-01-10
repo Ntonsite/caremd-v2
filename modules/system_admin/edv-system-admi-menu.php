@@ -215,6 +215,16 @@ switch ($dbtype) {
                             </a></FONT><br>
                         </td>
                     </tr>
+                                        <tr>
+                        <td bgcolor="#e9e9e9"><FONT  color="#0000cc" FACE="verdana,arial" size=2><b><?php echo $LDRistrictDischargeUnbilledNhif; ?></b> </FONT></td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#ffffff"><FONT  color="#0000cc" FACE="verdana,arial" size=2>&nbsp;&nbsp;&nbsp;<img <?php echo createComIcon($root_path, 'redpfeil.gif', '0', 'absmiddle') ?>>
+                            <a href="edv_restrict_discharge_for_unbilled_nhif.php?sid=<?php echo $sid . "&lang=" . $lang ?>" target="SYSADMIN_WFRAME"><?php echo $LDRistrictDischargeUnbilledNhifCfg; ?>
+                            </a></FONT><br>
+                        </td>
+                    </tr>
+
                     <tr>
                         <td bgcolor="#e9e9e9"><FONT  color="#0000cc" FACE="verdana,arial" size=2><b><?php echo $LDEnableBankref; ?></b> </FONT></td>
                     </tr>

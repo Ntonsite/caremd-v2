@@ -62,7 +62,7 @@ $db_ptr = $db->Execute($sql);
 $res_array = $db_ptr->GetArray();
 
 // how many rows we have in database
-$query = "SELECT COUNT(distinct(pid)) AS numrows  FROM care_encounter where pid not in(select distinct(pid) from care_tz_diagnosis)
+$query = "SELECT COUNT(distinct(pid)) AS numrows  FROM care_encounter where pid not in(select distinct(pid) FROM care_tz_diagnosis WHERE diagnosis_type='final')
             and encounter_date >= '$startdate' AND encounter_date <= '$enddate' LIMIT $offset, $rowsPerPage";
 $result = $db->Execute($query);
 $row = $result->FetchRow();

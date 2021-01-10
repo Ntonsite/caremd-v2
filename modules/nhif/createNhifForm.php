@@ -206,23 +206,26 @@ $fill=$pdf->SetFillColor(249,249,249); // Grey
 //$this -> TCPDF -> Cell(95,$cellHigh,$data,'L',0,'L',$fill,'',0,false,'T','C');
 
 
-$pdf->SetFont('Helvetica','',8);
+$pdf->SetFont('Helvetica','B',8);
 $pdf->Cell(160,'',$serialNumber,'','','R');
 //$pdf->Cell(100,'',"555555",'','','R');
 //Cell(w, h = 0, txt = '', border = 0, ln = 0, align = '', fill = 0, link = nil, stretch = 0, ignore_min_height = false, calign = 'T', valign = 'M') ⇒ Object
 
 $pdf->Ln();
 $pdf->SetFont('Helvetica','B',6);
-$pdf->Cell(160,'','A:PARTICULARS:','','','L');
+$pdf->Cell(160,'','A:   PARTICULARS:','','','L');
 $pdf->Ln();
+$pdf->SetFont('Helvetica','B',6);
+$pdf->Cell(160,'','A1: Health Facility Particulars','','','L');
 $pdf->SetFont('Helvetica','',8);
-$pdf->Cell(33,5,'1.Name of Health Facility','','','');
+$pdf->Ln();
+$pdf->Cell(40,5,'        1. Name of Health Facility','','','');
 $pdf->SetFont('Helvetica','B',8);
-$pdf->Cell(50,5,$companyName,'','C','');
+$pdf->Cell(50,5,$companyName,'B','C','');
 $pdf->SetFont('Helvetica','',8);
-$pdf->Cell(18,5,'2.Address','','','');
+$pdf->Cell(14,5,'2.Address','','','');
 $pdf->SetFont('Helvetica','B',8);
-$pdf->Cell(60,5,$companyAddress,'','','');
+$pdf->Cell(90,5,$companyAddress,'B','','');
 //$pdf->Cell(25,5,'Morogoro','','','',$fill);
 
 // $pdf->SetFont('Helvetica','',8);
@@ -232,71 +235,87 @@ $pdf->Cell(60,5,$companyAddress,'','','');
 
 $pdf->Ln();
 $pdf->SetFont('Helvetica','',8);
-$pdf->Cell(33,5,'4.Department/Ward');
+$pdf->Cell(25,5,'        3.Department','');
 $pdf->SetFont('Helvetica','B',8);
-$pdf->Cell(50,5,$ward_dept_name,'','C');
+$pdf->Cell(50,5,$ward_dept_name,'B','C');
 
 $pdf->SetFont('Helvetica','',8);
-$pdf->Cell(30,5,'5.Date Of Attendance');
+$pdf->Cell(30,5,'4.Date Of Attendance','');
 $pdf->SetFont('Helvetica','B',8);
-$pdf->Cell(18,5,date('d.m.Y',strtotime($rowDetails['encounter_date'])),'','C');
-
-$pdf->SetFont('Helvetica','',8);
-$pdf->Cell(30,5,'6.Patient File Number');
-$pdf->SetFont('Helvetica','B',8);
-$pdf->Cell(35,5,$rowDetails['selian_pid'],'','C');
-
+$pdf->Cell(18,5,date('d.m.Y',strtotime($rowDetails['encounter_date'])),'B','C');
 $pdf->Ln();
-$pdf->SetFont('Helvetica','',8);
-$pdf->Cell(33,5,'7.Name of Patient');
-$pdf->SetFont('Helvetica','B',8);
-$pdf->Cell(50,5,$rowDetails['name_first'].' '.$rowDetails['name_last'],'','C');
-
-$pdf->SetFont('Helvetica','',8);
-$pdf->Cell(15,5,'8.DOB:');
-$pdf->SetFont('Helvetica','B',8);
-$pdf->Cell(18,5,$rowDetails['date_birth'],'','C');
-
-$pdf->SetFont('Helvetica','',8);
-$pdf->Cell(12,5,'9.SEX:');
-$pdf->SetFont('Helvetica','B',8);
-$pdf->Cell(5,5,$rowDetails['sex'],'','C');
-
+$pdf->SetFont('Helvetica','B',6);
+$pdf->Cell(160,'','A2: Patient Particulars','','','L');
 $pdf->Ln();
 
 $pdf->SetFont('Helvetica','',8);
-$pdf->Cell(15,5,'10.Vote:');
+$pdf->Cell(33,5,'        1.Name of Patient','');
 $pdf->SetFont('Helvetica','B',8);
-$pdf->Cell(18,5,$rowDetails['employee_id'],'','C');
-
+$pdf->Cell(50,5,$rowDetails['name_first'].' '.$rowDetails['name_last'],'B','C');
 $pdf->SetFont('Helvetica','',8);
-$pdf->Cell(33,5,'11.Physical Address');
+$pdf->Cell(10,5,'2.DOB:','');
 $pdf->SetFont('Helvetica','B',8);
-$pdf->Cell(50,5,$claims_obj->GetPatientPhysicalAddress($rowDetails['ward'], $rowDetails['district']),'','C');
-
+$pdf->Cell(18,5,DATE('d-m-Y',strtotime($rowDetails['date_birth'])),'B','C');
 $pdf->SetFont('Helvetica','',8);
-$pdf->Cell(25,5,'12.Card Number:');
+$pdf->Cell(10,5,'3.Sex:','');
 $pdf->SetFont('Helvetica','B',8);
-$pdf->Cell(38,5,$rowDetails['membership_nr'],'','C');
+$pdf->Cell(5,5,strtoupper($rowDetails['sex']),'B','C');
+$pdf->SetFont('Helvetica','',8);
+$pdf->Cell(20,5,'4.Occupation:','');
+$pdf->SetFont('Helvetica','B',8);
+$pdf->Cell(20,5,'','B','C','1');
+$pdf->Ln();
+$pdf->SetFont('Helvetica','',8);
+$pdf->Cell(30,5,'        5.Patient File No.:','');
+$pdf->SetFont('Helvetica','B',8);
+$pdf->Cell(20,5,$rowDetails['selian_pid'],'B','C');
+$pdf->SetFont('Helvetica','',8);
+$pdf->Cell(33,5,'6.Physical Address','');
+$pdf->SetFont('Helvetica','B',8);
+$pdf->Cell(50,5,$claims_obj->GetPatientPhysicalAddress($rowDetails['ward'], $rowDetails['district']),'B','C');
+$pdf->SetFont('Helvetica','',8);
+$pdf->Cell(20,5,'7.Card Number:','');
+$pdf->SetFont('Helvetica','B',8);
+$pdf->Cell(38,5,$rowDetails['membership_nr'],'B','C');
+$pdf->Ln();
+$pdf->SetFont('Helvetica','',8);
+$pdf->Cell(38,5,'        8.Authorization No:','');
+$pdf->SetFont('Helvetica','B',8);
+$pdf->Cell(38,5,$rowDetails['nhif_authorization_number'],'B','C');
+$pdf->SetFont('Helvetica','',8);
+$pdf->Cell(15,5,'9.Vote:','');
+$pdf->SetFont('Helvetica','B',8);
+$pdf->Cell(18,5,$rowDetails['employee_id'],'B','C');
+$pdf->SetFont('Helvetica','',8);
+$pdf->Ln();
+$pdf->Cell(50,5,'       10.Preliminary Diagnosis (Code):','');
+$pdf->SetFont('Helvetica','B',8);
+$pdf->Cell(35,5,$preliminaryDX,'B');
+$pdf->SetFont('Helvetica','',8);
+$pdf->Cell(45,5,'11.Final Diagnosis (Code):','');
+$pdf->SetFont('Helvetica','B',8);
+$pdf->Cell(35,5,$finalDX,'B','');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 $pdf->Ln();
 
-$pdf->SetFont('Helvetica','',8);
-$pdf->Cell(33,5,'13.Occupation:');
-$pdf->SetFont('Helvetica','B',8);
-$pdf->Cell(20,5,'','','C');
 
-$pdf->SetFont('Helvetica','',8);
-$pdf->Cell(40,5,'14.Preliminary Diagnosis Code');
-$pdf->SetFont('Helvetica','B',8);
-$pdf->Cell(45,5,$preliminaryDX,'C');
 
-$pdf->SetFont('Helvetica','',8);
-$pdf->Cell(33,5,'15.Final Diagnosis Code');
-$pdf->SetFont('Helvetica','B',8);
-$pdf->Cell(33,5,$finalDX,'C');
 $pdf->Ln();
-$pdf->Cell(33,5,'B: COST OF SERVICE','C');
+$pdf->Cell(33,5,'B: Details / Cost of services','C');
 $pdf->Ln();
 $pdf->SetFont('Helvetica','B',12);
 $pdf->Cell(100,5,"Description",1,'C','',$fill);
@@ -572,7 +591,7 @@ $pdf->SetFont('Helvetica','B',8);
 $pdf->Cell(175,5,'','B','','L');
 $pdf->Ln();
 $pdf->SetFont('Helvetica','B',8);
-$pdf->Cell(18,5,'E: Claimant Certification:','','','');
+$pdf->Cell(18,5,'F: Claimant Certification:','','','');
 $pdf->Ln();
 $pdf->SetFont('Helvetica','',8);
 $pdf->Cell(75,5,'I Certify that I provided the above services.','','','L');
@@ -601,6 +620,12 @@ $pdf->Ln();
 $pdf->Cell(160,5,'Before reffering the patient to another facility. The prescriber should be satisfied for the missing item and its alternative within the facility.','','','L');
 $pdf->Ln();
 $pdf->Cell(160,5,'Any falsified information may subject you to prosecution in accordance with NHIF Act Cap 395.','','','L');
+$pdf->Ln();
+$pdf->SetFont('Helvetica','I',8);
+$pdf->Cell(160,5,'.Original form to be submitted to NHIF Offices by the treating Health Facility(Yellow). 1st Copy to be retained by the treating Facility (Pink). ','','','L');
+$pdf->Ln();
+
+$pdf->Cell(160,5,'2nd Copy to be given to NHIF beneficiary (Blue) ','','','L');
 
 
 

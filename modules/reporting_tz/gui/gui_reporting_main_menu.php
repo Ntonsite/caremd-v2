@@ -160,10 +160,10 @@ function getARV(path) {
                 <td><a class="report-link" href="<?php echo $root_path ?>modules/reporting_tz/OPD_Department_Admissions.php">OPD Departments Admission Summary</a></td>
                 <td><small class="font-sm">OPD Admissions Department Summary Report</small></td>
               </tr>
-               <!--  <tr>
+                 <tr>
                 <td><a class="report-link" href="<?php echo $root_path ?>modules/reporting_tz/IPD_admissions.php">IPD Admission Summary</a></td>
                 <td><small class="font-sm">IPD Admission Summary Report</small></td>
-              </tr> -->
+              </tr> 
 
                 <tr>
                 <td><a class="report-link" href="<?php echo $root_path ?>modules/reporting_tz/IPD_discharge.php">IPD Discharge Summary</a></td>

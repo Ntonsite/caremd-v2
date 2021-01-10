@@ -4,6 +4,9 @@ $toggle = 0;
 
 $sql = " SELECT pr.*, e.encounter_class_nr FROM care_encounter AS e, care_person AS p, care_encounter_prescription AS pr, care_tz_drugsandservices as service WHERE p.pid=" . $pid . " AND p.pid=e.pid AND e.encounter_nr=pr.encounter_nr AND service.item_id=pr.article_item_number AND service.is_labtest=0 AND ( service.purchasing_class = 'drug_list' OR service.purchasing_class ='supplies' OR purchasing_class ='dental' OR service.purchasing_class = 'minor_proc_op' OR service.purchasing_class='surgical_op') ORDER BY pr.prescribe_date DESC";
 
+
+
+
 # print '&nbsp;'.$sql;
 
 if ($result = $db->Execute($sql)) {
