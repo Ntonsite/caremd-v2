@@ -406,8 +406,10 @@ $WebERPLinkStock = 'Stock Link Configuration';
 $WebERPLinkInc = 'Income Link Configuration';
 $LDRestrictNotbilled = 'Restrict Not Billed Items';
 $LDRestrictNotbilledCfg = 'Configure Viewing Not Billed Items';
-$LDRistrictDischargeUnbilledNhif = 'Restrict Discharged Unbilled Nhif';
+$LDRistrictDischargeUnbilledNhif = 'Restrict Discharge Unbilled Nhif';
 $LDRistrictDischargeUnbilledNhifCfg = 'Do not Discharge Unbilled Nhif';
+$LDRistrictTransferToWardNhif = 'Restrict Transfer Nhif Patient to IPD';
+$LDRistrictTransferToWardNhifCfg = 'Restrict Transfer Nhif Patient to IPD';
 
 $LDUserRoles = 'User Access Roles';
 

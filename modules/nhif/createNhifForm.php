@@ -118,11 +118,7 @@ if (@$companyResult) {
 
 
 
-$consultation_total_cost = 0;
-    $consultations = $claims_obj->GetConsultations($encounter_nr);
-    foreach ($consultations as $cons) {
-        $consultation_total_cost += $cons['row_amount'];
-    }
+
 
 
 
@@ -133,7 +129,14 @@ if (!is_null($claims_details_query)) {
     
 }
 
-//echo $rowDetails['PatientTypeCode'];
+
+$consultation_total_cost = 0;
+    $consultations = $claims_obj->GetConsultations($encounter_nr,$rowDetails['PatientTypeCode']);
+    foreach ($consultations as $cons) {
+        $consultation_total_cost += $cons['row_amount'];
+    }
+
+
 
 switch ($rowDetails['PatientTypeCode']) {
     case 'OUT':
@@ -546,11 +549,13 @@ $pdf->Cell(18,10,'Signature:','','','');
 $pdf->writeHTMLCell('','','','',$doctorSignature);
 //****************************************************************
   $pdf->Ln();
+  $pdf->Ln();
+  $pdf->Ln();
 
 //****************************************************************
 
 $pdf->SetFont('Helvetica','B',10);
-$pdf->Cell(160,'','D: Uthibitisho wa mgonjwa/Patient Certification:','','','L');
+$pdf->Cell(160,10,'D: Uthibitisho wa mgonjwa/Patient Certification:','','','L');
 $pdf->Ln();
 $pdf->SetFont('Helvetica','',8);
 $pdf->Cell(75,5,'Nathibitisha kuwa nimepokea huduma zilizoanishwa hapo juu na natambua kwamba ni kosa kisheria kukiri kupata matibabu ambayo hayajatolewa.','','','L');
@@ -574,8 +579,10 @@ $pdf->Ln();
 
 
 $pdf->SetFont('Helvetica','B',8);
-$pdf->Cell(18,30,'Signature:','','','');
+$pdf->Cell(18,10,'Signature:','','','');
 $pdf->writeHTMLCell('','','','',$patientSignature);
+$pdf->Ln();
+$pdf->Ln();
 $pdf->Ln();
 
 $pdf->Cell(75,5,'Hakikisha unasaini fomu baada ya kupatiwa huduma na kupatiwa nakala ya fomu hii iliyojazwa huduma ulizopatiwa.','','','L');

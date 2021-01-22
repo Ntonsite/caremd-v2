@@ -552,7 +552,32 @@ class Diagnostics extends Encounter {
 			return $d_row;
 		}
 	}
-	//------------------------------------------------------------------------------
+
+	//---------------------------------------------------------------------
+
+    function duplicateDx($pid, $encounter_nr, $ICD10_code,$type){
+    	global $db;
+		$debug = FALSE;
+		($debug) ? $db->debug = TRUE : $db->debug = FALSE;
+
+
+
+		$this->sql = "SELECT * FROM $this->tbl_diagnosis WHERE $this->tbl_diagnosis_ICD_10_code = $ICD10_code AND $this->tbl_diagnosis_encounter_nr=$encounter_nr AND $this->tbl_diagnosis_type='$type' ";
+
+		$result = $db->Execute($this->sql);
+
+		if (@$result && @$result->RecordCount()>0 ) {
+			return TRUE;
+		}else{
+			return FALSE;
+		}
+
+
+
+
+
+
+    }  
 
 	function insert_diagnosis_as_new($pid, $encounter_nr, $ICD10_code, $ICD10_description, $comment, $type, $doctor) {
 		global $db;
@@ -585,6 +610,10 @@ class Diagnostics extends Encounter {
 			$ipd_series = $d_row['ipd_series'];
 			$ipd_name = $d_row['ipd_name'];
 		}
+
+       
+               
+     
 
 		$this->sql = "INSERT INTO `$this->tbl_diagnosis` (
                       `$this->tbl_diagnosis_casenr` ,
@@ -620,7 +649,7 @@ class Diagnostics extends Encounter {
                      '$opd_name',
                      '$ipd_series',
                      '$ipd_name'
-                  );";
+                  );";                  
 		$db->Execute($this->sql);
 		if ($db->Affected_Rows()) {
 			return TRUE;

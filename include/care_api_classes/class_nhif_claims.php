@@ -281,19 +281,32 @@ class Nhif_claims extends Nhif {
 		return $investigations;
 	}
 
-	public function GetConsultations($encounterNumber) {
+	public function GetConsultations($encounterNumber,$type) {
 		global $db;
 		$consultations = array();
 		$itemNumbers = $this->GetConsultationsItems();
 		$itemNumbers = implode(',', $itemNumbers);
 		$items = array();
 
+		switch ($type) {
+		          	case 'OUT':
+		          		$nhifConsultationCodes = '';
+		          		break;
+		          	
+		          	default:
+		          		$nhifConsultationCodes = 'AND nhif_item_code NOT IN("10001","10002","10003","10004","10005","10006")';		          		
+		          		break;
+		          }          
+
 		if (@$itemNumbers) {
 			$sql = "SELECT *
                 FROM  care_tz_billing_archive_elem INNER JOIN care_tz_company
                 ON care_tz_company.id=care_tz_billing_archive_elem.insurance_id
-                WHERE care_tz_company.company_code='NHIF' AND nr IN (SELECT nr FROM care_tz_billing_archive WHERE encounter_nr = '$encounterNumber')
+                WHERE care_tz_company.company_code='NHIF' AND nr IN (SELECT nr FROM care_tz_billing_archive WHERE encounter_nr = '$encounterNumber') $nhifConsultationCodes 
                 AND item_number IN ($itemNumbers)";
+
+
+
 
 
 
@@ -513,11 +526,25 @@ class Nhif_claims extends Nhif {
 		}
 	}
 
-	public function GetTotalAmountByEncounterNr($encounter_nr) {
+	public function GetTotalAmountByEncounterNr($encounter_nr,$type) {
 		global $db;
 		$totalAmount = 0;
+           
+           //$type = inpatient or outpatient; consultation should not be submitted for inpatient
+         
+         if ($type == 1) {
+             $sql = "SELECT SUM(amount * price) as totalAmount FROM care_tz_billing_archive_elem WHERE nr IN(SELECT nr FROM care_tz_billing_archive WHERE encounter_nr = '$encounter_nr') AND nhif_item_code NOT IN('10001','10002','10003','10004','10005','10006')";
 
-		$sql = "SELECT SUM(amount * price) as totalAmount FROM care_tz_billing_archive_elem WHERE nr IN(SELECT nr FROM care_tz_billing_archive WHERE encounter_nr = '$encounter_nr')";
+         	
+         }else{
+
+         	$sql = "SELECT SUM(amount * price) as totalAmount FROM care_tz_billing_archive_elem WHERE nr IN(SELECT nr FROM care_tz_billing_archive WHERE encounter_nr = '$encounter_nr')";
+
+         }
+		
+
+
+
 		$totalResult = $db->Execute($sql);
 		if (@$totalResult && $totalResult->RecordCount()) {
 			$totalRow = $totalResult->FetchRow();
@@ -1210,7 +1237,9 @@ class Nhif_claims extends Nhif {
 
          	$sql = "SELECT date_change, nr, sum(amount) AS amount, price, description, User_id, item_number, nhif_item_code, nhif_approval_no
             FROM care_tz_billing_archive_elem INNER JOIN care_tz_company ON care_tz_company.id=care_tz_billing_archive_elem.insurance_id
-            WHERE price > 0 AND care_tz_company.company_code='NHIF' AND  nr IN (SELECT nr FROM care_tz_billing_archive WHERE encounter_nr = '$encounter_nr') GROUP BY nhif_item_code ";
+            WHERE price > 0 AND nhif_item_code NOT IN('10001','10002','10003','10004','10005','10006') AND care_tz_company.company_code='NHIF' AND  nr IN (SELECT nr FROM care_tz_billing_archive WHERE encounter_nr = '$encounter_nr') GROUP BY nhif_item_code ";
+
+
 
 
 
@@ -1283,7 +1312,12 @@ class Nhif_claims extends Nhif {
 	function claims_json($filter_data = array()) {
 		$claims_details_query = $this->getPendingClaimsDetail($filter_data);
 		$encounter_nr = $filter_data['encounter_nr'];
-		$in_outpatient = $filter_data['in_outpatient'];
+		$in_outpatient = $filter_data['patient'];
+
+
+
+
+
 
 		$nhif_claims_query = $this->get_nhif_claimes_claimed(array('encounter_nr' => $encounter_nr));
 		if (!is_null($claims_details_query) && !is_null($nhif_claims_query)) {

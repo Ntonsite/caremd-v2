@@ -76,7 +76,7 @@ switch ($target) {
         $lognow = 'NHIF login ok';
         break;
     case 'send':
-        $allowedarea = $allow_area['nhif_all'];
+        $allowedarea = $allow_area['nhif_read'];
         $fileforward = "nhif_submit_claims.php" . $append . "&sid=$sid&target=send&lang=$lang&patient=$patient&encounter_nr=$encounter_nr&date_from=$date_from&date_to=$date_to";
         $lognow = 'NHIF login ok';
         break;

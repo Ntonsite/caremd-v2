@@ -365,10 +365,10 @@ window.location.href=\'nursing-station-pass.php'.URL_APPEND.'&rt=pflege&edit=1&s
                 asswin<?php echo $sid ?> = window.open(urlholder, "asswind<?php echo $sid ?>", "width=650,height=500,menubar=no,resizable=yes,scrollbars=yes");
 
             }
-            function Transfer(pn, pw, patnr)
+            function Transfer(pn, pw, patnr,insr)
             {
                 if (confirm("<?php echo $LDSureTransferPatient . "-" ?>")) {
-                    urlholder = "amb_clinic_transfer_select.php<?php echo URL_REDIRECT_APPEND ?>&pn=" + pn + "&pat_station=" + pw + "&dept_nr=<?php echo $dept_nr ?>&station=<?php echo $station ?>&patnr=" + patnr;
+                    urlholder = "amb_clinic_transfer_select.php<?php echo URL_REDIRECT_APPEND ?>&pn=" + pn + "&pat_station=" + pw + "&dept_nr=<?php echo $dept_nr ?>&station=<?php echo $station ?>&patnr=" + patnr + "&insurance_name="+insr;
                     transwin<?php echo $sid ?> = window.open(urlholder, "_self");
                 }
             }
@@ -711,9 +711,9 @@ if ($rows) {
 					$smarty->assign('sNotesIcon', $sBuffer);
 
 					if (strpos($insurance_name,'NHIF') !==false  && $_SESSION['transfer_nhif_patients'] == 1) {
-						$smarty->assign('sTransferIcon', '<a href="javascript:Transfer(\'' . $patient['encounter_nr'] . '\',\'\', \'' . $pid . '\')"><img ' . createComIcon($root_path, 'xchange.gif', '0', '', TRUE) . ' align="absmiddle" alt="' . $LDTransferPatient . '"></a><i onClick="transferNHIFPatient(\'' . $patient['encounter_nr'] . '\')" class="material-icons icon-blue">keyboard_tab</i>');
+						$smarty->assign('sTransferIcon', '<a href="javascript:Transfer(\'' . $patient['encounter_nr'] . '\',\'\', \'' . $pid . '\', \'' .$insurance_name  . '\')"><img ' . createComIcon($root_path, 'xchange.gif', '0', '', TRUE) . ' align="absmiddle" alt="' . $LDTransferPatient . '"></a><i onClick="transferNHIFPatient(\'' . $patient['encounter_nr'] . '\')" class="material-icons icon-blue">keyboard_tab</i>');
 					} else {
-						$smarty->assign('sTransferIcon', '<a href="javascript:Transfer(\'' . $patient['encounter_nr'] . '\',\'\', \'' . $pid . '\')"><img ' . createComIcon($root_path, 'xchange.gif', '0', '', TRUE) . ' align="absmiddle" alt="' . $LDTransferPatient . '"></a>');
+						$smarty->assign('sTransferIcon', '<a href="javascript:Transfer(\'' . $patient['encounter_nr'] . '\',\'\', \'' . $pid . '\', \'' . $insurance_name . '\')"><img ' . createComIcon($root_path, 'xchange.gif', '0', '', TRUE) . ' align="absmiddle" alt="' . $LDTransferPatient . '"></a>');
 					}
 
 					$smarty->assign('vitalSigns', '<a href="' . $root_path . 'modules/registration_admission/show_weight_height.php' . URL_APPEND . '&target=search&pid=' . $pid . '"><img ' . createComIcon($root_path, 'sheart-working.gif', '0', '', TRUE) . ' align="absmiddle" alt="" title="Vital Signs: Click to show Vital Signs"></a>');
@@ -740,10 +740,10 @@ if ($rows) {
 				$smarty->assign('sNotesIcon', $sBuffer);
 
 				if (strpos($insurance_name,'NHIF') !==false && $_SESSION['transfer_nhif_patients'] == 1) {
-					$smarty->assign('sTransferIcon', '<a href="javascript:Transfer(\'' . $patient['encounter_nr'] . '\',\'\', \'' . $pid . '\')"><img ' . createComIcon($root_path, 'xchange.gif', '0', '', TRUE) . ' align="absmiddle" alt="' . $LDTransferPatient . '"></a><i onClick="transferNHIFPatient(\'' . $patient['encounter_nr'] . '\')" class="material-icons icon-blue">keyboard_tab</i>');
+					$smarty->assign('sTransferIcon', '<a href="javascript:Transfer(\'' . $patient['encounter_nr'] . '\',\'\', \'' . $pid . '\', \'' . $insurance_name . '\')"><img ' . createComIcon($root_path, 'xchange.gif', '0', '', TRUE) . ' align="absmiddle" alt="' . $LDTransferPatient . '"></a><i onClick="transferNHIFPatient(\'' . $patient['encounter_nr'] . '\')" class="material-icons icon-blue">keyboard_tab</i>');
 
 				} else {
-					$smarty->assign('sTransferIcon', '<a href="javascript:Transfer(\'' . $patient['encounter_nr'] . '\',\'\', \'' . $pid . '\')"><img ' . createComIcon($root_path, 'xchange.gif', '0', '', TRUE) . ' align="absmiddle" alt="' . $LDTransferPatient . '"></a>');
+					$smarty->assign('sTransferIcon', '<a href="javascript:Transfer(\'' . $patient['encounter_nr'] . '\',\'\', \'' . $pid . '\', \'' . $insurance_name . '\')"><img ' . createComIcon($root_path, 'xchange.gif', '0', '', TRUE) . ' align="absmiddle" alt="' . $LDTransferPatient . '"></a>');
 				}
 
 				$smarty->assign('vitalSigns', '<a href="' . $root_path . 'modules/registration_admission/show_weight_height.php' . URL_APPEND . '&target=search&pid=' . $pid . '"><img ' . createComIcon($root_path, 'sheart-working.gif', '0', '', TRUE) . ' align="absmiddle" alt="' . $LDTransferPatient . '" title="Vital Signs: Click to show Vital Signs"></a>');

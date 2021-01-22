@@ -5525,9 +5525,10 @@ A:visited:hover {color: #cc0033;}
                                      	care_person.insurance_ID,
                                      	care_encounter.encounter_date,
                                         care_encounter.encounter_class_nr,
+                                        care_encounter.nhif_approved,
                                      	care_encounter.current_dept_nr,
                                      	care_encounter.current_ward_nr,
-                                     	care_encounter.nhif_approved,
+                                     	
                                      	CASE WHEN isnull(care_tz_drugsandservices.item_description)=1 THEN 'not available' ELSE care_tz_drugsandservices.item_description END as article,
                                      	CASE WHEN isnull(care_tz_drugsandservices.unit_price)=1 THEN 0 ELSE care_tz_drugsandservices.unit_price END as unit_price,
                                      	CASE WHEN isnull(care_tz_drugsandservices.unit_price_1)=1 THEN 0 ELSE care_tz_drugsandservices.unit_price_1 END as unit_price_1,
@@ -5572,8 +5573,8 @@ A:visited:hover {color: #cc0033;}
                                     ,       care_person.date_birth
                                     , 	care_person.insurance_ID
                                     ,       care_encounter.encounter_date
-                                    ,       care_encounter.nhif_approved
                                     ,       care_encounter.encounter_class_nr
+                                    ,       care_encounter.nhif_approved                                    
                                     ,       care_encounter.current_dept_nr
                                     ,       care_encounter.current_ward_nr
                                     ,       care_tz_drugsandservices.item_description
@@ -5616,9 +5617,9 @@ A:visited:hover {color: #cc0033;}
                                     , 	care_person.insurance_ID
                                     , 	care_encounter.encounter_date
                                     ,   care_encounter.encounter_class_nr
-                                    , 	care_encounter.current_dept_nr
-                                    , 	care_encounter.current_ward_nr
                                     , 	care_encounter.nhif_approved
+                                    , 	care_encounter.current_dept_nr
+                                    , 	care_encounter.current_ward_nr                                    
                                     , 	care_encounter_prescription.article
                                     , 	care_tz_drugsandservices.unit_price
                                     , 	care_tz_drugsandservices.unit_price_1

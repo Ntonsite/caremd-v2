@@ -156,7 +156,9 @@ if (@$notes) {
 	$pdf->ln(5);
 }
 
-$radiologySQL = "SELECT findings, diagnosis, doctor_id, findings_date FROM care_test_findings_radio WHERE encounter_nr = '$encounter_nr' ";
+$radiologySQL="SELECT rr.clinical_info,fr.findings, ds.item_description, fr.doctor_id, fr.findings_date,rr.send_doctor, rr.send_date FROM care_test_request_radio rr LEFT JOIN care_test_findings_radio fr ON rr.batch_nr=fr.batch_nr INNER JOIN care_tz_drugsandservices ds ON ds.item_id=rr.item_id WHERE rr.encounter_nr = '$encounter_nr'";
+
+
 $radioResult = $db->Execute($radiologySQL);
 $radios = array();
 if (@$radioResult && $radioResult->RecordCount() > 0) {
@@ -171,8 +173,9 @@ if (@$radios) {
 	$tbl = <<<EOD
 <table cellspacing="0" cellpadding="1" border="0.00001">
  	<tr style="font-weight: bold;">
-        <td>Finding Date</td>
-        <td>Diagnosis</td>
+        <td>Date</td>
+        <td>requested test</td>
+        <td>Clinical Information</td>
         <td>Findings</td>
         <td>Doctor</td>
     </tr>
@@ -181,13 +184,15 @@ EOD;
 	$pdf->SetFont('times', '', 11);
 
 	foreach ($radios as $radio) {
-		$date = date('d/m/Y', strtotime($radio['findings_date']));
-		$doctor = $radio['doctor_id'];
+		$date = date('d/m/Y', strtotime($radio['send_date']));
+		$doctor = $radio['send_doctor'];
+		$test = $radio['item_description'];
 		$findings = $radio['findings'];
-		$diagnosis = $radio['diagnosis'];
+		$clinical_info = $radio['clinical_info'];
 		$tbl .= '<tr height="20" style="line-height: 20px;" >
         <td>' . $date . '</td>
-        <td ><br>' . $diagnosis . '</td>
+        <td ><br>' . $test . '</td>
+        <td><br>' . $clinical_info . '</td>
         <td><br>' . $findings . '</td>
         <td><br>' . $doctor . '</td>
     </tr>';

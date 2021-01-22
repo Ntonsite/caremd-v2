@@ -18,13 +18,14 @@
 </script>
 <?php
 
+
 $bat_nr = (isset($bat_nr) ? $bat_nr : null);
 $claims_obj->Display_Header($LDNewQuotation, $enc_obj->ShowPID($bat_nr), '');
 
 ?>
 <BODY bgcolor="#ffffff" link="#000066" alink="#cc0000" vlink="#000066">
 
-    <?php $claims_obj->Display_Headline($LDPendingClaims, '', '', 'Nhif_pending_claims.php', 'Claims :: Pending Claims');?>
+    <?php $claims_obj->Display_Headline($LDFinalReview, '', '', 'Nhif_pending_claims.php', 'Claims :: Pending Claims');?>
     <!--Date starts here-->
     <script type="text/javascript">
         function CheckTarehe() {
@@ -67,6 +68,23 @@ $claims_obj->Display_Header($LDNewQuotation, $enc_obj->ShowPID($bat_nr), '');
 
 
     <?php
+//     Array
+// (
+//     [lang] => en
+//     [sid] => iduv7e9qe648rgiogn20loc684
+//     [target] => finalreview
+//     [patient] => 2
+//     [encounter_nr] => 30186
+//     [page_action] => 
+//     [date_from] => 01/11/2020
+//     [date_to] => 30/11/2020
+//     [checkintern] => 1
+// )
+
+    $encounter_nr = $_REQUEST['encounter_nr'];
+    $in_outpatient = $_REQUEST['patient']; 
+
+
 
 if ($page_action == 'approve') {
 
@@ -74,14 +92,34 @@ if ($page_action == 'approve') {
 	echo $claims_obj->add_nhif_claim(array('encounter_nr' => $encounter_nr));
 }
 
-$claims_details_query = $claims_obj->ShowPendingClaimsDetails(array('in_outpatient' => $in_outpatient, 'encounter_nr' => $encounter_nr));
+//echo "<pre>";print_r($_REQUEST);echo "</pre>";
+  
+ // $resultCep = $bill_obj->GetNewQuotation_Prescriptions($encounter_nr, $in_outpatient);
+ // $result_lab = $bill_obj->GetNewQuotation_Laboratory($encounter_nr, $in_outpatient);
+ // $result_rad = $bill_obj->GetNewQuotation_Radiology($encounter_nr, $in_outpatient);
+
+
+//coming data
+//Array ( [lang] => en [sid] => dk1kfsasrj3a1m7il49ist548u [target] => finalreview [patient] => 2 [encounter_nr] => 30340 [page_action] => [date_from] => 01/12/2020 [date_to] => 31/12/2020 [checkintern] => 1 )
+
+$date_from = $_REQUEST['date_from'];      //format is 01/12/2020
+$date_to   = $_REQUEST['date_to'];        //format is 01/12/2020
+$target    = $_REQUEST['target'];         //Final Feview
+$in_outpatient = $_REQUEST['patient'];    //
+$encounter_nr = $_REQUEST['encounter_nr']; //patient
+
+
+ 
+
+$claims_details_query = $claims_obj->ShowPendingClaimsDetails(array('in_outpatient' => $in_outpatient, 'encounter_nr' => $encounter_nr,'finalreview'=>$target));
+
+//print_r($claims_details_query);die;
+
 
 if (!is_null($claims_details_query)) {
 	$claims_details = $claims_details_query->fields;
 
 	// echo "<pre>"; print_r($claims_details);echo "</pre>";
-
-
 
 	?>
 
@@ -155,26 +193,42 @@ if (!is_null($claims_details_query)) {
 
         </style>
         <?php
-// echo "<pre>"; print_r($claims_details);echo "</pre>";
+//echo "<pre>"; print_r($claims_details);echo "</pre>";
 	//
 	//        echo $encounter_nr;
+
+
 
 	?>
 
         <div class="row">
-            <div class="col-4">
-                <a href="../../modules/nhif/nhif_pass.php<?=URL_APPEND?> &patient=<?=$in_outpatient?> &lang=en&target=claimsdetails&page_action=resfresh&encounter_nr=<?=$encounter_nr?>&date_from=<?=$date_from?>&date_to=<?=$date_to?>&type=<?=$in_outpatient?>&save=1" title="Refresh Details"><input type="submit" class="btn btn-info btn-block" name="show" value="Refresh"></a>
+             <div class="col-3">
+                  <button class="btn btn-info btn-block" onclick="getinfo(<?php echo $encounter_nr ?>)" >CHART FOLDER</button>
             </div>
             <div class="col-4">
-                <a href="../../modules/nhif/nhif_pass.php<?=URL_APPEND?> &patient=<?=$in_outpatient?> &lang=en&target=review&encounter_nr=<?=$encounter_nr?>&date_from=<?=$date_from?>&date_to=<?=$date_to?>" title="Back to List"><input type="submit" class="btn btn-info btn-block" name="show" value="Back to List"></a>
+                <a href="../../modules/nhif/nhif_pass.php<?=URL_APPEND?> &patient=<?=$in_outpatient?> &lang=en&target=BeforeBill&encounter_nr=<?=$encounter_nr?>&date_from=<?=$date_from?>&date_to=<?=$date_to?>" title="Back to List"><input type="submit" class="btn btn-info btn-block" name="show" value="Back to List"></a>
             </div>
             <div class="col-4">
                 <?php
-$nhif_claims_query = $claims_obj->get_nhif_claimes_claimed(array('encounter_nr' => $encounter_nr));
+// $nhif_claims_query = $claims_obj->get_nhif_claimes_claimed(array('encounter_nr' => $encounter_nr));
 
-	if (!is_null($nhif_claims_query)) {
+    $sqlUpdateStatus = "SELECT nhif_approved FROM care_encounter WHERE encounter_nr='".$encounter_nr."'";
+    $resultUpdateStatus = $db->Execute($sqlUpdateStatus); 
+    $isUpdated = $resultUpdateStatus->FetchRow();
+    
+    if ($isUpdated['nhif_approved'] == '1') {
+        $updated = true;
+    }else{
+        $updated = false;
+    }
+
+
+
+
+
+	if ($updated) {
 		?>
-                          <button class="btn btn-info btn-block" onclick="submitNHIFClaim('<?php echo $in_outpatient ?>', '<?php echo $encounter_nr ?>', '../../modules/nhif/nhif_pass.php<?=URL_APPEND?> &patient=<?=$in_outpatient?> &lang=en&target=send&encounter_nr=<?=$encounter_nr?>&type=<?=$in_outpatient?>&save=1')" >Submit</button>
+                          <button class="btn btn-info btn-block" onclick="undoApproval('<?php echo $in_outpatient ?>', '<?php echo $encounter_nr ?>', '../../modules/nhif/nhif_final_approval.php<?=URL_APPEND?> &patient=<?=$in_outpatient?> &lang=en&target=undo&encounter_nr=<?=$encounter_nr?>&type=<?=$in_outpatient?>&save=1')" >UN-DO</button>
 
 
                     <!-- <a href="../../modules/nhif/nhif_pass.php<?=URL_APPEND?> &patient=<?=$in_outpatient?> &lang=en&target=send&encounter_nr=<?=$encounter_nr?>&date_from=<?=$date_from?>&date_to=<?=$date_to?>" title="Send Claim to NHIF"><input type="submit" class="btn btn-info btn-block" name="show" value="Submit Claim"></a> -->
@@ -182,7 +236,7 @@ $nhif_claims_query = $claims_obj->get_nhif_claimes_claimed(array('encounter_nr' 
 } else {
 		?>
 
-                 <button class="btn btn-info btn-block" onclick="CreateNhifForm('<?php echo $in_outpatient ?>', '<?php echo $encounter_nr ?>', '../../modules/nhif/nhif_pass.php<?=URL_APPEND?> &patient=<?=$in_outpatient?> &lang=en&target=claimsdetails&page_action=approve&encounter_nr=<?=$encounter_nr?>&date_from=<?=$date_from?>&date_to=<?=$date_to?>')" >Create NHIF Form</button>
+                 <button class="btn btn-info btn-block" onclick="finalApproval('<?php echo $in_outpatient ?>', '<?php echo $encounter_nr ?>', '../../modules/nhif/nhif_final_approval.php<?=URL_APPEND?> &patient=<?=$in_outpatient?> &lang=en&target=approve&page_action=approve&encounter_nr=<?=$encounter_nr?>&date_from=<?=$date_from?>&date_to=<?=$date_to?>')" >Approve</button>
 
 
 
@@ -251,27 +305,38 @@ $nhif_claims_query = $claims_obj->get_nhif_claimes_claimed(array('encounter_nr' 
                                             <td>
 
                                                  <?php
-
-
-
-switch ($claims_details['encounter_class_nr']) {
-    case '2':
-
-        $type = 'OUT';
-        
-        break;
-    
-    default:
-        $type = 'IN';
-        break;
-}
+$resultCep = $bill_obj->GetNewQuotation_Prescriptions($encounter_nr, $in_outpatient);                                                 
 
 
 $consultation_total_cost = 0;
-	$consultations = $claims_obj->GetConsultations($encounter_nr,$type);
-	foreach ($consultations as $cons) {
-		$consultation_total_cost += $cons['row_amount'];
-	}
+	//$consultations = $claims_obj->GetConsultations($encounter_nr);
+
+if ($in_outpatient=='1') {
+
+    foreach ($resultCep as $cons) {
+        if (strtolower(substr($cons['item_number'], 0,4)) =='cons') {
+            $sqlConsPrice = "SELECT UnitPrice FROM care_tz_drugsandservices_nhifschemes WHERE SchemeID='".$cons['nhif_scheme_id']."' AND ItemCode='".$cons['nhifItemCode']."' AND   ItemTypeID<>1";
+            $consResult = $db->Execute($sqlConsPrice);
+            $consRow = $consResult->FetchRow();
+            $consultation_total_cost += $consRow['UnitPrice'];
+        }
+
+    }
+    
+}else{
+
+    foreach ($resultCep as $cons) {
+        if (strtolower(substr($cons['item_number'], 0,4)) =='cons') {
+            $sqlConsPrice = "SELECT UnitPrice FROM care_tz_drugsandservices_nhifschemes WHERE SchemeID='".$cons['nhif_scheme_id']."' AND ItemCode='".$cons['nhifItemCode']."' ";
+            $consResult = $db->Execute($sqlConsPrice);
+            $consRow = $consResult->FetchRow();
+            $consultation_total_cost += $consRow['UnitPrice'];
+        }
+
+    }
+
+}
+	
 	?>
                                                 <strong> <?php echo number_format($consultation_total_cost) ?></strong>
 
@@ -472,14 +537,17 @@ echo date("d/m/Y", strtotime($claims_details['date_birth']))
                                      <tr class="shade-light">
                                         <td  colspan="5">Consultations</td>
                                     </tr>
-                                    <?php foreach ($consultations as $consultation): ?>
+
+                                    <?php foreach ($resultCep as $cons): ?>
+                                        <?php if (strtolower(substr($cons['item_number'], 0,4)) =='cons') { ?>
                                         <tr class="h-md">
-                                            <td class="w-lg"><?php echo $consultation['description'] ?></td>
-                                            <td><?php echo $consultation['nhif_item_code'] ?></td>
-                                            <td class="text-right"><?php echo number_format($consultation['amount'], 2) ?></td>
-                                            <td class="text-right"><?php echo number_format($consultation['price'], 2) ?></td>
-                                            <td class="text-right"><?php echo number_format($consultation['row_amount'], 2) ?></td>
+                                            <td class="w-lg"><?php echo $cons['article'] ?></td>
+                                            <td><?php echo $cons['nhifItemCode'] ?></td>
+                                            <td class="text-right"><?php echo number_format($cons['total_dosage'], 2) ?></td>
+                                            <td class="text-right"><?php echo number_format($consultation_total_cost, 2) ?></td>
+                                            <td class="text-right"><?php echo number_format($consultation_total_cost*$cons['total_dosage'], 2) ?></td>
                                         </tr>
+                                        <?php }?>
                                     <?php endforeach?>
                                     <tr class="h-md">
                                         <td colspan="4">SUB TOTAL</td>
@@ -487,28 +555,84 @@ echo date("d/m/Y", strtotime($claims_details['date_birth']))
                                     </tr>
                                 <?php endif?>
 
+ 
+
                                 <?php
+$labinvestigation_total_cost = 0;
+$radinvestigation_total_cost = 0;                                
 $investigation_total_cost = 0;
+ $result_lab = $bill_obj->GetNewQuotation_Laboratory($encounter_nr, $in_outpatient);
+ //$result_rad = $bill_obj->GetNewQuotation_Radiology($encounter_nr, $in_outpatient);
 
-	$investigations = $claims_obj->GetInvestigations($encounter_nr);
+	//$investigations = $claims_obj->GetInvestigations($encounter_nr);
 
-	foreach ($investigations as $investigation) {
-		$investigation_total_cost += $investigation['row_amount'];
+	foreach ($result_lab as $lab) {
+		//$investigation_total_cost += $investigation['row_amount'];
+        //echo "<pre>";print_r($lab);echo "</pre>";
+        $sqlLabPrice = "SELECT UnitPrice FROM care_tz_drugsandservices_nhifschemes WHERE SchemeID='".$lab['nhif_scheme_id']."' AND ItemCode='".$lab['nhifItemCode']."'";
+        $labResult = $db->Execute($sqlLabPrice);
+        $labRow = $labResult->FetchRow();
+        $labinvestigation_total_cost += $labRow['UnitPrice'];
+
+
+
 	}
+
+    $result_rad = $bill_obj->GetNewQuotation_Radiology($encounter_nr, $in_outpatient);
+
+    foreach ($result_rad as $rad) {
+        //$investigation_total_cost += $investigation['row_amount'];
+        //echo "<pre>";print_r($lab);echo "</pre>";
+        $sqlRadPrice = "SELECT UnitPrice FROM care_tz_drugsandservices_nhifschemes WHERE SchemeID='".$rad['nhif_scheme_id']."' AND ItemCode='".$rad['nhifItemCode']."'";
+        $radResult = $db->Execute($sqlRadPrice);
+        $radRow = $radResult->FetchRow();
+        $radinvestigation_total_cost += $radRow['UnitPrice']*$rad['dosage'];
+
+    }
+
+    $investigation_total_cost = $radinvestigation_total_cost + $labinvestigation_total_cost;
 	?>
                                 <?php if ($investigation_total_cost > 0): ?>
                                      <tr class="shade-light">
                                         <td  colspan="5">INVESTIGATIONS</td>
                                     </tr>
-                                    <?php foreach ($investigations as $investigation): ?>
+                                    <?php foreach ($result_lab as $lab_items): ?>
+                                        <?php //echo "<pre>"; print_r($lab_items); echo "</pre>";?>
+                                    <?php    
+ $sqlLabItemPrice = "SELECT UnitPrice FROM care_tz_drugsandservices_nhifschemes WHERE SchemeID='".$lab_items['nhif_scheme_id']."' AND ItemCode='".$lab_items['nhifItemCode']."'";
+ $labItemResult = $db->Execute($sqlLabItemPrice);
+ $labItemRow = $labItemResult->FetchRow();
+                                     ?>    
+    
+
+
                                         <tr class="h-md">
-                                            <td class="w-lg"><?php echo $investigation['description'] ?></td>
-                                            <td><?php echo $investigation['nhif_item_code'] ?></td>
-                                            <td class="text-right"><?php echo number_format($investigation['amount'], 2) ?></td>
-                                            <td class="text-right"><?php echo number_format($investigation['price'], 2) ?></td>
-                                            <td class="text-right"><?php echo number_format($investigation['row_amount'], 2) ?></td>
+                                            <td class="w-lg"><?php echo $lab_items['item_description'] ?></td>
+                                            <td><?php echo $lab_items['nhifItemCode'] ?></td>
+                                            <td class="text-right"><?php echo number_format(1, 2) ?></td>
+                                            <td class="text-right"><?php echo number_format($labItemRow['UnitPrice'], 2) ?></td>
+                                            <td class="text-right"><?php echo number_format($labItemRow['UnitPrice']*1, 2) ?></td>
                                         </tr>
                                     <?php endforeach?>
+                                <?php foreach ($result_rad as $rad_items): ?>
+                                        <?php //echo "<pre>"; print_r($rad_items); echo "</pre>";?>
+                                    <?php    
+ $sqlRadItemPrice = "SELECT UnitPrice FROM care_tz_drugsandservices_nhifschemes WHERE SchemeID='".$rad_items['nhif_scheme_id']."' AND ItemCode='".$rad_items['nhifItemCode']."'";
+ $radItemResult = $db->Execute($sqlRadItemPrice);
+ $radItemRow = $radItemResult->FetchRow();
+                                     ?>    
+    
+
+
+                                        <tr class="h-md">
+                                            <td class="w-lg"><?php echo $rad_items['item_description'] ?></td>
+                                            <td><?php echo $rad_items['nhifItemCode'] ?></td>
+                                            <td class="text-right"><?php echo number_format($rad_items['dosage'], 2) ?></td>
+                                            <td class="text-right"><?php echo number_format($radItemRow['UnitPrice'], 2) ?></td>
+                                            <td class="text-right"><?php echo number_format($radItemRow['UnitPrice']*$rad_items['dosage'], 2) ?></td>
+                                        </tr>
+                                    <?php endforeach?>    
+
                                     <tr class="h-md">
                                         <td colspan="4">SUB TOTAL</td>
                                         <td class="text-right shade-light1"><?php echo number_format($investigation_total_cost, 2) ?></td>
@@ -517,10 +641,22 @@ $investigation_total_cost = 0;
 
                                 <?php
 $drugs_total_cost = 0;
-	$medicines = $claims_obj->GetMedicines($encounter_nr);
+	//$medicines = $claims_obj->GetMedicines($encounter_nr);
 
-	foreach ($medicines as $medicine) {
-		$drugs_total_cost += $medicine['row_amount'];
+
+	foreach ($resultCep as $med) {
+        //echo "<pre>";print_r($med); echo "</pre>";
+        if (substr($med['purchasing_class'], 0,9)=='drug_list') {
+            $sqlMedItemPrice = "SELECT UnitPrice FROM care_tz_drugsandservices_nhifschemes WHERE SchemeID='".$med['nhif_scheme_id']."' AND ItemCode='".$med['nhifItemCode']."'";
+            $medItemResult = $db->Execute($sqlMedItemPrice);
+           $medItemRow = $medItemResult->FetchRow();
+
+           $drugs_total_cost += $medItemRow['UnitPrice']*$med['total_dosage']; 
+
+            
+        }
+
+		
 	}
 	?>
 
@@ -528,14 +664,24 @@ $drugs_total_cost = 0;
                                     <tr class="shade-light">
                                         <td  colspan="5">MEDICINE</td>
                                     </tr>
-                                    <?php foreach ($medicines as $medicine): ?>
+                                    <?php foreach ($resultCep as $med_items): ?>
+                                        <?php //echo "<pre>";print_r($medicine);echo "</pre>";?>
+                                             <?php if(substr($med_items['purchasing_class'], 0,9)=='drug_list'){?>
+                                                <?php 
+                                                $sqlUnitPriceMed = "SELECT UnitPrice FROM care_tz_drugsandservices_nhifschemes WHERE SchemeID='".$med_items['nhif_scheme_id']."' AND ItemCode='".$med_items['nhifItemCode']."'";
+                                                $resultUnitPriceMed = $db->Execute($sqlUnitPriceMed);
+                                                $rowUnitPriceMed = $resultUnitPriceMed->FetchRow();
+                                                ?>
+
                                         <tr class="h-md">
-                                            <td class="w-lg"><?php echo $medicine['description'] ?></td>
-                                            <td><?php echo $medicine['nhif_item_code'] ?></td>
-                                            <td class="text-right"><?php echo number_format($medicine['amount'], 2) ?></td>
-                                            <td class="text-right"><?php echo number_format($medicine['price'], 2) ?></td>
-                                            <td class="text-right"><?php echo number_format($medicine['row_amount'], 2) ?></td>
-                                        </tr>
+                                            <td class="w-lg"><?php echo $med_items['article'] ?></td>
+                                            <td><?php echo $med_items['nhifItemCode'] ?></td>
+                                            <td class="text-right"><?php echo number_format($med_items['total_dosage'], 2) ?></td>
+                                            <td class="text-right"><?php echo number_format($rowUnitPriceMed['UnitPrice'], 2) ?></td>
+                                            <td class="text-right"><?php echo number_format($med_items['total_dosage']*$rowUnitPriceMed['UnitPrice'], 2) ?></td>
+                                        </tr>     
+                                                  <?php }?> 
+                                        
                                     <?php endforeach?>
                                      <tr class="h-md">
                                             <td colspan="4">SUB TOTAL</td>
@@ -544,25 +690,48 @@ $drugs_total_cost = 0;
                                 <?php endif?>
 
                                 <?php
+//start
+
+    //$medicines = $claims_obj->GetMedicines($encounter_nr);
+
 $procedure_total_cost = 0;
-	$procedures = $claims_obj->GetProcedures($encounter_nr);
-	foreach ($procedures as $procedure) {
-		$procedure_total_cost += $procedure['row_amount'];
-	}
+    foreach ($resultCep as $proc) {
+        //echo "<pre>";print_r($proc); echo "</pre>";
+        if (substr($proc['purchasing_class'], 0,6)=='dental' || substr($proc['purchasing_class'], 0,13)=='minor_proc_op' || substr($proc['purchasing_class'], 0,11)=='surgical_op' || substr($proc['purchasing_class'], 0,9)=='obgyne_op' || substr($proc['purchasing_class'], 0,8)=='ortho_op' ) {
+            $sqlProcItemPrice = "SELECT UnitPrice FROM care_tz_drugsandservices_nhifschemes WHERE SchemeID='".$proc['nhif_scheme_id']."' AND ItemCode='".$proc['nhifItemCode']."'";
+            $procItemResult = $db->Execute($sqlProcItemPrice);
+           $procItemRow = $procItemResult->FetchRow();
+           //echo "<pre>";print_r($procItemRow); echo "</pre>"; 
+
+
+           $procedure_total_cost += $procItemRow['UnitPrice']*$proc['total_dosage']; 
+
+            
+        }
+
+        
+    }
+
+//end                                
 	?>
 
                                 <?php if ($procedure_total_cost > 0): ?>
                                     <tr class="shade-light">
                                         <td  colspan="5">PROCEDURES</td>
                                     </tr>
-                                    <?php foreach ($procedures as $procedure): ?>
+                                    <?php foreach ($resultCep as $proc_items): ?>
+<?php        if (substr($proc_items['purchasing_class'], 0,6)=='dental' || substr($proc_items['purchasing_class'], 0,13)=='minor_proc_op' || substr($proc_items['purchasing_class'], 0,11)=='surgical_op' || substr($proc_items['purchasing_class'], 0,9)=='obgyne_op' || substr($proc_items['purchasing_class'], 0,8)=='ortho_op' ) { ?>
+<?php $sqlProcUnitPrice = "SELECT UnitPrice FROM care_tz_drugsandservices_nhifschemes WHERE SchemeID='".$proc_items['nhif_scheme_id']."' AND ItemCode='".$proc_items['nhifItemCode']."'";
+            $procUnitPriceResult = $db->Execute($sqlProcUnitPrice);
+           $procUnitPriceRow = $procUnitPriceResult->FetchRow(); ?>
                                         <tr class="h-md">
-                                            <td class="w-lg"><?php echo $procedure['description'] ?></td>
-                                            <td><?php echo $procedure['nhif_item_code'] ?></td>
-                                            <td class="text-right"><?php echo number_format($procedure['amount'], 2) ?></td>
-                                            <td class="text-right"><?php echo number_format($procedure['price'], 2) ?></td>
-                                            <td class="text-right"><?php echo number_format($procedure['row_amount'], 2) ?></td>
+                                            <td class="w-lg"><?php echo $proc_items['article'] ?></td>
+                                            <td><?php echo $proc_items['nhifItemCode'] ?></td>
+                                            <td class="text-right"><?php echo number_format($proc_items['total_dosage'], 2) ?></td>
+                                            <td class="text-right"><?php echo number_format($procUnitPriceRow['UnitPrice'], 2) ?></td>
+                                            <td class="text-right"><?php echo number_format($proc_items['total_dosage']*$procUnitPriceRow['UnitPrice'], 2) ?></td>
                                         </tr>
+                                        <?php }?>
                                     <?php endforeach?>
                                      <tr class="h-md">
                                             <td colspan="4">SUB TOTAL</td>
@@ -572,24 +741,48 @@ $procedure_total_cost = 0;
 
                                  <?php
 $supplies_total_cost = 0;
-	$supplies = $claims_obj->GetSupplies($encounter_nr);    
-	foreach ($supplies as $supply) {
-		$supplies_total_cost += $supply['row_amount'];
-	}
+	foreach ($resultCep as $sup) {
+        
+        if (substr($sup['purchasing_class'], 0,7)=='service' || substr($sup['purchasing_class'], 0,8)=='supplies'  ) {
+             if (strtolower(substr($sup['item_number'], 0,4))!=='cons') {
+                $sqlSupPrice = "SELECT UnitPrice FROM care_tz_drugsandservices_nhifschemes WHERE SchemeID='".$sup['nhif_scheme_id']."' AND ItemCode='".$sup['nhifItemCode']."'";
+                $supPriceResult = $db->Execute($sqlSupPrice);
+                $supPriceItemRow = $supPriceResult->FetchRow();
+                $supplies_total_cost += $supPriceItemRow['UnitPrice']*$sup['total_dosage'];
+                
+                
+             }
+             
+
+            
+        }
+
+        
+    }
 	?>
 
                                 <?php if ($supplies_total_cost > 0): ?>
                                     <tr class="shade-light">
                                         <td  colspan="5">SUPPLIES/SERVICES</td>
                                     </tr>
-                                    <?php foreach ($supplies as $supply): ?>
+                                    <?php foreach ($resultCep as $sup_items): ?>
+          <?php  if (substr($sup_items['purchasing_class'], 0,7)=='service' || substr($sup_items['purchasing_class'], 0,8)=='supplies'  ) {?>
+                                         <?php if(strtolower(substr($sup_items['item_number'], 0,4))!=='cons'):?>
+                                            <?php 
+                                            $sqlUnitPriceSup = "SELECT UnitPrice FROM care_tz_drugsandservices_nhifschemes WHERE ItemCode='".$sup_items['nhifItemCode']."' AND SchemeID='".$sup_items['nhif_scheme_id']."'";
+                                            $ResultUnitPriceSup = $db->Execute($sqlUnitPriceSup);
+                                            $unitPriceSupRow = $ResultUnitPriceSup->FetchRow();
+                                            ?>
+                                         
                                         <tr class="h-md">
-                                            <td class="w-lg"><?php echo $supply['description'] ?></td>
-                                            <td><?php echo $supply['nhif_item_code'] ?></td>
-                                            <td class="text-right"><?php echo number_format($supply['amount'], 2) ?></td>
-                                            <td class="text-right"><?php echo number_format($supply['price'], 2) ?></td>
-                                            <td class="text-right"><?php echo number_format($supply['row_amount'], 2) ?></td>
+                                            <td class="w-lg"><?php echo $sup_items['article'] ?></td>
+                                            <td><?php echo $sup_items['nhifItemCode'] ?></td>
+                                            <td class="text-right"><?php echo number_format($sup_items['total_dosage'], 2) ?></td>
+                                            <td class="text-right"><?php echo number_format($unitPriceSupRow['UnitPrice'], 2) ?></td>
+                                            <td class="text-right"><?php echo number_format($sup_items['total_dosage']*$unitPriceSupRow['UnitPrice'], 2) ?></td>
                                         </tr>
+                                    <?php endif?>
+                                        <?php }?>
                                     <?php endforeach?>
                                      <tr class="h-md">
                                             <td colspan="4">SUB TOTAL</td>
@@ -665,7 +858,6 @@ $supplies_total_cost = 0;
                                         </tr>
                                     </table>
                                 </td>
-                                <?php //$patientSignature = '<img src="../../modules/nhif/signatures/signature'.$encounter_nr.'.png"  width="223"   height="46" style="vertical-align:top;float:left" >';?>
                                 <td><table class="table-lebel" ><tr><td>Signature:</td> <td></td></tr></table></td>
                                 <td><table class="table-lebel" ><tr><td>Tel. No:</td> <td></td></tr></table></td>
                             </tr>
@@ -688,8 +880,6 @@ $docUser = $claims_obj->GetDocUser($doctor);
 $qDetailsRow=$claims_obj->GetqualificationDetails($doctor);  
 $doctorQualificationName=$qDetailsRow['sname'];
 
-$login_id = $docUser['login_id'];
-
 	// $patientId = $claims_obj->GetPersonel($personelNumber);
 	// $person = $claims_obj->GetPerson($patientId);
 	?>
@@ -710,15 +900,19 @@ $login_id = $docUser['login_id'];
                                     <table class="table-lebel" >
                                         <tr>
                                             <td>Qualification:</td>
-                                            <td><strong><?php echo $doctorQualificationName;?></strong></td>
+                                            <td><strong><?php echo $doctorQualificationName; ?></strong></td>
                                         </tr>
                                     </table>
                                 </td>
 
                                 <td>
+                        <?php
+                        $login_id = $docUser['login_id'];
+                      $doctorSignature = '<img src="../../modules/nhif/signatures/'.$login_id.'.png"  width="29" height="16">';
+                      ?>
+              
                                     <table class="" >
                                         <tr>
-                                            <?php $doctorSignature = '<img src="../../modules/nhif/signatures/'.$login_id.'.png"  width="29" height="16">';?>
                                             <td>Signature:</td>
                                             <td><?php echo $doctorSignature;?></td>
                                         </tr>
@@ -740,17 +934,21 @@ $login_id = $docUser['login_id'];
                                 <td>
                                     <table class="table-lebel" >
                                         <tr>
-                                            <td>
+                                            <td>I certify that I received the above named services. Name:</td>
+                                             <td>
                                                 <strong><?=strtoupper($claims_details['name_first'])?> <?=strtoupper($claims_details['name_middle'])?> <?=strtoupper($claims_details['name_last'])?></strong>
                                             </td>
                                         </tr>
                                     </table>
                                 </td>
                                 <?php
+
                                 $patientSignature = '<img src="../../modules/nhif/signatures/signature'.$encounter_nr.'.png"  width="223"   height="46" style="vertical-align:top;float:left" >';
                                 ?>
 
-                                <td><table class="" ><tr><td>Signature:</td> <td><?php echo $patientSignature; ?></td></tr></table></td>
+                                <td><table class="" ><tr><td>Signature:</td><td><?php echo $patientSignature;?> 
+                                    
+                                </td></tr></table></td>
                                 <td><table class="table-lebel" ><tr><td>Tel. No:</td> <td><strong><?=($docUser) ? $docUser['tel_no'] : ""?></strong></td></tr></table></td>
                             </tr>
                         </table>
@@ -766,15 +964,17 @@ $login_id = $docUser['login_id'];
                 </tr>
 
                 <?php endif?>
-                <?php $muhuri_file = '<img src="../../gui/img/common/default/'.'muhuri.png"  width="61" height="36">';?>
                 <tr>
                     <td>
                         <table border="0" width="100%" cellspacing="0" cellpadding="0">
                             <tr>
                                 <td><table class="table-lebel" ><tr><td>I certify that I provided the above service.  Name:</td> <td><?=ucfirst($doctor)?></td></tr></table></td>
-                                <td><table class="table-lebel" ><tr><td>Signature:</td> <td><?php echo $doctorSignature; ?>
-                                </td></tr></table></td>
-                                <td><table class="" ><tr><td>Official Stamp:</td> <td><?php echo $muhuri_file;?></td></tr></table></td>
+                                <td><table class="" ><tr><td>Signature:</td>
+                                 <td><?php echo $doctorSignature;?></td></tr></table></td>
+                                 <?php
+                                 $muhuri_file = '<img src="../../gui/img/common/default/'.'muhuri.png"  width="61" height="36">';
+                                 ?>
+                                <td><table ><tr><td>Official Stamp:</td> <td><?php echo $muhuri_file; ?></td></tr></table></td>
                             </tr>
                         </table>
 
@@ -806,34 +1006,44 @@ $login_id = $docUser['login_id'];
         
         ?>
 
+
         <div class="row">
             <div class="col-3">
-                  <a target="_blank" href="../../modules/nhif/printPatientFile.php?type=<?=$in_outpatient?>&encounter_nr=<?=$encounter_nr?>" title="Print Patient File"><input type="submit" class="btn btn-info btn-block" name="show" value="Print Patient File"></a>
+                  <button class="btn btn-info btn-block" onclick="getinfo(<?php echo $encounter_nr ?>)" >CHART FOLDER</button>
             </div>
 
-            <div class="col-3">
-                <form name="form1" action="" method="POST" onSubmit=" return CheckTarehe();">
-                    <input type="submit" class="btn btn-info btn-block" name="show" value="Refresh">
-                </form>
+           <div class="col-4">
+                <a href="../../modules/nhif/nhif_pass.php<?=URL_APPEND?> &patient=<?=$in_outpatient?> &lang=en&target=BeforeBill&encounter_nr=<?=$encounter_nr?>&date_from=<?=$date_from?>&date_to=<?=$date_to?>" title="Back to List"><input type="submit" class="btn btn-info btn-block" name="show" value="Back to List"></a>
             </div>
 
-            <div class="col-6">
+            
                 <?php
-$nhif_claims_query = $claims_obj->get_nhif_claimes_claimed($filter_data = array('encounter_nr' => $encounter_nr));
 
-	if (!is_null($nhif_claims_query)) {
+
+	if ($updated) {
 		?>
+                    <div class="col-4">
+
+                      <button class="btn btn-info btn-block" onclick="undoApproval('<?php echo $in_outpatient ?>', '<?php echo $encounter_nr ?>', '../../modules/nhif/nhif_final_approval.php<?=URL_APPEND?> &patient=<?=$in_outpatient?> &lang=en&target=undo&encounter_nr=<?=$encounter_nr?>&type=<?=$in_outpatient?>&save=1')" >UN-DO</button>
+                      </div>
+
+
+
+
                     <!-- <a href="" title="Send Claim to NHIF"><input type="submit" class="btn btn-info btn-block" name="show" value="Submit"></a> -->
-                    <button class="btn btn-info btn-block" onclick="submitNHIFClaim('<?php echo $in_outpatient ?>', '<?php echo $encounter_nr ?>', '../../modules/nhif/nhif_pass.php<?=URL_APPEND?> &patient=<?=$in_outpatient?> &lang=en&target=send&encounter_nr=<?=$encounter_nr?>&type=<?=$in_outpatient?>&save=1')" >Submit</button>
+                    
                     <?php
 } else {
 		?>
-                    
-                    <button class="btn btn-info btn-block" onclick="CreateNhifForm('<?php echo $in_outpatient ?>', '<?php echo $encounter_nr ?>', '../../modules/nhif/nhif_pass.php<?=URL_APPEND?> &patient=<?=$in_outpatient?> &lang=en&target=claimsdetails&page_action=approve&encounter_nr=<?=$encounter_nr?>&date_from=<?=$date_from?>&date_to=<?=$date_to?>')" >Create NHIF Form</button>
+                    <div class="col-4">
+                    <button class="btn btn-info btn-block" onclick="finalApproval('<?php echo $in_outpatient ?>', '<?php echo $encounter_nr ?>', '../../modules/nhif/nhif_final_approval.php<?=URL_APPEND?> &patient=<?=$in_outpatient?> &lang=en&target=approve&page_action=approve&encounter_nr=<?=$encounter_nr?>&date_from=<?=$date_from?>&date_to=<?=$date_to?>')" >Approve</button>
+
                         <?php
+
 }
 	?>
 
+                    </div>
             </div>
         </div>
         <?php

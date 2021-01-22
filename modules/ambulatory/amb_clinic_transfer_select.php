@@ -1,6 +1,9 @@
 <?php
 require './roots.php';
 require $root_path . 'include/inc_environment_global.php';
+require_once $root_path . 'include/care_api_classes/class_globalconfig.php';
+$GLOBAL_CONFIG = $GLOBAL_CONFIG ?? [];
+
 /**
  * CARE2X Integrated Hospital Information System Deployment 2.1 - 2004-10-02
  * GNU General Public License
@@ -26,6 +29,9 @@ $_SESSION['backToPatientList'] = TRUE;
 $dept_obj = new Department;
 $allmed = $dept_obj->getAllMedical();
 $dept_count = $dept_obj->LastRecordCount();
+$glob_obj = new GlobalConfig($GLOBAL_CONFIG);
+
+
 
 # Start Smarty templating here
 /**
@@ -148,14 +154,38 @@ while (list($x, $v) = $helper->CustomEach($allmed)) {
 }
 ?>
 
+<?php
+$hide = false;
+$sqlRestriction = "SELECT type,value FROM care_config_global WHERE type='restrict_transfer_nhif_patients'";
+$resultRestriction = $db->Execute($sqlRestriction);
+
+if (@$resultRestriction && $resultRestriction->RecordCount()>0 ) {
+    if ($rowRestriction = $resultRestriction->FetchRow() ) {
+         if ($rowRestriction['value'] == 1 && stripos($_GET['insurance_name'], 'NHIF')!==false) {
+            $hide = true;
+             
+         }else{
+            $hide = false;
+         }
+     } 
+    
+}
+
+
+?>
+
 </table>
 <br>
 
+
 <table border=0 cellpadding=2 cellspacing=1 width=100%>
 
+<?php if($hide == false):?>
     <tr bgcolor="#f6f6f6">
         <td colspan=2>&nbsp;<FONT class="prompt"><?php echo $LDTransferWard; ?></td>
     </tr>
+
+<?php endif ?>
 
 
 <?php
@@ -182,7 +212,15 @@ $station = "'.$root_path.'modules/registration_admission/aufnahme_start.php?sid=
 
 $pathInpatient = $root_path . 'modules/registration_admission/aufnahme_start.php?sid=' . $sid . '&ntid=false&lang=' . $lang . '&pid=' . $patnr . '&origin=patreg_reg&encounter_class_nr=1&transFromOutp=yes&pn=' . $pn;
 ?>
+
+
+
+
+    <?php if($hide == false):?>
+
     <tr><td><a href="<?php echo $root_path . 'modules/registration_admission/aufnahme_start.php?sid=' . $sid . '&ntid=false&lang=' . $lang . '&pid=' . $patnr . '&origin=patreg_reg&encounter_class_nr=1&transFromOutp=yes&pn=' . $pn ?>">click here</a></td></tr>
+
+<?php endif?>
 
 
 </table>

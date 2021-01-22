@@ -1,5 +1,6 @@
 
 <?php
+
 $bat_nr = (isset($bat_nr) ? $bat_nr : null);
 $claims_obj->Display_Header($LDNewQuotation, $enc_obj->ShowPID($bat_nr), '');
 ?>
@@ -65,6 +66,8 @@ $claims_obj->Display_Header($LDNewQuotation, $enc_obj->ShowPID($bat_nr), '');
                         <tr>
                             <td>
                                 <?php
+
+                                
                                 $_POST['date_from'] = (isset($_POST['date_from']) ? $_POST['date_from'] : isset($_REQUEST['date_from']) ? $_REQUEST['date_from'] : NULL);
                                 $in_outpatient = (isset($_POST['in_outpatient']) ? $_POST['in_outpatient'] : $in_outpatient);
                                 ?>
@@ -114,13 +117,15 @@ $claims_obj->Display_Header($LDNewQuotation, $enc_obj->ShowPID($bat_nr), '');
             <!--Date ends here-->
 
             <?php if (!isset($mode)) $mode = ''; ?>
+            
+            <?php $target = isset($target)? $target : 'BeforeBill'; ?>
 
             <div style="" class="col-lg-12 col-12">
                 <table width="100%"  cellspacing=0  class="table datatable table-striped table-bordered table-hover  nowrap" cellspacing="0">
                     <thead class="thead-light">
                         <tr>
 
-                            <th><div align="center"><a href="nhif_pass.php?target=review&patient=<?php
+                            <th><div align="center"><a href="nhif_pass.php?target=<?php echo $target ?>&patient=<?php
                                     echo $_REQUEST['patient'] . '&sort=care_encounter.encounter_date&date_from=' . $_POST['date_from'] . '&date_to=' . $date_to . '&sorttyp=';
                                     if (!$_REQUEST['sorttyp'])
                                         echo 'asc';
@@ -129,7 +134,7 @@ $claims_obj->Display_Header($LDNewQuotation, $enc_obj->ShowPID($bat_nr), '');
                                     if ($_REQUEST['sorttyp'] == 'desc')
                                         echo 'asc';
                                     ?> "><strong><?php echo $LDPatientFileNo; ?></strong></a></div></th>
-                            <th><div align="center"><a href="nhif_pass.php?target=review&patient=<?php
+                            <th><div align="center"><a href="nhif_pass.php?target=<?php echo $target ?>&patient=<?php
                                     echo $_REQUEST['patient'] . '&sort=care_encounter.encounter_date&date_from=' . $_POST['date_from'] . '&date_to=' . $date_to . '&sorttyp=';
                                     if (!$_REQUEST['sorttyp'])
                                         echo 'asc';
@@ -138,7 +143,7 @@ $claims_obj->Display_Header($LDNewQuotation, $enc_obj->ShowPID($bat_nr), '');
                                     if ($_REQUEST['sorttyp'] == 'desc')
                                         echo 'asc';
                                     ?> "><strong><?php echo $LDCardno; ?></strong></a></div></th>
-                            <th><div align="center"><a href="nhif_pass.php?target=review&patient=<?php
+                            <th><div align="center"><a href="nhif_pass.php?target=<?php echo $target ?>&patient=<?php
                                     echo $_REQUEST['patient'] . '&sort=care_encounter.encounter_date&date_from=' . $_POST['date_from'] . '&date_to=' . $date_to . '&sorttyp=';
                                     if (!$_REQUEST['sorttyp'])
                                         echo 'asc';
@@ -151,7 +156,7 @@ $claims_obj->Display_Header($LDNewQuotation, $enc_obj->ShowPID($bat_nr), '');
                             </th>
 
                             </th>
-                            <th><div align="center"><a href="nhif_pass.php?target=review&patient=<?php
+                            <th><div align="center"><a href="nhif_pass.php?target=<?php echo $target ?>&patient=<?php
                                     echo $_REQUEST['patient'] . '&sort=care_encounter.encounter_date&date_from=' . $_POST['date_from'] . '&date_to=' . $date_to . '&sorttyp=';
                                     if (!$_REQUEST['sorttyp'])
                                         echo 'asc';
@@ -162,7 +167,7 @@ $claims_obj->Display_Header($LDNewQuotation, $enc_obj->ShowPID($bat_nr), '');
                                     ?> "><strong><?php echo $LDLastName; ?></strong></a>
                                 </div>
                             </th>
-                            <th><div align="center"><a href="nhif_pass.php?target=review&patient=<?php
+                            <th><div align="center"><a href="nhif_pass.php?target=<?php echo $target ?>&patient=<?php
                                     echo $_REQUEST['patient'] . '&sort=care_encounter.encounter_date&date_from=' . $_POST['date_from'] . '&date_to=' . $date_to . '&sorttyp=';
                                     if (!$_REQUEST['sorttyp'])
                                         echo 'asc';
@@ -173,7 +178,7 @@ $claims_obj->Display_Header($LDNewQuotation, $enc_obj->ShowPID($bat_nr), '');
                                     ?> "><strong><?php echo $LDGender; ?></strong></a>
                                 </div>
                             </th>
-                            <th><div align="center"><a href="nhif_pass.php?target=review&patient=<?php
+                            <th><div align="center"><a href="nhif_pass.php?target=<?php echo $target ?>&patient=<?php
                                     echo $_REQUEST['patient'] . '&sort=care_encounter.encounter_date&date_from=' . $_POST['date_from'] . '&date_to=' . $date_to . '&sorttyp=';
                                     if (!$_REQUEST['sorttyp'])
                                         echo 'asc';
@@ -184,7 +189,7 @@ $claims_obj->Display_Header($LDNewQuotation, $enc_obj->ShowPID($bat_nr), '');
                                     ?> "><strong><?php echo $LDDateOfBirth; ?></strong></a>
                                 </div>
                             </th>
-                            <th><div align="center"><a href="nhif_pass.php?target=review&patient=<?php
+                            <th><div align="center"><a href="nhif_pass.php?target=<?php echo $target ?>&patient=<?php
                                     echo $_REQUEST['patient'] . '&sort=care_encounter.encounter_date&date_from=' . $_POST['date_from'] . '&date_to=' . $date_to . '&sorttyp=';
                                     if (!$_REQUEST['sorttyp'])
                                         echo 'asc';
@@ -195,7 +200,7 @@ $claims_obj->Display_Header($LDNewQuotation, $enc_obj->ShowPID($bat_nr), '');
                                     ?> "><strong><?php echo $LDTelephoneNo; ?></strong></a>
                                 </div>
                             </th>
-                            <th><div align="center"><a href="nhif_pass.php?target=review&patient=<?php
+                            <th><div align="center"><a href="nhif_pass.php?target=<?php echo $target ?>&patient=<?php
                                     echo $_REQUEST['patient'] . '&sort=care_encounter.encounter_date&date_from=' . $_POST['date_from'] . '&date_to=' . $date_to . '&sorttyp=';
                                     if (!$_REQUEST['sorttyp'])
                                         echo 'asc';
@@ -206,7 +211,7 @@ $claims_obj->Display_Header($LDNewQuotation, $enc_obj->ShowPID($bat_nr), '');
                                     ?> "><strong><?php echo $AuthorizationNo; ?></strong></a>
                                 </div>
                             </th>
-                            <th><div align="center"><a href="nhif_pass.php?target=review&patient=<?php
+                            <th><div align="center"><a href="nhif_pass.php?target=<?php echo $target ?>&patient=<?php
                                     echo $_REQUEST['patient'] . '&sort=care_encounter.encounter_date&date_from=' . $_POST['date_from'] . '&date_to=' . $date_to . '&sorttyp=';
                                     if (!$_REQUEST['sorttyp'])
                                         echo 'asc';
@@ -217,7 +222,7 @@ $claims_obj->Display_Header($LDNewQuotation, $enc_obj->ShowPID($bat_nr), '');
                                     ?> "><strong><?php echo $LDAttendanceDate; ?></strong></a>
                                 </div>
                             </th>
-                            <th><div align="center"><a href="nhif_pass.php?target=review&patient=<?php
+                            <th><div align="center"><a href="nhif_pass.php?target=<?php echo $target ?>&patient=<?php
                                     echo $_REQUEST['patient'] . '&sort=care_encounter.encounter_date&date_from=' . $_POST['date_from'] . '&date_to=' . $date_to . '&sorttyp=';
                                     if (!$_REQUEST['sorttyp'])
                                         echo 'asc';
@@ -228,7 +233,7 @@ $claims_obj->Display_Header($LDNewQuotation, $enc_obj->ShowPID($bat_nr), '');
                                     ?> "><strong>Registration</strong></a>
                                 </div>
                             </th>
-                            <th><div align="center"><a href="nhif_pass.php?target=review&patient=<?php
+                            <th><div align="center"><a href="nhif_pass.php?target=<?php echo $target ?>&patient=<?php
                                     echo $_REQUEST['patient'] . '&sort=care_encounter.encounter_date&date_from=' . $_POST['date_from'] . '&date_to=' . $date_to . '&sorttyp=';
                                     if (!$_REQUEST['sorttyp'])
                                         echo 'asc';
@@ -239,7 +244,7 @@ $claims_obj->Display_Header($LDNewQuotation, $enc_obj->ShowPID($bat_nr), '');
                                     ?> "><strong>Investigation</strong></a>
                                 </div>
                             </th>
-                            <th><div align="center"><a href="nhif_pass.php?target=review&patient=<?php
+                            <th><div align="center"><a href="nhif_pass.php?target=<?php echo $target ?>&patient=<?php
                                     echo $_REQUEST['patient'] . '&sort=care_encounter.encounter_date&date_from=' . $_POST['date_from'] . '&date_to=' . $date_to . '&sorttyp=';
                                     if (!$_REQUEST['sorttyp'])
                                         echo 'asc';
@@ -250,7 +255,7 @@ $claims_obj->Display_Header($LDNewQuotation, $enc_obj->ShowPID($bat_nr), '');
                                     ?> "><strong>Outpatient <br>Charges</strong></a>
                                 </div>
                             </th>
-                            <th><div align="center"><a href="nhif_pass.php?target=review&patient=<?php
+                            <th><div align="center"><a href="nhif_pass.php?target=<?php echo $target ?>&patient=<?php
                                     echo $_REQUEST['patient'] . '&sort=care_encounter.encounter_date&date_from=' . $_POST['date_from'] . '&date_to=' . $date_to . '&sorttyp=';
                                     if (!$_REQUEST['sorttyp'])
                                         echo 'asc';
@@ -261,7 +266,7 @@ $claims_obj->Display_Header($LDNewQuotation, $enc_obj->ShowPID($bat_nr), '');
                                     ?> "><strong>Surgery</strong></a>
                                 </div>
                             </th>
-                            <th><div align="center"><a href="nhif_pass.php?target=review&patient=<?php
+                            <th><div align="center"><a href="nhif_pass.php?target=<?php echo $target ?>&patient=<?php
                                     echo $_REQUEST['patient'] . '&sort=care_encounter.encounter_date&date_from=' . $_POST['date_from'] . '&date_to=' . $date_to . '&sorttyp=';
                                     if (!$_REQUEST['sorttyp'])
                                         echo 'asc';
@@ -272,7 +277,7 @@ $claims_obj->Display_Header($LDNewQuotation, $enc_obj->ShowPID($bat_nr), '');
                                     ?> "><strong>Days <br>Admitted</strong></a>
                                 </div>
                             </th>
-                            <th><div align="center"><a href="nhif_pass.php?target=review&patient=<?php
+                            <th><div align="center"><a href="nhif_pass.php?target=<?php echo $target ?>&patient=<?php
                                     echo $_REQUEST['patient'] . '&sort=care_encounter.encounter_date&date_from=' . $_POST['date_from'] . '&date_to=' . $date_to . '&sorttyp=';
                                     if (!$_REQUEST['sorttyp'])
                                         echo 'asc';
@@ -283,7 +288,7 @@ $claims_obj->Display_Header($LDNewQuotation, $enc_obj->ShowPID($bat_nr), '');
                                     ?> "><strong>Inpatient <br>Charges</strong></a>
                                 </div>
                             </th>
-                            <th><div align="center"><a href="nhif_pass.php?target=review&patient=<?php
+                            <th><div align="center"><a href="nhif_pass.php?target=<?php echo $target ?>&patient=<?php
                                     echo $_REQUEST['patient'] . '&sort=care_encounter.encounter_date&date_from=' . $_POST['date_from'] . '&date_to=' . $date_to . '&sorttyp=';
                                     if (!$_REQUEST['sorttyp'])
                                         echo 'asc';
@@ -328,17 +333,112 @@ $claims_obj->Display_Header($LDNewQuotation, $enc_obj->ShowPID($bat_nr), '');
                         $total_inpatient_charges = 0;
                         $grant_total = 0;
 
-                        $pending_claims_query = $claims_obj->GetPendingClaims(array('in_outpatient' => $in_outpatient, 'sid' => $sid, 'date_from' => $_POST['date_from'], 'date_to' => $_POST['date_to']));
+                        $pending_claims_query = $claims_obj->GetPendingClaims(array('in_outpatient' => $in_outpatient, 'sid' => $sid, 'date_from' => $_POST['date_from'], 'date_to' => $_POST['date_to'],'is_discharged'=>'0'));
+
+                        // $pending_claims_query = $bill_obj->ShowNewQuotations($in_outpatient, $sid, $_POST['date_from'], $_POST['date_to']);
+
+                        //print_r($pending_claims_query);die;
+
+
                         if (!is_null($pending_claims_query)) {
                             while ($row = $pending_claims_query->FetchRow()) {
+                                //echo "<pre>";print_r($row); echo "</pre>";
                                 if ($row['sex'] == 'm'or $row['sex'] == 'M') {
                                     $row['sex'] = 'Male';
                                 } elseif ($row['sex'] == 'f' OR $row['sex'] == 'F') {
                                     $row['sex'] = 'Female';
                                 }
+                         
 
+                                $result_cep = $bill_obj->GetNewQuotation_Prescriptions($row['visit_no'], $in_outpatient);
+                                
+                                $row_total_cep = 0;
+                                 
+                                 if ($in_outpatient == '1') {
+
+                                     while($cep_row = $result_cep->FetchRow()){
+
+                                        
+                                      //Get unit price from NHIF table
+                                        $sqlNhifUnitPriceCep = "SELECT UnitPrice FROM care_tz_drugsandservices_nhifschemes WHERE ItemCode = '".$cep_row['nhifItemCode']."' AND SchemeID = '".$cep_row['nhif_scheme_id']."' AND ItemTypeID<>'1' ";
+
+                                        
+
+                                        
+                                        $NhifUnitPriceResultCep = $db->Execute($sqlNhifUnitPriceCep);
+                                        $NhifUnitPriceCep = $NhifUnitPriceResultCep->FetchRow();
+                                        $NhifUnitPriceCep = $NhifUnitPriceCep['UnitPrice'];
+
+                                    //Get total Price
+                                        $TotalPriceCep = $NhifUnitPriceCep * $cep_row['total_dosage'];
+                                        $row_total_cep += $TotalPriceCep;
+
+                                       }
+  
+
+                                      
+                                  }else{
+
+                                while($cep_row = $result_cep->FetchRow()){
+                                      //Get unit price from NHIF table
+                                    $sqlNhifUnitPriceCep = "SELECT UnitPrice FROM care_tz_drugsandservices_nhifschemes WHERE ItemCode = '".$cep_row['nhifItemCode']."' AND SchemeID = '".$cep_row['nhif_scheme_id']."' ";
+                                    $NhifUnitPriceResultCep = $db->Execute($sqlNhifUnitPriceCep);
+                                    $NhifUnitPriceCep = $NhifUnitPriceResultCep->FetchRow();
+                                    $NhifUnitPriceCep = $NhifUnitPriceCep['UnitPrice'];
+
+                                    //Get total Price
+                                    $TotalPriceCep = $NhifUnitPriceCep * $cep_row['total_dosage'];
+                                    $row_total_cep += $TotalPriceCep;
+
+
+
+
+
+
+
+                                  }
+                                }
+
+                                
+
+                 $result_lab = $bill_obj->GetNewQuotation_Laboratory($row['visit_no'], $in_outpatient);
+                 $row_total_lab = 0;
+                                while($lab_row = $result_lab->FetchRow()){
+                                      //Get unit price from NHIF table
+                                    $sqlNhifUnitPriceLab = "SELECT UnitPrice FROM care_tz_drugsandservices_nhifschemes WHERE ItemCode = '".$lab_row['nhifItemCode']."' AND SchemeID = '".$lab_row['nhif_scheme_id']."' ";
+                                    $NhifUnitPriceResultLab = $db->Execute($sqlNhifUnitPriceLab);
+                                    $NhifUnitPriceLab = $NhifUnitPriceResultLab->FetchRow();
+                                    $NhifUnitPriceLab = $NhifUnitPriceLab['UnitPrice'];
+
+                                    //Get total Price
+                                    $TotalPriceLab = $NhifUnitPriceLab * 1;
+                                    $row_total_lab += $TotalPriceLab;
+
+                                }
+
+                 $result_rad = $bill_obj->GetNewQuotation_Radiology($row['visit_no'], $in_outpatient);
+                 $row_total_rad = 0;
+                                while($rad_row = $result_rad->FetchRow()){
+                                      //Get unit price from NHIF table
+                                    $sqlNhifUnitPriceRad = "SELECT UnitPrice FROM care_tz_drugsandservices_nhifschemes WHERE ItemCode = '".$rad_row['nhifItemCode']."' AND SchemeID = '".$rad_row['nhif_scheme_id']."' ";
+                                    $NhifUnitPriceResultRad = $db->Execute($sqlNhifUnitPriceRad);
+                                    $NhifUnitPriceRad = $NhifUnitPriceResultRad->FetchRow();
+                                    $NhifUnitPriceRad = $NhifUnitPriceRad['UnitPrice'];
+
+                                    //Get total Price
+                                    $TotalPriceRad = $NhifUnitPriceRad * $rad_row['dosage'];
+                                    $row_total_rad += $TotalPriceRad;
+
+                                }                
+                
+
+                
+
+
+                                $row_total = 0;
+
+                                $row_total = $row_total_cep + $row_total_lab + $row_total_rad;
                                
-                                $row_total = $claims_obj->GetTotalAmountByEncounterNr($row['visit_no'],$in_outpatient);
 
                                 ?>
                                 <tr>
@@ -359,7 +459,7 @@ $claims_obj->Display_Header($LDNewQuotation, $enc_obj->ShowPID($bat_nr), '');
                                     <td style="text-align: right"><?= $inpatient_charges ?></td>
                                     <td style="text-align: right"><?= number_format($row_total,2) ?></td>
                                     <td ><div align="center">
-                                            <a href="../../modules/nhif/nhif_pass.php<?= URL_APPEND ?>&patient=<?= $in_outpatient ?>&lang=en&target=claimsdetails&encounter_nr=<?= $row['visit_no'] ?>&date_from=<?= $date_from ?>&date_to=<?= $date_to ?>" title="Visit Details : Click to show data"><button type="button">>></button></a>
+                                            <a href="../../modules/nhif/nhif_pass.php<?= URL_APPEND ?>&patient=<?= $in_outpatient ?>&lang=en&target=claimsreview&encounter_nr=<?= $row['visit_no'] ?>&date_from=<?= $date_from ?>&date_to=<?= $date_to ?>" title="Visit Details : Click to show data"><button type="button">>></button></a>
                                         </div>
                                     </td>
 

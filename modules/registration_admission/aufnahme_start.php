@@ -1039,11 +1039,13 @@ if (!isset($pid) || !$pid) {
 
 	if (@$NhifSchemeId) {
 
-		$cTemp = $cTemp . '<select name="consultation_fee">
+		
+
+			$cTemp = $cTemp . '<select name="consultation_fee">
 							<option value=""></option>';
 
 	$sql_con = "SELECT  DISTINCT ds.item_description FROM care_tz_drugsandservices ds INNER JOIN care_tz_drugsandservices_nhifschemes dsn  ON ds.nhif_item_code=dsn.ItemCode 
-	WHERE ds.item_number LIKE 'CONS%' AND ds.purchasing_class='service' AND dsn.ItemTypeID='1' AND dsn.SchemeID='".$NhifSchemeId."'";
+	WHERE ds.item_number LIKE 'CONS%' AND ds.purchasing_class='service' AND dsn.ItemTypeID IN ('1','7')  AND dsn.SchemeID='".$NhifSchemeId."'";
 	
 	$db_con = $db->Execute($sql_con);
 	while ($conrow = $db_con->FetchRow()) {
@@ -1052,6 +1054,10 @@ if (!isset($pid) || !$pid) {
 		$cTemp = $cTemp . $conrow['item_description'];
 		$cTemp = $cTemp . '</option>';
 	}
+			
+		
+
+		
 		
 	}elseif(($encounter_class_nr == 2 || $inOutPatient == 2 )&&$cash) {
 		$cTemp = $cTemp . '<select name="consultation_fee" id="consultation_fee">';
