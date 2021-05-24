@@ -381,6 +381,8 @@ $LDListing = 'No Filter';
 $LDFlagDiagnosis = 'Flag Patients without Diagnosis';
 $LDEnableBankref='Enable Bank Reference';
 $LDWeberpApiNurseChart='Enable Stock API on Nurse Chart';
+$LDEnableInjectionChartOPD='Enable Injection Chart for OPD';
+$LDEnableOPDNurseChart='Enable OPD nurse Chart';
 $LDEnableMarkOutOfStock='Allow Doctor to get stock status';
 $LDEnableDoctorToViewStockStatus='Enable Doctor to view stock status';
 $LDPriceReadOnly='Price Read Only';
@@ -410,6 +412,10 @@ $LDRistrictDischargeUnbilledNhif = 'Restrict Discharge Unbilled Nhif';
 $LDRistrictDischargeUnbilledNhifCfg = 'Do not Discharge Unbilled Nhif';
 $LDRistrictTransferToWardNhif = 'Restrict Transfer Nhif Patient to IPD';
 $LDRistrictTransferToWardNhifCfg = 'Restrict Transfer Nhif Patient to IPD';
+$LDNhifAutoInsertConsultation = 'NHIF Auto Insert Consultation';
+$LDNhifAutoInsertConsultationCfg = 'NHIF Auto Insert Consultation';
+$LDDischargeNHIFPatientOnBill = 'Discharge NHIF Patient Upon Billing';
+$LDDischargeNHIFPatientOnBillCfg = 'Discharge NHIF Patient Upon Billing';
 
 $LDUserRoles = 'User Access Roles';
 

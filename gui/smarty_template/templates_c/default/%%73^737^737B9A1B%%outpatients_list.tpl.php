@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2019-09-03 13:31:03
+<?php /* Smarty version 2.6.22, created on 2021-04-02 18:49:00
          compiled from ambulatory/outpatients_list.tpl */ ?>
 
 <table cellspacing="0" width="100%">

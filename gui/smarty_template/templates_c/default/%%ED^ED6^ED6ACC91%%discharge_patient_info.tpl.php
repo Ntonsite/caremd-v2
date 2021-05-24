@@ -1,50 +1,50 @@
-<?php /* Smarty version 2.6.22, created on 2012-11-14 14:19:29
-  compiled from nursing/discharge_patient_info.tpl */ ?>
+<?php /* Smarty version 2.6.22, created on 2021-05-23 13:06:33
+         compiled from nursing/discharge_patient_info.tpl */ ?>
 
 <ul>
 
     <div class="prompt"><?php echo $this->_tpl_vars['sPrompt']; ?>
-    </div>
+</div>
 
     <form action="<?php echo $this->_tpl_vars['thisfile']; ?>
-          " name="discform" method="post" onSubmit="return pruf(this)">
+" name="discform" method="post" onSubmit="return pruf(this)">
 
         <table border=0 cellspacing="1">
             <tr>
                 <td colspan=2 class="adm_input">
                     <?php echo $this->_tpl_vars['sBarcodeLabel']; ?>
-                    <?php echo $this->_tpl_vars['img_source']; ?>
+ <?php echo $this->_tpl_vars['img_source']; ?>
 
                 </td>
             </tr>
             <tr>
                 <td class="adm_item"><?php echo $this->_tpl_vars['LDLocation']; ?>
-                    :</td>
+:</td>
                 <td class="adm_input"><?php echo $this->_tpl_vars['sLocation']; ?>
-                </td>
+</td>
             </tr>
             <td class="adm_item"><?php echo $this->_tpl_vars['LDDate']; ?>
-                :</td>
+:</td>
             <td class="adm_input">
                 <?php if ($this->_tpl_vars['released']): ?>
-                    <?php echo $this->_tpl_vars['x_date']; ?>
+                <?php echo $this->_tpl_vars['x_date']; ?>
 
                 <?php else: ?>
-                    <?php echo $this->_tpl_vars['sDateInput']; ?>
-                    <?php echo $this->_tpl_vars['sDateMiniCalendar']; ?>
+                <?php echo $this->_tpl_vars['sDateInput']; ?>
+ <?php echo $this->_tpl_vars['sDateMiniCalendar']; ?>
 
                 <?php endif; ?>
             </td>
             </tr>
             <tr>
                 <td class="adm_item"><?php echo $this->_tpl_vars['LDClockTime']; ?>
-                    :</td>
+:</td>
                 <td class="adm_input">
                     <?php if ($this->_tpl_vars['released']): ?>
-                        <?php echo $this->_tpl_vars['x_time']; ?>
+                    <?php echo $this->_tpl_vars['x_time']; ?>
 
                     <?php else: ?>
-                        <?php echo $this->_tpl_vars['sTimeInput']; ?>
+                    <?php echo $this->_tpl_vars['sTimeInput']; ?>
 
                     <?php endif; ?>
                 </td>
@@ -53,15 +53,15 @@
 
             <tr>
                 <td class="adm_item"><?php echo $this->_tpl_vars['LDNurse']; ?>
-                    :</td>
+:</td>
                 <td class="adm_input">
                     <?php if ($this->_tpl_vars['released']): ?>
-                        <?php echo $this->_tpl_vars['encoder']; ?>
+                    <?php echo $this->_tpl_vars['encoder']; ?>
 
                     <?php else: ?>
-                        <input type="text" name="encoder" size=25 maxlength=30 value="<?php echo $this->_tpl_vars['encoder']; ?>
-                               ">
-                           <?php endif; ?>
+                    <input type="text" name="encoder" size=25 maxlength=30 value="<?php echo $this->_tpl_vars['encoder']; ?>
+">
+                    <?php endif; ?>
                 </td>
             </tr>
 

@@ -229,6 +229,8 @@ function popPic(pid,nm){
 			  {
 			  $disch_id=$db_row_disch['nr'];
 			  $sql_patients="SELECT count( * ) AS ward_total FROM $tmp_table WHERE discharge_type='$disch_id' AND date_format( discharge_date, '%d.%m.%y' ) >='$date_discharge' AND date_format( discharge_date, '%d.%m.%y' ) <='$date_discharge'";
+
+			  echo $sql_patients; die;
 			  $db_ptr_patients = $db->Execute($sql_patients);
 			  $db_row_patients=$db_ptr_patients->FetchRow();
 			  

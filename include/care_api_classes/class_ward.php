@@ -941,6 +941,8 @@ class Ward extends Encounter {
 		$this->sql = "SELECT SUM(nr_of_beds) AS nr FROM $this->tb_room WHERE ward_nr=$ward_nr AND
 		is_temp_closed IN ('',0) AND status NOT IN ($this->dead_stat)";
 
+		
+
 		if ($buf = $db->Execute($this->sql)) {
 			if ($buf->RecordCount()) {
 				$row = $buf->FetchRow();

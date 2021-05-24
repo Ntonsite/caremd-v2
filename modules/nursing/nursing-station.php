@@ -96,6 +96,8 @@ require_once $root_path . 'global_conf/inc_remoteservers_conf.php';
 if (($mode == '') || ($mode == 'fresh')) {
 	if ($ward_info = &$ward_obj->getWardInfo($ward_nr)) {
 		$room_obj = &$ward_obj->getRoomInfo($ward_nr, $ward_info['room_nr_start'], $ward_info['room_nr_end']);
+          
+
 		if (is_object($room_obj)) {
 			$room_ok = true;
 		} else {
@@ -103,6 +105,7 @@ if (($mode == '') || ($mode == 'fresh')) {
 		}
 		# GEt the number of beds
 		$nr_beds = $ward_obj->countBeds($ward_nr);
+		
 
 		# Get ward patients
 		if ($is_today) {
@@ -444,6 +447,7 @@ if ($ward_ok) {
 	//print $ward_info['room_nr_end'].'=========<hr />';
 
 	for ($i = $ward_info['room_nr_start']; $i <= $ward_info['room_nr_end']; $i++) {
+
 		if ($room_ok) {
 			$room_info = $room_obj->FetchRow();
 		} else {
@@ -774,6 +778,8 @@ if ($ward_ok) {
 			ob_end_clean();
 		} // end of bed loop
 		# Append the new row to the previous row in string
+
+		//echo "<pre>"; print_r($sListRows); echo "</pre>";
 
 		$smarty->assign('sOccListRows', $sListRows);
 	} // end of ward loop

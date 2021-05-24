@@ -14,8 +14,8 @@
 </style>
 <div style="width:100%; padding:3px; text-align:center; background:lime; border-bottom:5px solid white;" class="adm_item">
     <input type='button' value="Refresh Patient List" name = 'btn' class="mimHover" onclick="window.location.href = '{{$sReloadBtn}}'" >
-    <input type="button" value="Un Discharge Patient" class="mimHover" onClick="showDischargedPatients()">
-
+    <!-- <input type="button" value="Un Discharge Patient" class="mimHover" onClick="showDischargedPatients()">
+  -->
 </div>
 <table cellspacing="0" cellpadding="0" width="100%">
     <tbody>
@@ -28,8 +28,8 @@
 
 <div style="width:100%; padding:3px; text-align:center; background:lime; border-top:5px solid white;" class="adm_item">
     <input type='button' value="Refresh Patient List" name = 'btn' class="mimHover" onclick="window.location.href = '{{$sReloadBtn}}'" >
-    <input type="button" value="Un Discharge Patient" class="mimHover" onClick="showDischargedPatients()">
-    
+   <!--  <input type="button" value="Un Discharge Patient" class="mimHover" onClick="showDischargedPatients()">
+    --> 
 </div>
 <p>
     {{$pDiagnosis}}

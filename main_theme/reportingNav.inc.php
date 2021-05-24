@@ -103,7 +103,9 @@
           <a class="dropdown-item" href="<?php echo $root_path ?>modules/reporting_tz/obgyne_surgeries_report.php<?php echo URL_APPEND ?>">OB Gyne Report</a>
           <a class="dropdown-item" href="<?php echo $root_path ?>modules/reporting_tz/ortho_surgeries_report.php<?php echo URL_APPEND ?>">Orthopedics Surgeries Report</a>
           <a class="dropdown-item" href="<?php echo $root_path ?>modules/reporting_tz/minor_procedures_report.php<?php echo URL_APPEND ?>">Dressings and Minor Procedures</a>
-          <a class="dropdown-item" href="<?php echo $root_path ?>modules/reporting_tz/blockpayment_financial_summary.php<?php echo URL_APPEND ?>">Block payment financial summary </a>
+
+          <a class="dropdown-item" href="<?php echo $root_path ?>modules/reporting_tz/zero_consultations.php">Consultations with Zero Amount</a>
+         <!--  <a class="dropdown-item" href="<?php //echo $root_path ?>modules/reporting_tz/blockpayment_financial_summary.php<?php //echo URL_APPEND ?>">Block payment financial summary </a> -->
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="<?php echo $root_path ?>modules/reporting_tz/pending_quotations_report.php<?php echo URL_APPEND ?>">Pending Quotations Report</a>
           <a class="dropdown-item" href="<?php echo $root_path ?>modules/reporting_tz/deleted_quotations_report.php<?php echo URL_APPEND ?>">Deleted Quotations Report</a>

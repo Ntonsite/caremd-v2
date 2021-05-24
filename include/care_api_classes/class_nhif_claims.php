@@ -1467,14 +1467,13 @@ class Nhif_claims extends Nhif {
 
 			// printing returned respose
 
-			$StatusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			$StatusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);         
 
-			
-
-
-
+             
 
 			if ($StatusCode === 200) {
+
+				//json_decode
 				//Update session variable $_SESSION['nhif_access_token']
 				$header_data = 'Authorization:' . $decoded->token_type . ' ' . $decoded->access_token;
 				if (isset($source) && $source == 'claims') {
@@ -1482,7 +1481,9 @@ class Nhif_claims extends Nhif {
 				} else {
 					$_SESSION['nhif_access_token'] = $header_data;
 				}
-				$this->update_claim_status($filter_data);
+                 
+
+				$this->update_claim_status($filter_data,$result);
 				return array('success' => TRUE, 'status_massage' => $result);
 			}
 			if ($StatusCode === 400) {
@@ -1503,7 +1504,7 @@ class Nhif_claims extends Nhif {
 		}
 	}
 
-	function update_claim_status($filter_data = array()) {
+	function update_claim_status($filter_data = array(),$result) {
 		global $db;
 		$this->debug = FALSE;
 		($this->debug) ? $db->debug = true : $db->debug = FALSE;
@@ -1511,7 +1512,28 @@ class Nhif_claims extends Nhif {
 			echo "<br><b>Method class_nhif_claims::update_claim_status()</b><br>";
 		}
 
-		$sql = "UPDATE care_nhif_claims SET claim_status = 'submitted' WHERE 1";
+	
+		//$json = '{"SubmissionID":"5c3bfbc7-2bd2-4003-9aa1-baf77a9b3654","SubmissionNo":"S100002501012","DateSubmitted":"0001-01-01T00:00:00","FacilityCode":"04672","ClaimYear":2021,"ClaimMonth":1,"FolioNo":3,"BillNo":null,"SubmittedBy":"dfute","CardNo":"101102132946","AuthorizationNo":"110127797163","AmountClaimed":"30200.00","Remarks":"Claim Received Successfully"}';
+
+		
+
+		$claimData = json_decode($result);
+		$SubmissionID = $claimData->SubmissionID;
+		$SubmissionNo = $claimData->SubmissionNo;
+		$DateSubmitted = $claimData->DateSubmitted;
+		$FacilityCode = $claimData->FacilityCode;
+		$ClaimYear = $claimData->ClaimYear;
+		$ClaimMonth = $claimData->ClaimMonth;
+		$FolioNo = $claimData->FolioNo;
+		$BillNo = $claimData->BillNo;
+		$CardNo = $claimData->CardNo;
+		$AuthorizationNo = $claimData->AuthorizationNo;
+		$AmountClaimed = $claimData->AmountClaimed;
+		$Remarks = $claimData->Remarks;
+
+
+
+		$sql = "UPDATE care_nhif_claims SET claim_status = 'submitted',SubmissionID='".$SubmissionID."',SubmissionNo='".$SubmissionNo."',DateSubmitted='".$DateSubmitted."',FacilityCode='".$FacilityCode."',ClaimYear='".$ClaimYear."',ClaimMonth='".$ClaimMonth."',FolioNo='".$FolioNo."',BillNo='".$BillNo."',CardNo='".$CardNo."',AuthorizationNo='".$AuthorizationNo."',AmountClaimed='".$AmountClaimed."',Remarks='".$Remarks."' WHERE 1";
 
 		if (isset($filter_data['encounter_nr'])) {
 			$sql .= " AND care_nhif_claims.encounter_nr = '" . $filter_data['encounter_nr'] . "' ";
@@ -1526,10 +1548,11 @@ class Nhif_claims extends Nhif {
 
 	function Display_Headline($Headline, $Headline_Tag, $Headline_phpTag, $Help_file, $Help_Tag) {
 
+
 		echo '<table cellspacing="0" class="titlebar" border=0 height="35" width="100%>
-                                                                         <tr valign=top  class="titlebar" >
-                                                                         <td bgcolor="#99ccff" ><font color="#330066"> &nbsp;&nbsp;' . $Headline . ' ' . $Headline_Tag . ' ' . $Headline_phpTag . ' </font></td>
-                                                                <td bgcolor="#99ccff" align=right> <a href="../../modules/billing_tz/billing_tz.php"><img src="../../gui/img/control/default/en/en_back2.gif" border=0 width="110" height="24" alt="" style="filter:alpha(opacity=70)" onMouseover="hilite(this, 1)" onMouseOut="hilite(this, 0)" ></a>';
+                    <tr valign=top  class="titlebar" >
+                        <td bgcolor="#99ccff" ><font color="#330066"> &nbsp;&nbsp;' . $Headline . ' ' . $Headline_Tag . ' ' . $Headline_phpTag . ' </font></td>
+                        <td bgcolor="#99ccff" align=right> <a href="../../modules/billing_tz/billing_tz.php"><img src="../../gui/img/control/default/en/en_back2.gif" border=0 width="110" height="24" alt="" style="filter:alpha(opacity=70)" onMouseover="hilite(this, 1)" onMouseOut="hilite(this, 0)" ></a>';
 		$_SESSION['ispopup'] = (isset($_SESSION['ispopup']) ? $_SESSION['ispopup'] : null);
 		if ($_SESSION['ispopup'] == "true") {
 			$closelink = 'javascript:history.back()';

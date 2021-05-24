@@ -496,6 +496,8 @@ class selianreport extends report
 						break;
 				} //end checking admission
 
+				
+
 				switch ($insurance) {
 					case '-2':
 						$hf = '';
@@ -575,7 +577,7 @@ class selianreport extends report
             FROM care_tz_diagnosis AS dx
                 INNER JOIN care_person AS cp   ON dx.PID = cp.pid
                 INNER JOIN care_encounter ce   ON ce.encounter_nr = dx.encounter_nr
-            WHERE diagnosis_type = 'final' AND $sql_timeframe $hf $idara  GROUP BY 	ICD_10_code ORDER BY opd_series ";
+            WHERE diagnosis_type = 'final' AND $sql_timeframe $hf $idara  GROUP BY 	opd_series ORDER BY opd_series ";
 
             //echo $diagnosisesSQL;die;
 
@@ -7816,6 +7818,8 @@ paramater_name as id
 		function Detailed_Revenue($date_from, $date_to, $company, $admission, $dept = '', $insurance = '', $print = 0)
 		{
 
+
+
 			//The detailed revenue function was written by Israel Pascal and modified by Mark Patrick
 			//            $print = 1;
 			global $LDOther, $LDBilled_date, $LDAdmission_date, $LDPatient, $LDBirthDate, $LDSelianfilenumber, $LDMembership_NR, $LDForm_NR, $LDDescription, $LDGroup, $LDPrice, $LDRefund, $LDTopup, $LDDeposit;
@@ -7935,6 +7939,7 @@ paramater_name as id
 
 			if ($print) {
 				$_POST['fileNr'] = $_REQUEST['fileNr'];
+				$_POST['tag'] = $_REQUEST['tag'];
 			}
 
 			if (empty($_POST['fileNr']) || $_POST['fileNr'] == '') {
@@ -7942,6 +7947,14 @@ paramater_name as id
 			} else {
 				$fileNr = 'AND cp.selian_pid=' . $_POST['fileNr'];
 			}
+
+			if (empty($_POST['tag']) || $_POST['tag'] == '') {
+				$tag = '';
+			} else {
+				$tag = "AND billelem.doctor='".$_POST['tag']."'";
+			}
+
+
 
 			$filename = fopen('./gui/downloads/detailed_revenue.csv', 'w');
 	?>
@@ -7951,9 +7964,9 @@ paramater_name as id
 				<th width="150" colspan="2"><?php echo date('d.M.Y H:i:s', $date_from_timestamp); ?></th>
 				<th width="70">TO:</th>
 				<th width="150" colspan="3"><?php echo date('d.M.Y H:i:s', $date_to_timestamp); ?></th>
-				<th colspan="6"><?php echo $company_names; ?></th>
+				<th colspan="6"><?php echo $company_names. '  SEEN BY:'.$_POST['tag']; ?></th>
 			</tr>
-			<?php fputcsv($filename, array('FROM:', date('d.M.Y H:i:s', $date_from_timestamp), 'TO:', date('d.M.Y H:i:s', $date_to_timestamp), $company_names)); ?>
+			<?php fputcsv($filename, array('FROM:', date('d.M.Y H:i:s', $date_from_timestamp), 'TO:', date('d.M.Y H:i:s', $date_to_timestamp), $company_names.'  SEEN BY:'.$_POST['tag'])); ?>
 			<tr>
 				<th width="70" scope="col" font-size="8"> <?php echo $LDBilled_date; ?></th>
 				<th width="70" scope="col"> <?php echo $LDAdmission_date; ?></th>
@@ -7970,7 +7983,7 @@ paramater_name as id
 				<th width="70" scope="col"> <?php echo $LDDeposit; ?></th>
 			</tr>
 			<?php
-			fputcsv($filename, array($LDBilled_date, $LDAdmission_date, $LDPatient, $LDBirthDate, $LDSelianfilenumber, $LDMembership_NR, $LDForm_NR, $LDPartCode, $LDDescription, $LDGroup, $LDNoOfItems, $LDPrice, $LDDeposit));
+			fputcsv($filename, array($LDBilled_date, $LDAdmission_date, $LDPatient, $LDBirthDate, $LDSelianfilenumber, $LDMembership_NR, $LDForm_NR, $LDPartCode, $LDDescription, $LDGroup, $LDNoOfItems, $LDPrice,'BankRef',$LDDeposit));
 			//*********************************START PATIENTS WITHOUT DEPOSIT***************************************************************
 			//echo 'in out'. $in_out_patient;
 			//get list of all receipts to pass in the loop
@@ -7981,14 +7994,13 @@ paramater_name as id
 			                      ON cba.encounter_nr=ce.encounter_nr
 			  INNER JOIN care_person cp
 			                      ON cp.pid=ce.pid
-			   WHERE billelem.is_deposit_item!=1 AND billelem.description NOT IN('Advance','Topup','Refund') AND  billelem.date_change BETWEEN '" . $date_from_timestamp . "' AND '" . $date_to_timestamp . "' " . $and_PayType . " " . $in_out_patient . " " . $fileNr . " GROUP BY cba.nr ORDER BY cba.encounter_nr";
+			   WHERE billelem.is_deposit_item!=1 AND billelem.description NOT IN('Advance','Topup','Refund') AND  billelem.date_change BETWEEN '" . $date_from_timestamp . "' AND '" . $date_to_timestamp . "' " . $and_PayType . " " . $in_out_patient . " " . $fileNr . " " . $tag . " GROUP BY cba.nr ORDER BY cba.encounter_nr";
 
-			// echo $sql_receipts_list;
-			// die();
+			 
 
 			$receipts_list_result = $db->Execute($sql_receipts_list);
 
-			//          echo $sql_receipts_list;
+			         // echo $sql_receipts_list;
 
 			while ($rows_particlars = $receipts_list_result->FetchRow()) {
 			?>
@@ -8101,7 +8113,7 @@ paramater_name as id
 
 					</tr>
 
-					<?php fputcsv($filename, array(date('d.M.Y', $rows_particlars['billed_date']), date('d.M.Y', strtotime($rows_particlars['admission_date'])), ucfirst($rows_particlars['name_last']) . ' ' . ucfirst($rows_particlars['name_first']), date('d.M.Y', strtotime($rows_particlars['date_birth'])), $rows_particlars['selian_pid'], $rows_particlars['membership_nr'], $rows_particlars['form_nr'], $rows_items['partcode'], $rows_items['description'], $class['purch_class'], $rows_items['amount'], $rows_items['total_price'], 'Null')); ?>
+					<?php fputcsv($filename, array(date('d.M.Y', $rows_particlars['billed_date']), date('d.M.Y', strtotime($rows_particlars['admission_date'])), ucfirst($rows_particlars['name_last']) . ' ' . ucfirst($rows_particlars['name_first']), date('d.M.Y', strtotime($rows_particlars['date_birth'])), $rows_particlars['selian_pid'], $rows_particlars['membership_nr'], $rows_particlars['form_nr'], $rows_items['partcode'], $rows_items['description'], $class['purch_class'], $rows_items['amount'], $rows_items['total_price'],$rows_particlars['bank_ref'], 'Null')); ?>
 				<?php
 				} //end while $rows_items
 				?>
@@ -8132,7 +8144,7 @@ paramater_name as id
                INNER JOIN care_encounter AS ce ON cp.pid = ce.pid
                INNER JOIN care_tz_billing_archive AS cba ON ce.encounter_nr = cba.encounter_nr
                INNER JOIN care_tz_billing_archive_elem AS billelem ON billelem.nr = cba.nr
-          WHERE description='Advance' AND billelem.date_change BETWEEN '" . $date_from_timestamp . "' AND '" . $date_to_timestamp . "' " . $in_out_patient . " " . $and_PayType . " " . $fileNr . " ";
+          WHERE description='Advance' AND billelem.date_change BETWEEN '" . $date_from_timestamp . "' AND '" . $date_to_timestamp . "' " . $in_out_patient . " " . $and_PayType . " " . $fileNr . " " . $tag . " ";
 			$sql_deposit_result = $db->Execute($sql_deposit);
 
 			while ($rows_dep = $sql_deposit_result->FetchRow()) {
@@ -8176,7 +8188,7 @@ paramater_name as id
 			   WHERE billelem.is_deposit_item=1 AND billelem.description NOT IN('Advance','Topup','Refund')
                            AND billelem.nr NOT IN(SELECT nr FROM care_tz_billing_archive_elem WHERE description like'Topup%'
                             OR description like 'Refund%' AND  billelem.date_change BETWEEN '" . $date_from_timestamp . "' AND '" . $date_to_timestamp . "')
-                           AND  billelem.date_change BETWEEN '" . $date_from_timestamp . "' AND '" . $date_to_timestamp . "' " . $and_PayType . " " . $in_out_patient . " " . $fileNr . " GROUP BY cba.nr ORDER BY cba.encounter_nr";
+                           AND  billelem.date_change BETWEEN '" . $date_from_timestamp . "' AND '" . $date_to_timestamp . "' " . $and_PayType . " " . $in_out_patient . " " . $fileNr . " " . $tag . " GROUP BY cba.nr ORDER BY cba.encounter_nr";
 			$receipts_list_result = $db->Execute($sql_receipts_list);
 
 			//            echo $sql_receipts_list;
@@ -8321,7 +8333,7 @@ paramater_name as id
                INNER JOIN care_encounter AS ce ON cp.pid = ce.pid
                INNER JOIN care_tz_billing_archive AS cba ON ce.encounter_nr = cba.encounter_nr
                INNER JOIN care_tz_billing_archive_elem AS billelem ON billelem.nr = cba.nr
-          WHERE description='Topup' AND billelem.date_change BETWEEN '" . $date_from_timestamp . "' AND '" . $date_to_timestamp . "' " . $in_out_patient . " " . $and_PayType . " " . $fileNr . " ";
+          WHERE description='Topup' AND billelem.date_change BETWEEN '" . $date_from_timestamp . "' AND '" . $date_to_timestamp . "' " . $in_out_patient . " " . $and_PayType . " " . $fileNr . " " . $tag . " ";
 			$sql_topup_result = $db->Execute($sql_topup);
 
 			while ($rows_topup = $sql_topup_result->fetchRow()) {
@@ -8488,7 +8500,7 @@ paramater_name as id
                INNER JOIN care_encounter AS ce ON cp.pid = ce.pid
                INNER JOIN care_tz_billing_archive AS cba ON ce.encounter_nr = cba.encounter_nr
                INNER JOIN care_tz_billing_archive_elem AS billelem ON billelem.nr = cba.nr
-          WHERE description='Refund' AND billelem.date_change BETWEEN '" . $date_from_timestamp . "' AND '" . $date_to_timestamp . "' " . $in_out_patient . " " . $and_PayType . " " . $fileNr . " ";
+          WHERE description='Refund' AND billelem.date_change BETWEEN '" . $date_from_timestamp . "' AND '" . $date_to_timestamp . "' " . $in_out_patient . " " . $and_PayType . " " . $fileNr . " " . $tag . " ";
 			$sql_refund_result = $db->Execute($sql_refund);
 
 			while ($rows_refund = $sql_refund_result->fetchRow()) {
@@ -8914,7 +8926,7 @@ paramater_name as id
 			?>
 				<table>
 					<tr>
-						<th><?php echo $hospname; ?><br>Report Date: <?php echo $date_from; ?> To: <?php echo $date_to; ?><br>Health Fund:<?php echo $company_names; ?><br>Dept/ward:<?php echo $idara; ?></th>
+						<th><?php echo $hospname; ?><br>Report Date: <?php echo $date_from; ?> To: <?php echo $date_to; ?><br>Health Fund:<?php echo $company_names.' SEEN BY:'.$_POST['tag']; ?><br>Dept/ward:<?php echo $idara; ?></th>
 					</tr>
 
 
@@ -8967,6 +8979,9 @@ paramater_name as id
 					// echo $sqlDateTo;
 					//echo $in_out_patient.'<br>'.$and_PayType;
 
+					$tag = (@$_POST['tag']) ? 'AND bae.doctor="'.$_POST['tag'].'"' : ''; 
+
+
 
                
 
@@ -8987,7 +9002,7 @@ paramater_name as id
 						FROM care_tz_billing_archive_elem bae 
 						INNER JOIN care_tz_drugsandservices ds ON ds.item_id = bae.item_number 
 						WHERE date_change >= '".$timestampFrom."' 
-						AND date_change <= '".$timestampTo."' $and_PayType $in_out_patient 
+						AND date_change <= '".$timestampTo."' $and_PayType $in_out_patient $tag
 						GROUP BY TAREHE";
 
 						//echo $this->sql;

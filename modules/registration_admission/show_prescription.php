@@ -110,6 +110,7 @@ if (isset($pn)) {
 	require_once $root_path . 'include/care_api_classes/class_encounter.php';
 	$encounter_obj = new Encounter($pn);
 	$pid = $encounter_obj->EncounterExists($pn);
+	$encounter_class = $encounter_obj->EncounterClass($pn);
 	$_SESSION['sess_pid'] = $pid;
 	$_SESSION['sess_en'] = $pn;
 
@@ -150,25 +151,47 @@ if ($parent_admit) {
 	}
 } else {
 	if ($ShowOnlyPharmacy) {
+
+         $transmit_to_weberp_enabled = $glob_obj->getConfigValue('transmit_to_weberp_enabled');
+         $stock_deduction_on_chart_enabled = $glob_obj->getConfigValue('nurse_chart_deduct_stock');
+
+
+         
+
+
+
+
+
+ if ($transmit_to_weberp_enabled === "1" && $stock_deduction_on_chart_enabled === "1" && $encounter_class == "1" ) :
+
+	$purchasing_class = "AND  care_tz_drugsandservices.purchasing_class = 'supplies'";
+
+else:
+
+	$purchasing_class = "AND ( care_tz_drugsandservices.purchasing_class = 'drug_list' OR care_tz_drugsandservices.purchasing_class ='supplies' )";          	
+endif; 
+
+
 		if ($glob_obj->getConfigValue("restrict_unbilled_items") === "1" && $externalcall) {
-			$sql = "SELECT pr.*, e.encounter_class_nr FROM care_encounter AS e, care_person AS p, care_encounter_prescription AS pr, care_tz_drugsandservices
+			$sql = "SELECT pr.*, e.encounter_class_nr,care_tz_drugsandservices.purchasing_class FROM care_encounter AS e, care_person AS p, care_encounter_prescription AS pr, care_tz_drugsandservices
           WHERE p.pid=" . $_SESSION['sess_pid'] . " AND p.pid=e.pid AND e.encounter_nr=pr.encounter_nr
                       AND pr.article_item_number=care_tz_drugsandservices.item_id
                       AND pr.mark_os='0' AND (pr.bill_number > '0'  OR e.encounter_class_nr = '1' OR p.insurance_ID>0)
-                      AND ( purchasing_class = 'drug_list'
-                      OR purchasing_class ='supplies' OR purchasing_class ='special_others_list'
-                      OR purchasing_class ='drug_list_ctc' OR purchasing_class='drug_list_nhif') AND pr.status IN('pending','') AND pr.encounter_nr=" . $pn . " 
+                  $purchasing_class  AND pr.status IN('pending','') AND pr.encounter_nr=" . $pn . " 
           ORDER BY pr.prescribe_date DESC";
           
 
 		} else {
-			$sql = "SELECT pr.*, e.encounter_class_nr FROM care_encounter AS e, care_person AS p, care_encounter_prescription AS pr, care_tz_drugsandservices
+			$sql = "SELECT pr.*, e.encounter_class_nr,care_tz_drugsandservices.purchasing_class FROM care_encounter AS e, care_person AS p, care_encounter_prescription AS pr, care_tz_drugsandservices
           WHERE p.pid=" . $_SESSION['sess_pid'] . " AND p.pid=e.pid AND e.encounter_nr=pr.encounter_nr
-                      AND pr.mark_os='0' AND pr.article_item_number=care_tz_drugsandservices.item_id AND ( purchasing_class = 'drug_list'
-                      OR purchasing_class ='supplies' OR purchasing_class ='special_others_list'
-                      OR purchasing_class ='drug_list_ctc' OR purchasing_class='drug_list_nhif' ) AND pr.status IN ('pending','') AND pr.encounter_nr=" . $pn . "
+                      AND pr.mark_os='0' AND pr.article_item_number=care_tz_drugsandservices.item_id  AND pr.status IN ('pending','') $purchasing_class AND pr.encounter_nr=" . $pn . "
           ORDER BY pr.prescribe_date DESC";
 		}
+
+
+
+
+
 
 		
 

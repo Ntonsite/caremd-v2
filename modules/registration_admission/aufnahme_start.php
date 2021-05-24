@@ -1059,7 +1059,7 @@ if (!isset($pid) || !$pid) {
 
 		
 		
-	}elseif(($encounter_class_nr == 2 || $inOutPatient == 2 )&&$cash) {
+	}elseif(($encounter_class_nr == 2 )&&$cash) {
 		$cTemp = $cTemp . '<select name="consultation_fee" id="consultation_fee">';
 
 		$cTemp = $cTemp .='</select>';
@@ -1070,9 +1070,23 @@ if (!isset($pid) || !$pid) {
 		
 
 		
-	}else{
+	}elseif($encounter_class_nr == 1 ){
 
-		$cTemp = $cTemp . '<select name="consultation_fee">
+		$cTemp = $cTemp . '<select name="consultation_fee">';
+							
+
+	$sql_con = "SELECT  item_description FROM care_tz_drugsandservices WHERE item_number LIKE 'WD%' AND purchasing_class='service'";
+	$db_con = $db->Execute($sql_con);
+	while ($conrow = $db_con->FetchRow()) {
+		$cTemp = $cTemp . '<option value="' . $conrow['item_description'] . '" ';
+		$cTemp = $cTemp . '>';
+		$cTemp = $cTemp . $conrow['item_description'];
+		$cTemp = $cTemp . '</option>';
+	}
+
+}else{
+
+	$cTemp = $cTemp . '<select name="consultation_fee">
 							<option value=""></option>';
 
 	$sql_con = "SELECT  item_description FROM care_tz_drugsandservices WHERE item_number LIKE 'CONS%' AND purchasing_class='service'";

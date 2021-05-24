@@ -99,6 +99,8 @@ if ($rooms = $db->Execute($sql)) {
 
 # Get the today�s occupancy
 # NOTE: this qry HAS to correspond to Ward._getWardOccupants($ward_nr,$date) which is used to generate ward quick info
+
+$dbf_nodate = ($dbf_nodate == '0000-00-00') ? '1980-01-01' : $dbf_nodate;
 $sqlSnippet = " FROM $dbtable AS w
      LEFT JOIN care_encounter_location AS l ON l.group_nr=w.nr AND l.type_nr=5 ";
 if ($is_today)
@@ -112,7 +114,7 @@ $sqlSnippet.=" AND ce.status NOT IN ('discharged')";
 $sqlSnippet.=" AND l.status NOT IN ('discharged','closed',$ward_obj->dead_stat)";
 
 //put it together
-$sql = "(SELECT 0 AS maxoccbed,nr AS ward_nr 
+$sql = "SELECT 0 AS maxoccbed,nr AS ward_nr 
   	FROM care_ward 
   	WHERE
   	  is_temp_closed IN ('',0) 
@@ -120,11 +122,15 @@ $sql = "(SELECT 0 AS maxoccbed,nr AS ward_nr
   	  AND date_create<='$s_date'
   	  AND nr NOT IN (SELECT distinct w.nr AS ward_nr ";
 $sql.=$sqlSnippet . ")";
-$sql.=") UNION (";
+$sql.=" UNION ";
 $sql.="SELECT COUNT(l.location_nr) AS maxoccbed, w.nr AS ward_nr ";
 $sql.=$sqlSnippet;
-$sql.=" GROUP BY w.nr)";
+$sql.=" GROUP BY w.nr";
 $sql.=" ORDER BY ward_nr";
+
+
+
+
 
 if ($occbed = $db->Execute($sql)) {
     //echo $sql;
@@ -132,6 +138,8 @@ if ($occbed = $db->Execute($sql)) {
 } else {
     echo "$sql<br>$LDDbNoRead";
 }
+
+
 
 /**
  * LOAD Smarty
@@ -199,6 +207,7 @@ if ($rows) {
 
         $roomrow = $rooms->FetchRow();
         $bedrow = $occbed->FetchRow();
+
         $freebeds = $roomrow['maxbed'] - $bedrow['maxoccbed'];
         // Patch 2004-05-15
         if ($roomrow['maxbed']) {

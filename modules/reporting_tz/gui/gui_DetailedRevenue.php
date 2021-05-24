@@ -47,7 +47,7 @@ border-collapse:collapse;
             }
             function printOut(admission_id, dept, insurance)
             {
-                urlholder = "./DetailedRevenue.php?printout=TRUE&start=<?php echo $selected_date_from; ?>&end=<?php echo $selected_date_to; ?>&fileNr=<?php echo $fileNr;?>&company=<?php echo $company; ?>&in_out_patient=" + admission_id + "&dept_nr=" + dept + "&insurance=" + insurance;
+                urlholder = "./DetailedRevenue.php?printout=TRUE&start=<?php echo $selected_date_from; ?>&end=<?php echo $selected_date_to; ?>&fileNr=<?php echo $fileNr;?>&tag=<?php echo $tag;?>&company=<?php echo $company; ?>&in_out_patient=" + admission_id + "&dept_nr=" + dept + "&insurance=" + insurance;
                 testprintout = window.open(urlholder, "printout", "width=800,height=600,menubar=no,resizable=yes,scrollbars=yes");
                 window.testprintout.moveTo(0, 0);
             }

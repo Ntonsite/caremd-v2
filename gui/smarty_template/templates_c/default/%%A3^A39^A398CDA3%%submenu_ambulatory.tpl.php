@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2017-07-16 20:37:44
+<?php /* Smarty version 2.6.22, created on 2021-04-02 18:48:50
          compiled from ambulatory/submenu_ambulatory.tpl */ ?>
 <blockquote>
     <table border=0 cellpadding=5>

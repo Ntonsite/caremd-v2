@@ -1083,6 +1083,20 @@ if (nhifPatient&&allowVerification=="") {
   
 </script>
 
+<script >
+  function disableReSend(){
+        $(document).ready(function () {
+            $(':input[type="image"]').one('click', function (event) {  
+             event.preventDefault();
+           //do something
+             $(this).prop('disabled', true);
+           });
+       });
+    
+    
+  }
+</script>
+
 
 
 </body>

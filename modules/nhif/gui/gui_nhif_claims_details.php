@@ -500,9 +500,75 @@ $investigation_total_cost = 0;
                                      <tr class="shade-light">
                                         <td  colspan="5">INVESTIGATIONS</td>
                                     </tr>
-                                    <?php foreach ($investigations as $investigation): ?>
-                                        <tr class="h-md">
-                                            <td class="w-lg"><?php echo $investigation['description'] ?></td>
+                                    <?php foreach ($investigations as $investigation):
+                                    // echo "<pre>";print_r($investigation); echo "</pre>";
+
+                                     //Flag investigation with no result
+                                     if ($investigation['is_labtest'] == 1) {
+                                        $sqlParamName =  "SELECT paramater_name,batch_nr FROM care_test_request_chemlabor_sub WHERE item_id = '".$investigation['item_number']."' AND encounter_nr = '$encounter_nr' ";
+
+                                        $resultParamName = $db->Execute($sqlParamName);
+                                        if (@$resultParamName && $resultParamName->RecordCount()>0 ) {
+                                            $rowParameter = $resultParamName->FetchRow();
+
+
+                                            //check lab result in result table 
+                                            $sqlJobId = "SELECT * FROM care_test_findings_chemlabor_sub WHERE job_id='".$rowParameter['batch_nr']."' AND encounter_nr='$encounter_nr' AND paramater_name = '".$rowParameter['paramater_name']."' ";
+                                             
+                                            $resultJobId = $db->Execute($sqlJobId);
+                                            if (@$resultJobId && $resultJobId->RecordCount()>0) {
+                                                $rowJobId = $resultJobId->FetchRow();
+                                                $isResultEntered = (@$rowJobId['parameter_value']) ? true : false; 
+                                            }else{
+                                                $isResultEntered = false;
+                                            }
+
+                                            
+                                        }
+                                         
+                                     }else{
+
+                                        $sqlBatchRadio =  "SELECT batch_nr FROM care_test_request_radio WHERE test_request = '".$investigation['item_number']."' AND encounter_nr = '$encounter_nr' ";
+
+                                        $resultBatchRadio = $db->Execute($sqlBatchRadio);
+                                        if (@$resultBatchRadio && $resultBatchRadio->RecordCount()>0 ) {
+                                            $rowBatchRadio = $resultBatchRadio->FetchRow();
+
+
+                                            //check lab result in result table 
+                                            $sqlFindingRadio = "SELECT * FROM care_test_findings_radio WHERE batch_nr='".$rowBatchRadio['batch_nr']."' AND encounter_nr='$encounter_nr'";
+                                             
+                                            $resultFindingRadio = $db->Execute($sqlFindingRadio);
+                                            if (@$resultFindingRadio && $resultFindingRadio->RecordCount()>0) {
+                                                $rowFindingRadio = $resultFindingRadio->FetchRow();
+                                                $isResultEntered = (@$rowFindingRadio['findings']) ? true : false; 
+                                            }else{
+                                                $isResultEntered = false;
+                                            }
+
+                                        }
+
+                                     }
+
+                                     $warnLab = '';
+                                     $rowColor = '';
+                                     $dataColor = '';
+                                     if ($isResultEntered == false) {
+                                       $rowColor = "bg-danger";
+                                       $warnLab = "(FINDINGS NOT ENTERED PLEASE FILL FINDINGS BEFORE APPROVAL)";
+                                       $dataColor ="text-light";
+                                     }else{
+                                      $rowColor = "h-md";
+                                       $dataColor = "w-lg";
+                                       }
+
+                                       
+
+                                     
+
+                                     ?>
+                                        <tr class="<?php echo $rowColor; ?>">
+                                            <td class="<?php echo $dataColor ?>"><?php echo $investigation['description'].' '.$warnLab; ?></td>
                                             <td><?php echo $investigation['nhif_item_code'] ?></td>
                                             <td class="text-right"><?php echo number_format($investigation['amount'], 2) ?></td>
                                             <td class="text-right"><?php echo number_format($investigation['price'], 2) ?></td>

@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2019-11-29 17:47:49
+<?php /* Smarty version 2.6.22, created on 2021-05-21 20:35:13
          compiled from nursing/ward_occupancy.tpl */ ?>
 
 <?php echo $this->_tpl_vars['sWarningPrompt']; ?>
@@ -16,8 +16,8 @@
 <div style="width:100%; padding:3px; text-align:center; background:lime; border-bottom:5px solid white;" class="adm_item">
     <input type='button' value="Refresh Patient List" name = 'btn' class="mimHover" onclick="window.location.href = '<?php echo $this->_tpl_vars['sReloadBtn']; ?>
 '" >
-    <input type="button" value="Un Discharge Patient" class="mimHover" onClick="showDischargedPatients()">
-
+    <!-- <input type="button" value="Un Discharge Patient" class="mimHover" onClick="showDischargedPatients()">
+  -->
 </div>
 <table cellspacing="0" cellpadding="0" width="100%">
     <tbody>
@@ -36,8 +36,8 @@ unset($_smarty_tpl_vars);
 <div style="width:100%; padding:3px; text-align:center; background:lime; border-top:5px solid white;" class="adm_item">
     <input type='button' value="Refresh Patient List" name = 'btn' class="mimHover" onclick="window.location.href = '<?php echo $this->_tpl_vars['sReloadBtn']; ?>
 '" >
-    <input type="button" value="Un Discharge Patient" class="mimHover" onClick="showDischargedPatients()">
-    
+   <!--  <input type="button" value="Un Discharge Patient" class="mimHover" onClick="showDischargedPatients()">
+    --> 
 </div>
 <p>
     <?php echo $this->_tpl_vars['pDiagnosis']; ?>

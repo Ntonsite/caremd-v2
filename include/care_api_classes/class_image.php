@@ -268,12 +268,17 @@ class Image extends Core {
 	 * @return boolean
 	 */
 	function isValidUploadedImage($img, $mfilter = '') {
+		global $mfilter;
 		if (empty($mfilter)) {
 			$mfilter = $this->mimefilter;
 		}
 
 		if (is_uploaded_file($img['tmp_name']) && $img['size']) {
 			$this->ul_img_ext = substr($img['name'], strrpos($img['name'], '.') + 1);
+
+			$this->ul_img_ext = (stristr($mfilter, $this->ul_img_ext)) ? $this->ul_img_ext : 'dcm';
+			//echo $this->ul_img_ext; die;
+
 			if (stristr($mfilter, $this->ul_img_ext)) {
 				return true;
 			} else {

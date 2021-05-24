@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2019-11-19 10:22:47
+<?php /* Smarty version 2.6.22, created on 2021-04-02 18:48:58
          compiled from ambulatory/outpatients_list_row.tpl */ ?>
 
 <?php if ($this->_tpl_vars['bToggleRowClass']): ?>

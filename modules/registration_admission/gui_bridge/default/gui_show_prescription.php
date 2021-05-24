@@ -58,6 +58,11 @@ $toggle = 0;
 while ($row = $result->FetchRow()) {
 	//this page appear in pharmacy
 	//echo "<pre>"; print_r($row); echo "</pre>";
+
+
+
+
+
 	if ($toggle) {
 		$bgc = '#f3f3f3';
 	} else {
@@ -73,6 +78,8 @@ while ($row = $result->FetchRow()) {
 	else {
 		$full_en = $row['encounter_nr'] + $GLOBAL_CONFIG['patient_outpatient_nr_adder'];
 	}
+
+
 	// outpatient admission
 	$amount = 0;
 	$notbilledyet = false;
@@ -126,9 +133,23 @@ echo $row['total_dosage'];
 	 ?>
             </td>
             <?php
-$transmit_to_weberp_enabled = $glob_obj->getConfigValue('transmit_to_weberp_enabled');
+            
 
-	if ($transmit_to_weberp_enabled == 1) {
+          
+$transmit_to_weberp_enabled = $glob_obj->getConfigValue('transmit_to_weberp_enabled');
+$nurse_chart_deduct_stock_enabled = $glob_obj->getConfigValue('nurse_chart_deduct_stock');
+
+//echo $row['encounter_class_nr'];
+
+/*
+1. chart deduct enabled and xmlrpc enabled and is ipd then pass only supplies
+2. else if xmlrpc enabled and chart_deduct disabled then do normally
+
+*/
+
+
+
+	if ($transmit_to_weberp_enabled == 1 ) {
 
 
 

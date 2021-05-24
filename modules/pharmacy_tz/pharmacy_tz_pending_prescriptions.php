@@ -15,6 +15,8 @@ require_once $root_path . 'include/care_api_classes/class_tz_billing.php';
  */
 require_once $root_path . 'include/care_api_classes/class_encounter.php';
 $transmit_to_weberp_enabled = $glob_obj->getConfigValue('transmit_to_weberp_enabled');
+$stock_deduction_on_chart_enabled = $glob_obj->getConfigValue('nurse_chart_deduct_stock');
+$nurse_chart_injection_opd = $glob_obj->getConfigValue('nurse_chart_injection_opd');
 if ($transmit_to_weberp_enabled == 1) {
 	require_once $root_path . 'include/care_api_classes/class_weberp_c2x.php';
 	$weberp_obj = new weberp();
@@ -57,6 +59,11 @@ if ($admission == 'inpatient') {
 	}
 }
 
+
+
+
+
+
 $debug = false;
 
 if ($debug) {
@@ -82,6 +89,22 @@ if (empty($back_path)) {
 	}
 
 }
+
+
+if ($transmit_to_weberp_enabled === "1" && $stock_deduction_on_chart_enabled === "1" && $admission == 'inpatient' ) :
+
+	$purchasing_class = "AND  care_tz_drugsandservices.purchasing_class = 'supplies'";
+
+else:
+
+	$purchasing_class = "AND ( care_tz_drugsandservices.purchasing_class = 'drug_list' OR care_tz_drugsandservices.purchasing_class ='supplies' )";          	
+endif;
+
+
+if ( $nurse_chart_injection_opd == 1) :
+	$exclude_injection = "AND care_tz_drugsandservices.sub_class NOT IN('injections','ampule')";
+endif;
+
 
 $mode = isset($mode) ? $mode : "";
 if ($mode == "done" && isset($pn) && isset($prescription_date)) {
@@ -123,18 +146,20 @@ if ($mode == "done" && isset($pn) && isset($prescription_date)) {
 	//xmlrpc API is On
 	if ($transmit_to_weberp_enabled === "1") {
 
+
+
 		if ($glob_obj->getConfigValue("restrict_unbilled_items") === "1" && $insname === "CASH") {
 			$sql = "SELECT pr.*, e.encounter_class_nr FROM care_encounter AS e, care_person AS p, care_encounter_prescription AS pr, care_tz_drugsandservices
           WHERE p.pid=" . $_SESSION['sess_pid'] . " AND p.pid=e.pid AND e.encounter_nr=pr.encounter_nr
                       AND pr.article_item_number=care_tz_drugsandservices.item_id
-                      AND (pr.bill_number > '0'  OR e.encounter_class_nr = '1')
-                      AND ( purchasing_class = 'drug_list' OR purchasing_class='supplies')  AND  (pr.status='pending' OR pr.status='') AND pr.encounter_nr='" . $pn . "'  AND pr.prescribe_date='" . $prescription_date . "'
+                      AND (pr.bill_number > '0'  OR e.encounter_class_nr = '1') $exclude_injection
+                      $purchasing_class  AND  (pr.status='pending' OR pr.status='') AND pr.encounter_nr='" . $pn . "'  AND pr.prescribe_date='" . $prescription_date . "'
           ORDER BY pr.modify_time DESC";
 			//echo $sql;
 		} else {
 			$sql = "SELECT pr.*, e.encounter_class_nr FROM care_encounter AS e, care_person AS p, care_encounter_prescription AS pr, care_tz_drugsandservices
           WHERE p.pid=" . $_SESSION['sess_pid'] . " AND p.pid=e.pid AND e.encounter_nr=pr.encounter_nr
-                      AND pr.article_item_number=care_tz_drugsandservices.item_id AND ( purchasing_class = 'drug_list' OR purchasing_class='supplies')  AND (pr.status='pending' OR pr.status='') AND pr.encounter_nr='" . $pn . "' AND pr.prescribe_date='" . $prescription_date . "'
+                      AND pr.article_item_number=care_tz_drugsandservices.item_id  $purchasing_class $exclude_injection  AND (pr.status='pending' OR pr.status='') AND pr.encounter_nr='" . $pn . "' AND pr.prescribe_date='" . $prescription_date . "'
           ORDER BY pr.modify_time DESC";
 		}
 
@@ -282,13 +307,48 @@ if (empty($mode)) /* Get the pending test requests */ {
 	// 	"GROUP by care_encounter_prescription.prescribe_date, care_encounter_prescription.encounter_nr, care_person.pid, care_person.selian_pid, name_first, name_last " .
 	// 	"ORDER BY care_encounter_prescription.prescribe_date DESC";
 
-		$sql="SELECT care_person.pid, care_person.selian_pid, UPPER(name_last) as name_last, CONCAT(name_first,' ', name_2) AS name_first, care_encounter_prescription.encounter_nr, care_encounter_prescription.prescribe_date, care_person.pid as batch_nr 
-		FROM care_encounter_prescription 
-		INNER JOIN care_encounter ON care_encounter_prescription.encounter_nr = care_encounter.encounter_nr  
-		INNER JOIN care_person ON care_encounter.pid = care_person.pid 
-		INNER JOIN care_tz_drugsandservices ON care_encounter_prescription.article_item_number=care_tz_drugsandservices.item_id  
-		WHERE  care_encounter_prescription.mark_os='0' AND (care_encounter_prescription.status='pending' OR care_encounter_prescription.status='') and care_encounter.pharmacy='$locationcode' $and_admission_class and ( care_tz_drugsandservices.purchasing_class = 'drug_list' OR care_tz_drugsandservices.purchasing_class ='supplies' ) 
-		GROUP by care_encounter_prescription.prescribe_date, care_encounter_prescription.encounter_nr, care_person.pid, care_person.selian_pid, name_first, name_last ORDER BY care_encounter_prescription.prescribe_date DESC";
+       /*
+        disable drug_list if stock deduction is enabled for IPD, only supplies should be shown      
+
+
+       */
+
+// $transmit_to_weberp_enabled 
+// $stock_deduction_on_chart_enabled 
+         
+ 
+
+
+
+
+
+
+
+		$sql="SELECT care_person.pid,
+		             care_person.selian_pid, 
+		             UPPER(name_last) as name_last, CONCAT(name_first,' ', name_2) AS name_first,
+		             care_encounter_prescription.encounter_nr,
+		             care_encounter_prescription.prescribe_date,
+		             care_person.pid as batch_nr 
+		      FROM care_encounter_prescription 
+		      INNER JOIN care_encounter ON care_encounter_prescription.encounter_nr = care_encounter.encounter_nr  
+		      INNER JOIN care_person ON care_encounter.pid = care_person.pid 
+		      INNER JOIN care_tz_drugsandservices ON care_encounter_prescription.article_item_number=care_tz_drugsandservices.item_id  
+		      WHERE  care_encounter_prescription.mark_os='0' 
+		      AND (care_encounter_prescription.status='pending' OR care_encounter_prescription.status='') 
+		      AND care_encounter.pharmacy='$locationcode' $and_admission_class  $purchasing_class $exclude_injection
+		       AND care_encounter_prescription.prescribe_date > now() - INTERVAL 30 day
+
+		      GROUP by care_encounter_prescription.prescribe_date, care_encounter_prescription.encounter_nr, care_person.pid, care_person.selian_pid, name_first, name_last 
+		      ORDER BY care_encounter_prescription.prescribe_date DESC";
+
+
+		      
+
+
+
+
+
 		
 
 	 

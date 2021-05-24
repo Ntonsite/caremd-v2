@@ -80,7 +80,15 @@ if (!isset($mode)) {
 
 			}
 
+		
+
+
+
+
 			$imageTypes = explode('/', $_FILES[$picfile]['type']);
+
+
+              
 			$data = array('pid' => $pid,
 				'encounter_nr' => $_POST['encounter_nr'],
 				'doc_ref_ids' => $_POST['doc_ref_ids'],
@@ -110,7 +118,20 @@ if (!isset($mode)) {
 				# to simplify sorting of the filenames according to order of upload
 				$prep = 1000 + $icount;
 
+                //octet-stream
+
+                $imageTypes = explode('/', $_FILES[$picfile]['type']);
+
+                //print_r($imageTypes);die;
+                if ($imageTypes[1] == 'octet-stream') {
+
+                	$_FILES[$picfile]['name'] = $_FILES[$picfile]['name'].'.dcm';
+                	
+                }
+
+
 				$picfilename = $prep . '_' . $_FILES[$picfile]['name'];
+
 
 				//echo $_FILES[$picfile]['name'].' <img '.createComIcon($root_path,'fwd.gif','0','absmiddle').'> ';
 				# Echo for debugging

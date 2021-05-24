@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2017-07-16 21:08:04
+<?php /* Smarty version 2.6.22, created on 2021-05-21 20:35:10
          compiled from nursing/nursing.tpl */ ?>
 <blockquote>
     <TABLE cellSpacing=0  width=600 class="submenu_frame" cellpadding="0">

@@ -442,7 +442,7 @@ $isNHIFRestricted = $pres_obj->isNHIFRestristed($item_array[$i]);
 			echo '<select class="presptionSelect" id="total_dosage' . $i . '" name="arr_total_dosage[' . $i . ']">';
 
 			$totalDoseUnits[0] = '';
-			for ($doseCounter = 1; $doseCounter < 11; $doseCounter++) {
+			for ($doseCounter = 1; $doseCounter < 81; $doseCounter++) {
 				$totalDoseUnits[$doseCounter] = $doseCounter;
 			}
 
@@ -728,7 +728,7 @@ if (isset($externalcall)) {
     <?php }?>
 
         <input type="hidden" name="is_outpatient_prescription" value="1">
-        <input type="image" <?php echo createLDImgSrc($root_path, 'savedisc.gif', '0'); ?> id="save">
+        <input type="image" onclick="return disableReSend()" <?php echo createLDImgSrc($root_path, 'savedisc.gif', '0'); ?> id="save">
 
     </form>
 

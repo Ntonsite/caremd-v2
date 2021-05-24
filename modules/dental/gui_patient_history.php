@@ -170,7 +170,7 @@ print '<body ';
                     <div id="prntcc">
                         <input name="New" type="button" id="Close2" value="Add Notes &raquo;" class="button" onClick="navigate('<?php echo $encounter_nr; ?>&url=<?php echo '../dental/gui_patient_history.php|' . $pid; ?>', '../dental/gui_dental_addnotes.php')" >
                         <input name="Print" type="button" id="Print2" value="Print this &raquo;" class="button" onClick="printPage();" >
-                        <input name="Close" type="button" id="Close2" value="Close" class="button2" onClick="javascript:history.back();" >
+                        <input name="Close" type="button" id="Close2" value="Close" class="button2" onclick="getinfo(<?php echo $encounter_nr ?>)" >
                     </div>
                 </div>
             </td>

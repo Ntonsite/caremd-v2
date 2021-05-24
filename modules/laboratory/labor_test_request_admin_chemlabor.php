@@ -109,7 +109,7 @@ if (empty($mode)) /* Get the pending test requests with no specimen/sample colle
 					care_encounter, care_person
 						         WHERE (tr.status='pending' OR tr.status='')  AND
 						         tr.encounter_nr = care_encounter.encounter_nr AND
-						         care_encounter.pid = care_person.pid
+						         care_encounter.pid = care_person.pid AND (tr.send_date > now() - INTERVAL 30 day) 
 
                                                          AND tr.specimen_collected = 0
 						         ORDER BY  tr.send_date DESC";
@@ -137,7 +137,7 @@ if (empty($mode)) /* Get the pending test requests with no specimen/sample colle
 					care_encounter, care_person
 						         WHERE (tr.status='pending' OR tr.status='')  AND
 						         tr.encounter_nr = care_encounter.encounter_nr AND
-						         care_encounter.pid = care_person.pid
+						         care_encounter.pid = care_person.pid AND  (tr.send_date > now() - INTERVAL 30 day)
 
                                                          AND tr.specimen_collected = 1
 						         ORDER BY  tr.send_date DESC";

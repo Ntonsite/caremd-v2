@@ -31,7 +31,6 @@
                         
                         <input type='button' value="Refresh Patient List" name = 'btn' class="mimHover" onclick="window.location.href = '{{$sReloadBtn}}'" >
                         <input type="button" value="Un Discharge Patient" class="mimHover" onClick="showDischargedPatients()">
-
                     </div>
                     <p>
                         {{$showDiagnosis}}

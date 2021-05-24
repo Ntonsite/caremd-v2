@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2019-03-10 20:17:28
+<?php /* Smarty version 2.6.22, created on 2021-04-02 18:48:50
          compiled from common/mainframe.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('function', 'config_load', 'common/mainframe.tpl', 4, false),)), $this); ?>

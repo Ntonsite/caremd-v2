@@ -1,6 +1,8 @@
 <?php
 $diagnostic_obj->loadEncounterData($_SESSION['sess_en']);
-$encounter_arr = $diagnostic_obj->getLoadedEncounterData();?>
+$encounter_arr = $diagnostic_obj->getLoadedEncounterData();
+//echo "<pre>"; print_r($encounter_arr); "</pre>";
+?>
 <html>
 <head>
 <title><?php echo $LDDiagnoses; ?></title>

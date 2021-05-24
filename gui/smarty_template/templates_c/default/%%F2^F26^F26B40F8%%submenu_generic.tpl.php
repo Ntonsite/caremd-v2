@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2017-07-16 20:37:44
+<?php /* Smarty version 2.6.22, created on 2021-04-02 18:48:50
          compiled from ambulatory/submenu_generic.tpl */ ?>
 <form name="dept_select" method="post" action="">
     <TABLE cellSpacing=0  width=600 class="submenu_frame" cellpadding="0">

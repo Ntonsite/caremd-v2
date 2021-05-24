@@ -21,7 +21,7 @@ $claims_obj = new Nhif_claims;
 
 
 //make tcpdf object
-$pdf = new TCPDF('p','mm', 'A4');
+$pdf = new TCPDF('L','mm', 'A4');
 
 //remove default header and footer
 $pdf->setPrintHeader(false);
@@ -210,7 +210,7 @@ $fill=$pdf->SetFillColor(249,249,249); // Grey
 
 
 $pdf->SetFont('Helvetica','B',8);
-$pdf->Cell(160,'',$serialNumber,'','','R');
+$pdf->Cell(250,'',$serialNumber,'','','R');
 //$pdf->Cell(100,'',"555555",'','','R');
 //Cell(w, h = 0, txt = '', border = 0, ln = 0, align = '', fill = 0, link = nil, stretch = 0, ignore_min_height = false, calign = 'T', valign = 'M') ⇒ Object
 
@@ -228,7 +228,7 @@ $pdf->Cell(50,5,$companyName,'B','C','');
 $pdf->SetFont('Helvetica','',8);
 $pdf->Cell(14,5,'2.Address','','','');
 $pdf->SetFont('Helvetica','B',8);
-$pdf->Cell(90,5,$companyAddress,'B','','');
+$pdf->Cell(58,5,$companyAddress,'B','','');
 //$pdf->Cell(25,5,'Morogoro','','','',$fill);
 
 // $pdf->SetFont('Helvetica','',8);
@@ -236,7 +236,7 @@ $pdf->Cell(90,5,$companyAddress,'B','','');
 // $pdf->SetFont('Helvetica','B',8);
 // $pdf->Cell(20,5,number_format($consultation_total_cost),'','','');
 
-$pdf->Ln();
+//$pdf->Ln();
 $pdf->SetFont('Helvetica','',8);
 $pdf->Cell(25,5,'        3.Department','');
 $pdf->SetFont('Helvetica','B',8);
@@ -267,11 +267,12 @@ $pdf->SetFont('Helvetica','',8);
 $pdf->Cell(20,5,'4.Occupation:','');
 $pdf->SetFont('Helvetica','B',8);
 $pdf->Cell(20,5,'','B','C','1');
-$pdf->Ln();
+//$pdf->Ln();
 $pdf->SetFont('Helvetica','',8);
 $pdf->Cell(30,5,'        5.Patient File No.:','');
 $pdf->SetFont('Helvetica','B',8);
-$pdf->Cell(20,5,$rowDetails['selian_pid'],'B','C');
+$pdf->Cell(50,5,$rowDetails['selian_pid'],'B','C');
+$pdf->Ln();
 $pdf->SetFont('Helvetica','',8);
 $pdf->Cell(33,5,'6.Physical Address','');
 $pdf->SetFont('Helvetica','B',8);
@@ -280,24 +281,25 @@ $pdf->SetFont('Helvetica','',8);
 $pdf->Cell(20,5,'7.Card Number:','');
 $pdf->SetFont('Helvetica','B',8);
 $pdf->Cell(38,5,$rowDetails['membership_nr'],'B','C');
-$pdf->Ln();
+//$pdf->Ln();
 $pdf->SetFont('Helvetica','',8);
 $pdf->Cell(38,5,'        8.Authorization No:','');
 $pdf->SetFont('Helvetica','B',8);
 $pdf->Cell(38,5,$rowDetails['nhif_authorization_number'],'B','C');
 $pdf->SetFont('Helvetica','',8);
+$pdf->Ln();
 $pdf->Cell(15,5,'9.Vote:','');
 $pdf->SetFont('Helvetica','B',8);
 $pdf->Cell(18,5,$rowDetails['employee_id'],'B','C');
 $pdf->SetFont('Helvetica','',8);
-$pdf->Ln();
+//$pdf->Ln();
 $pdf->Cell(50,5,'       10.Preliminary Diagnosis (Code):','');
 $pdf->SetFont('Helvetica','B',8);
-$pdf->Cell(35,5,$preliminaryDX,'B');
+$pdf->Cell(55,5,$preliminaryDX,'B');
 $pdf->SetFont('Helvetica','',8);
 $pdf->Cell(45,5,'11.Final Diagnosis (Code):','');
 $pdf->SetFont('Helvetica','B',8);
-$pdf->Cell(35,5,$finalDX,'B','');
+$pdf->Cell(55,5,$finalDX,'B','');
 
 
 
@@ -321,7 +323,7 @@ $pdf->Ln();
 $pdf->Cell(33,5,'B: Details / Cost of services','C');
 $pdf->Ln();
 $pdf->SetFont('Helvetica','B',12);
-$pdf->Cell(100,5,"Description",1,'C','',$fill);
+$pdf->Cell(185,5,"Description",1,'C','',$fill);
 $pdf->Cell(30,5,"Item Code",1,'','',$fill);
 $pdf->Cell(15,5,"Qty",1,'','',$fill);
 $pdf->Cell(25,5,"Unit Price",1,'','',$fill);
@@ -333,12 +335,12 @@ $pdf->Ln();
 if ($consultation_total_cost > 0){
 
      $pdf->SetFont('Helvetica','',12);
-     $pdf->Cell(195,5,"CONSULTATIONS",1,'C','',$fill);
+     $pdf->Cell(280,5,"CONSULTATIONS",1,'C','',$fill);
      $pdf->Ln();
 
     foreach ($consultations as $consultation){
 
-      $pdf->Cell(100,5,$consultation['description'],1,'C','');
+      $pdf->Cell(185,5,$consultation['description'],1,'C','');
       
       $pdf->Cell(30,5,$consultation['nhif_item_code'],1,'','');
       $pdf->Cell(15,5,number_format($consultation['amount']),1,'','');
@@ -348,7 +350,7 @@ if ($consultation_total_cost > 0){
 
 
     }
-    $pdf->Cell(170,5,'SUB TOTAL',1,'C','');
+    $pdf->Cell(255,5,'SUB TOTAL',1,'C','');
     $pdf->Cell(25,5,number_format($consultation_total_cost),1,'','');  
 
 }
@@ -364,12 +366,12 @@ foreach ($investigations as $investigation) {
 
   if ($investigation_total_cost > 0){
      $pdf->SetFont('Helvetica','',12);
-     $pdf->Cell(195,5,"INVESTIGATIONS",1,'C','',$fill);
+     $pdf->Cell(280,5,"INVESTIGATIONS",1,'C','',$fill);
      $pdf->Ln();
     foreach ($investigations as $investigation){
 
-      $pdf->Cell(100,5,$investigation['description'],1,'C','');
-      $pdf->Cell(30,5,$investigation_total_cost['nhif_item_code'],1,'','');
+      $pdf->Cell(185,5,$investigation['description'],1,'C','');
+      $pdf->Cell(30,5,$investigation['nhif_item_code'],1,'','');
       $pdf->Cell(15,5,number_format($investigation['amount']),1,'','');
       $pdf->Cell(25,5,number_format($investigation['price']),1,'','');
       $pdf->Cell(25,5,number_format($investigation['row_amount']),1,'','');
@@ -377,7 +379,7 @@ foreach ($investigations as $investigation) {
 
     }
 
-    $pdf->Cell(170,5,'SUB TOTAL',1,'C','');
+    $pdf->Cell(255,5,'SUB TOTAL',1,'C','');
     $pdf->Cell(25,5,number_format($investigation_total_cost),1,'','');  
 
   }
@@ -397,13 +399,13 @@ foreach ($investigations as $investigation) {
 
      if ($drugs_total_cost > 0){
      $pdf->SetFont('Helvetica','',12);
-     $pdf->Cell(195,5,"MEDICINES",1,'C','',$fill);
+     $pdf->Cell(280,5,"MEDICINES",1,'C','',$fill);
      $pdf->Ln();
      
 
      foreach ($medicines as $medicine){
 
-      $pdf->Cell(100,5,$medicine['description'],1,'C','');
+      $pdf->Cell(185,5,$medicine['description'],1,'C','');
       
       $pdf->Cell(30,5,$medicine['nhif_item_code'],1,'','');
       $pdf->Cell(15,5,number_format($medicine['amount']),1,'','');
@@ -414,7 +416,7 @@ foreach ($investigations as $investigation) {
 
     }
 
-    $pdf->Cell(170,5,'SUB TOTAL',1,'C','');
+    $pdf->Cell(255,5,'SUB TOTAL',1,'C','');
     $pdf->Cell(25,5,number_format($drugs_total_cost),1,'','');
 
 
@@ -432,11 +434,11 @@ foreach ($investigations as $investigation) {
 
   if ($procedure_total_cost > 0){
      $pdf->SetFont('Helvetica','',12);
-     $pdf->Cell(195,5,"PROCEDURES",1,'C','',$fill);
+     $pdf->Cell(280,5,"PROCEDURES",1,'C','',$fill);
      $pdf->Ln();
 
      foreach ($procedures as $procedure){
-      $pdf->Cell(100,5,$procedure['description'],1,'C','');
+      $pdf->Cell(185,5,$procedure['description'],1,'C','');
       
       $pdf->Cell(30,5,$procedure['nhif_item_code'],1,'','');
       $pdf->Cell(15,5,number_format($procedure['amount']),1,'','');
@@ -446,7 +448,7 @@ foreach ($investigations as $investigation) {
 
      }
 
-     $pdf->Cell(170,5,'SUB TOTAL',1,'C','');
+     $pdf->Cell(255,5,'SUB TOTAL',1,'C','');
      $pdf->Cell(25,5,number_format($procedure_total_cost),1,'','');
 
 
@@ -464,13 +466,13 @@ $pdf->Ln();
   if ($supplies_total_cost > 0){
 
     $pdf->SetFont('Helvetica','',12);
-     $pdf->Cell(195,5,"SUPPLIES/SERVICES",1,'C','',$fill);
+     $pdf->Cell(280,5,"SUPPLIES/SERVICES",1,'C','',$fill);
      $pdf->Ln();
 
 
      foreach ($supplies as $supply){
 
-      $pdf->Cell(100,5,$supply['description'],1,'C','');      
+      $pdf->Cell(185,5,$supply['description'],1,'C','');      
       $pdf->Cell(30,5,$supply['nhif_item_code'],1,'','');
       $pdf->Cell(15,5,number_format($supply['amount']),1,'','');
       $pdf->Cell(25,5,number_format($supply['price']),1,'','');
@@ -480,7 +482,7 @@ $pdf->Ln();
 
      }
 
-     $pdf->Cell(170,5,'SUB TOTAL',1,'C','');
+     $pdf->Cell(255,5,'SUB TOTAL',1,'C','');
      $pdf->Cell(25,5,number_format($supplies_total_cost),1,'','');
 
   }
@@ -493,7 +495,7 @@ $pdf->Ln();
 
 
 
-     $pdf->Cell(170,5,'GRAND TOTAL',1,'C','');
+     $pdf->Cell(255,5,'GRAND TOTAL',1,'C','');
      $pdf->Cell(25,5,$grandtotal,1,'','');
      $pdf->Ln();
 
@@ -535,33 +537,33 @@ $pdf->Cell(28,10,$docUser['practitioner_nr'],'B','C','');
 //****************************************************************
 
 
-$pdf->Ln();
 
 $pdf->SetFont('Helvetica','B',8);
 $pdf->Cell(15,10,'Mob. No:','','','');
 $pdf->SetFont('Helvetica','',8);
 $pdf->Cell(25,10,$docUser[' tel_no'],'','C','');
+$pdf->Ln();
 
 
 //****************************************************************
 $pdf->SetFont('Helvetica','B',8);
 $pdf->Cell(18,10,'Signature:','','','');
-$pdf->writeHTMLCell('','','','',$doctorSignature);
+$pdf->writeHTMLCell('',18,'','',$doctorSignature,'');
 //****************************************************************
   $pdf->Ln();
   $pdf->Ln();
-  $pdf->Ln();
+  
 
 //****************************************************************
 
 $pdf->SetFont('Helvetica','B',10);
-$pdf->Cell(160,10,'D: Uthibitisho wa mgonjwa/Patient Certification:','','','L');
+$pdf->Cell(280,10,'D: Uthibitisho wa mgonjwa/Patient Certification:','','','L');
 $pdf->Ln();
 $pdf->SetFont('Helvetica','',8);
-$pdf->Cell(75,5,'Nathibitisha kuwa nimepokea huduma zilizoanishwa hapo juu na natambua kwamba ni kosa kisheria kukiri kupata matibabu ambayo hayajatolewa.','','','L');
+$pdf->Cell(280,5,'Nathibitisha kuwa nimepokea huduma zilizoanishwa hapo juu na natambua kwamba ni kosa kisheria kukiri kupata matibabu ambayo hayajatolewa.','','','L');
 $pdf->Ln();
 
-$pdf->Cell(75,5,'I certify that I received the above mentioned services as witnessed by my signature hereunder and I understand that it is illegal to provide false testimony.','','','L');
+$pdf->Cell(280,5,'I certify that I received the above mentioned services as witnessed by my signature hereunder and I understand that it is illegal to provide false testimony.','','','L');
 
 $pdf->Ln();
 $pdf->SetFont('Helvetica','B',8);
@@ -580,18 +582,17 @@ $pdf->Ln();
 
 $pdf->SetFont('Helvetica','B',8);
 $pdf->Cell(18,10,'Signature:','','','');
-$pdf->writeHTMLCell('','','','',$patientSignature);
-$pdf->Ln();
-$pdf->Ln();
+$pdf->writeHTMLCell('',18,'','',$patientSignature,'');
 $pdf->Ln();
 
-$pdf->Cell(75,5,'Hakikisha unasaini fomu baada ya kupatiwa huduma na kupatiwa nakala ya fomu hii iliyojazwa huduma ulizopatiwa.','','','L');
+
+$pdf->Cell(280,5,'Hakikisha unasaini fomu baada ya kupatiwa huduma na kupatiwa nakala ya fomu hii iliyojazwa huduma ulizopatiwa.','','','L');
 $pdf->Ln();
-$pdf->Cell(75,5,'Make sure you receive a copy of the form you signed.','','','L');
+$pdf->Cell(280,5,'Make sure you receive a copy of the form you signed.','','','L');
 
 $pdf->Ln();
 $pdf->SetFont('Helvetica','B',8);
-$pdf->Cell(75,5,'E: Description of In/Out-patient Management/any other additional Information(a separate sheet of paper can be used):.','','','L');
+$pdf->Cell(280,5,'E: Description of In/Out-patient Management/any other additional Information(a separate sheet of paper can be used):.','','','L');
 $pdf->Ln();
 $pdf->Ln();
 $pdf->SetFont('Helvetica','B',8);
@@ -612,7 +613,7 @@ $pdf->Cell(40,5,$docUser['name'],'','C','');
 
 $pdf->SetFont('Helvetica','B',8);
 $pdf->Cell(15,5,'Signature:','','','');
-$pdf->writeHTMLCell('','','','',$doctorSignature);
+$pdf->writeHTMLCell('',18,'','',$doctorSignature,'');
 
 $pdf->Ln();
 

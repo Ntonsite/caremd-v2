@@ -12,7 +12,7 @@ if($substore_value) header("location: pharmacy_tz.php");
  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 
   	<script language="javascript" >
-<!--
+
 function gethelp(x,s,x1,x2,x3,x4)
 {
 	if (!x) x="";
@@ -20,7 +20,7 @@ function gethelp(x,s,x1,x2,x3,x4)
 	helpwin=window.open(urlholder,"helpwin","width=790,height=540,menubar=no,resizable=yes,scrollbars=yes");
 	window.helpwin.moveTo(0,0);
 }
-// -->
+
 
 </script>
 <link rel="stylesheet" href="../../css/themes/default/default.css" type="text/css">
@@ -35,7 +35,7 @@ A:visited:active {color: #cc0000;}
 A:visited:hover {color: #cc0033;}
 </style>
 <script language="JavaScript">
-<!--
+
 
 function popPic(pid,nm){
 
@@ -51,14 +51,13 @@ function getARV(path) {
 
 
 
-// -->
 </script>
 
 
 </HEAD>
 <BODY bgcolor=#ffffff link=#000066 alink=#cc0000 vlink=#000066  >
 
-<!-- START HEAD OF HTML CONTENT --->
+
 
 <table width=100% border=0 cellspacing=0 height=100%>
 	<tr>
@@ -75,7 +74,7 @@ function getARV(path) {
   					 </tr>
  </table>
 
-<!-- END OF HEAD OF HTML CONTENT--->
+
 <?php
 $data=array();
 $sql_subtore="SELECT loccode, locationname FROM locations";

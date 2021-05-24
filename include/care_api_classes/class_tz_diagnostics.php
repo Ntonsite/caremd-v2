@@ -651,6 +651,7 @@ class Diagnostics extends Encounter {
                      '$ipd_name'
                   );";                  
 		$db->Execute($this->sql);
+		//echo 'new diag'. $this->sql;die;
 		if ($db->Affected_Rows()) {
 			return TRUE;
 		} else {
@@ -698,7 +699,7 @@ class Diagnostics extends Encounter {
                       `$this->tbl_diagnosis_ICD_10_description` ,
                       `$this->tbl_diagnosis_type`,
                       `$this->tbl_diagnosis_comment`,
-					            `$this->tbl_diagnosis_doctor_name`,
+					  `$this->tbl_diagnosis_doctor_name`,
                       `diagnosis_type`,
                       `series`,
                       `opd_series`,
@@ -715,7 +716,7 @@ class Diagnostics extends Encounter {
                       '$ICD10_description',
                       '$type',
                       '$comment',
-					           '$doctor',
+					  '$doctor',
                      '$diagnosisType',
                      '$series',
                      '$opd_series',
@@ -723,7 +724,12 @@ class Diagnostics extends Encounter {
                      '$ipd_series',
                      '$ipd_name'
                   );";
-		$db->Execute($this->sql);
+		$db->Execute($this->sql);   
+        
+          
+
+
+
 		if ($db->Affected_Rows()) {
 			return TRUE;
 		} else {

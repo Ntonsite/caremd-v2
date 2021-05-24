@@ -33,9 +33,13 @@ if ($enc_obj->loadEncounterData($pn)) {
 
 	if (($mode == 'release') && !(isset($lock) || $lock)) {
 
+
+
 		$date = (empty($x_date)) ? date('Y-m-d') : formatDate2STD($x_date, $date_format);
 		$time = (empty($x_time)) ? date('H:i:s') : convertTimeToStandard($x_time);
 		# Check the discharge type
+
+		
 		switch ($relart) {
 		case 8:
 			if ($released = $enc_obj->DischargeFromDept($pn, $relart, $date, $time)) {

@@ -236,6 +236,26 @@ switch ($dbtype) {
                     </tr>
 
                     <tr>
+                        <td bgcolor="#e9e9e9"><FONT  color="#0000cc" FACE="verdana,arial" size=2><b><?php echo $LDNhifAutoInsertConsultation; ?></b> </FONT></td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#ffffff"><FONT  color="#0000cc" FACE="verdana,arial" size=2>&nbsp;&nbsp;&nbsp;<img <?php echo createComIcon($root_path, 'redpfeil.gif', '0', 'absmiddle') ?>>
+                            <a href="edv_nhif_auto_insert_consultation.php?sid=<?php echo $sid . "&lang=" . $lang ?>" target="SYSADMIN_WFRAME"><?php echo $LDNhifAutoInsertConsultationCfg; ?>
+                            </a></FONT><br>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td bgcolor="#e9e9e9"><FONT  color="#0000cc" FACE="verdana,arial" size=2><b><?php echo $LDDischargeNHIFPatientOnBill; ?></b> </FONT></td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#ffffff"><FONT  color="#0000cc" FACE="verdana,arial" size=2>&nbsp;&nbsp;&nbsp;<img <?php echo createComIcon($root_path, 'redpfeil.gif', '0', 'absmiddle') ?>>
+                            <a href="edv_discharge_nhif_patient_upon_bill.php?sid=<?php echo $sid . "&lang=" . $lang ?>" target="SYSADMIN_WFRAME"><?php echo $LDDischargeNHIFPatientOnBillCfg; ?>
+                            </a></FONT><br>
+                        </td>
+                    </tr>
+
+                    <tr>
                         <td bgcolor="#e9e9e9"><FONT  color="#0000cc" FACE="verdana,arial" size=2><b><?php echo $LDEnableBankref; ?></b> </FONT></td>
                     </tr>
                     <tr>
@@ -262,6 +282,16 @@ switch ($dbtype) {
 
                         <td bgcolor="#ffffff"><FONT  color="#0000cc" FACE="verdana,arial" size=2>&nbsp;&nbsp;&nbsp;<img <?php echo createComIcon($root_path, 'redpfeil.gif', '0', 'absmiddle') ?>>
                             <a href="edv_nurse_chart_stock.php?sid=<?php echo $sid . "&lang=" . $lang ?>" target="SYSADMIN_WFRAME"><?php echo $LDEnableStockAPI; ?>
+                            </a></FONT><br>
+                        </td>
+                    </tr>
+                     <tr>
+                        <tr>
+                        <td bgcolor="#e9e9e9"><FONT  color="#0000cc" FACE="verdana,arial" size=2><b><?php echo $LDEnableOPDNurseChart; ?></b> </FONT></td>
+                    </tr>
+
+                        <td bgcolor="#ffffff"><FONT  color="#0000cc" FACE="verdana,arial" size=2>&nbsp;&nbsp;&nbsp;<img <?php echo createComIcon($root_path, 'redpfeil.gif', '0', 'absmiddle') ?>>
+                            <a href="edv_nurse_chart_injection_opd.php?sid=<?php echo $sid . "&lang=" . $lang ?>" target="SYSADMIN_WFRAME"><?php echo $LDEnableInjectionChartOPD; ?>
                             </a></FONT><br>
                         </td>
                     </tr>

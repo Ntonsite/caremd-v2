@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2020-03-23 16:30:55
+<?php /* Smarty version 2.6.22, created on 2021-05-21 20:35:13
          compiled from nursing/ward_occupancy_list.tpl */ ?>
 
 <table cellspacing="0" style="width:100%;">

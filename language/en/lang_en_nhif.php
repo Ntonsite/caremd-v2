@@ -95,6 +95,23 @@ $LDDateCreated = 'Date Created';
 $LDLastModifiedBy = 'Last Modified By';
 $LDLastModified = 'Last Modified';
 $LDFolioNo = 'Folio No';
+$LDFolioID = 'Folio ID';
+$LDSubmissionID = 'Submission ID';
+$LDSubmissionNo = 'Submission No';
+$LDDateSubmitted = 'Date Submitted';
+$LDBillNo = 'Bill No';
+$LDSubmittedBy = 'Submitted By';
+$LDSerialNo  = 'Serial No';
+$LDAmountClaimed = 'Amount Claimed';
+$LDRemarks = 'Remarks';
+$LDAge = 'Age';
+$LDClaimStatus = 'Claim Status';
+
+
+
+
+
+
 $LDFullName = 'Full Name';
 $LDRegistration = 'Registration';
 

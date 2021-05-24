@@ -111,12 +111,12 @@
                                 <TR  height=1>
                                     <TD colSpan=3 class="vspace"><IMG height=1 src="../../gui/img/common/default/pixel.gif" width=5></TD>
                                 </TR>
-                                <tr>
+                               <!--  <tr>
                                         <td align=center><img src="../../gui/img/common/default/prescription.gif" border=0 width="27" height="17"></td>
                                         <TD class="submenu_item"><nobr><a href="javascript:open_bulk_dispense('out patient')" >Bulk Dispense(Out Patient)
                                     </a></nobr></TD>
                                 <TD>Bulk Dispense for Medicines(OutPatient)</TD>
-                                </tr>
+                                </tr> -->
                                 <TR  height=1>
                                     <TD colSpan=3 class="vspace"><IMG height=1 src="../../gui/img/common/default/pixel.gif" width=5></TD>
                                 </TR>

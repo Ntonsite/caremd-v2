@@ -309,10 +309,19 @@ if ($task == "insert") {
 			$bill_obj->close_deposit($encounter_nr);
 		}
 
+        $Discharge = 0; 
+        $sqlDisch = "SELECT value FROM care_config_global WHERE type ='discharge_nhif_upon_bill'";
+        $resultDisch = $db->Execute($sqlDisch);
+        if (@$resultDisch && $resultDisch->RecordCount()>0  ) {
+           	$rowDischarge =  $resultDisch->FetchRow();
+           	$Discharge = $rowDischarge['value'];
+           } 
+
+         
 
         
 
-		if (stripos($_REQUEST['insrname'], 'NHIF') !== false && $_REQUEST['patient'] == 'outpatient' ) {
+		if (stripos($_REQUEST['insrname'], 'NHIF') !== false && $_REQUEST['patient'] == 'outpatient' && $Discharge == 1 ) {
 			$date = date('Y-m-d');
 		    $time = date("H:i:s");
 		    $enc_obj->Discharge($encounter_nr, 1, $date, $time);

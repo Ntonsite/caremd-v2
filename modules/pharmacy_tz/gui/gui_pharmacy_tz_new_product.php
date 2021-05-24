@@ -256,6 +256,7 @@ function CheckCategory(){
                 <option value="caps" <?PHP if ($item_subclass=="caps") echo "selected";?>>caps</option>
                 <option value="bottle" <?PHP if ($item_subclass=="bottle") echo "selected";?>>bottle</option>
                 <option value="syrup" <?PHP if ($item_subclass=="syrup") echo "selected";?>>syrup</option>
+                <option value="ampule" <?PHP if ($item_subclass=="ampule") echo "selected";?>>ampule/vial</option>
                 <option value="suspension" <?PHP if ($item_subclass=="suspension") echo "selected";?>>suspension</option>
                 <option value="meal" <?PHP if ($item_subclass=="meal") echo "selected";?>>Meal</option>
                 </select>

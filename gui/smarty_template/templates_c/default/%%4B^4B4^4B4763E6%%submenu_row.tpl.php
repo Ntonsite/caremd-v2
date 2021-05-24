@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2017-04-03 11:09:33
+<?php /* Smarty version 2.6.22, created on 2021-05-21 20:35:10
          compiled from common/submenu_row.tpl */ ?>
 <TR>
     <td align=center><?php echo $this->_tpl_vars['sIconImg']; ?>

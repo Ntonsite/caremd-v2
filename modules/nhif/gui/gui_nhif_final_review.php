@@ -602,12 +602,42 @@ $investigation_total_cost = 0;
  $sqlLabItemPrice = "SELECT UnitPrice FROM care_tz_drugsandservices_nhifschemes WHERE SchemeID='".$lab_items['nhif_scheme_id']."' AND ItemCode='".$lab_items['nhifItemCode']."'";
  $labItemResult = $db->Execute($sqlLabItemPrice);
  $labItemRow = $labItemResult->FetchRow();
+
+
+ //start flag items with investigation result
+ $isResultEmpty = false;
+ $sqlFlagLabResult = "SELECT * FROM care_test_findings_chemlabor_sub WHERE paramater_name = '".$lab_items['paramater_name']."' AND encounter_nr='$encounter_nr' ";
+
+
+
+$warnLab = '';
+ $flagLabResult = $db->Execute($sqlFlagLabResult);
+ if (@$flagLabResult && $flagLabResult->RecordCount()>0 ) {
+     $rowLabResult = $flagLabResult->FetchRow();
+     $isResultEmpty =  (@$rowLabResult['parameter_value']) ? false : true;
+ }else{
+    $isResultEmpty = true;
+ }
+
+if ($isResultEmpty) {
+    $rowColor = "bg-danger";
+    $warnLab = "(FINDINGS NOT ENTERED PLEASE FILL FINDINGS BEFORE APPROVAL)";
+    $dataColor ="text-light";
+}else{
+    $rowColor = "h-md";
+    $dataColor = "w-lg";
+}
+
+ 
+
+ //end flag items with investigation result
+
                                      ?>    
     
 
 
-                                        <tr class="h-md">
-                                            <td class="w-lg"><?php echo $lab_items['item_description'] ?></td>
+                                        <tr class="<?php echo $rowColor; ?>">
+                                            <td class="<?php echo $dataColor; ?>"><?php echo $lab_items['item_description'].' '.$warnLab ?></td>
                                             <td><?php echo $lab_items['nhifItemCode'] ?></td>
                                             <td class="text-right"><?php echo number_format(1, 2) ?></td>
                                             <td class="text-right"><?php echo number_format($labItemRow['UnitPrice'], 2) ?></td>
@@ -620,12 +650,44 @@ $investigation_total_cost = 0;
  $sqlRadItemPrice = "SELECT UnitPrice FROM care_tz_drugsandservices_nhifschemes WHERE SchemeID='".$rad_items['nhif_scheme_id']."' AND ItemCode='".$rad_items['nhifItemCode']."'";
  $radItemResult = $db->Execute($sqlRadItemPrice);
  $radItemRow = $radItemResult->FetchRow();
+
+ 
+ $isResultEmpty = false;
+ $sqlFlagRadResult = "SELECT * FROM care_test_findings_radio WHERE batch_nr = '".$rad_items['batch_nr']."' AND encounter_nr='$encounter_nr' ";
+
+
+
+
+
+
+
+ $warnRad = '';
+  $flagRadResult = $db->Execute($sqlFlagRadResult);
+  if (@$flagRadResult && $flagRadResult->RecordCount()>0 ) {
+      $rowRadResult = $flagRadResult->FetchRow();
+      $isResultEmpty =  (@$rowRadResult['findings']) ? false : true;
+  }else{
+     $isResultEmpty = true;
+  }
+
+ if ($isResultEmpty) {
+     $rowColor = "bg-danger";
+     $warnRad = "(FINDINGS NOT ENTERED PLEASE FILL FINDINGS BEFORE APPROVAL)";
+     $dataColor ="text-light";
+ }else{
+     $rowColor = "h-md";
+     $dataColor = "w-lg";
+ }
+  
+
+
+
                                      ?>    
     
 
 
-                                        <tr class="h-md">
-                                            <td class="w-lg"><?php echo $rad_items['item_description'] ?></td>
+                                        <tr class="<?php echo $rowColor; ?>">
+                                            <td class="<?php echo $dataColor;?>"><?php echo $rad_items['item_description'].''.$warnRad ?></td>
                                             <td><?php echo $rad_items['nhifItemCode'] ?></td>
                                             <td class="text-right"><?php echo number_format($rad_items['dosage'], 2) ?></td>
                                             <td class="text-right"><?php echo number_format($radItemRow['UnitPrice'], 2) ?></td>

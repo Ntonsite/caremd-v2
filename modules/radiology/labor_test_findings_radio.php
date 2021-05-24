@@ -367,7 +367,7 @@ require_once $root_path . 'include/inc_test_findings_form_' . $subtarget . '.php
 echo '&nbsp;<br>';
 if ($edit && $batch_nr) {
 	echo '
-         <input type="image" ' . createLDImgSrc($root_path, 'savedisc.gif', '0') . '>';
+         <input type="image" onclick="return disableReSend()" ' . createLDImgSrc($root_path, 'savedisc.gif', '0') . '>';
 }
 ?>
 

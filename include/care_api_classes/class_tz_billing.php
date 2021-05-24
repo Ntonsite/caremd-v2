@@ -662,7 +662,7 @@ class Bill extends Encounter {
 		$user_id = $_SESSION['sess_user_name'];
 		$this->sql = "SELECT $this->tbl_prescriptions.*,ds.nhif_item_code as nhifItemCode, ce.current_dept_nr,cp.insurance_ID,ce.current_ward_nr,ce.encounter_class_nr FROM $this->tbl_prescriptions INNER JOIN care_encounter ce ON ce.encounter_nr=$this->tbl_prescriptions.encounter_nr INNER JOIN care_person cp ON cp.pid=ce.pid INNER JOIN care_tz_drugsandservices ds ON ds.item_id=$this->tbl_prescriptions.article_item_number  WHERE nr = " . $prescriptions_nr;
 
-		// echo $this->sql;
+		
 
 		if ($this->debug) {
 			echo $this->sql . "<br>";
@@ -750,12 +750,13 @@ class Bill extends Encounter {
 		"       encounter_class_nr,   " .
 		"       nhif_item_code,   " .
 		"       nhif_approval_no,   " .
+		"       doctor,   " .
 		"		meal_type,   " .
 		"		User_Id)" .
 		"
-		VALUES (" . $bill_number . ", '" . time() . "', 0, 1, 0, 0, 0, '" . $row['total_dosage'] . "', '" . $row['total_dosage'] . "', " . $row['times_per_day'] . "," . $row['days'] . ", " . $price . ", '" . $row['materialcost'] . "', '" . $row['article'] . "', '" . $row['notes'] . "', " . $row['article_item_number'] . ", '" . $row['insurance_ID'] . "', '" . $contract['id'] . "', '" . $row['nr'] . "','" . $row['sub_store'] . "','" . $bank . "','" . $row['current_dept_nr'] . "','" . $row['current_ward_nr'] . "','" . $row['encounter_class_nr'] . "','" . $row['nhifItemCode'] . "','" . $row['nhif_approval_no'] . "','" . $row['meal_type'] . "','" . $user_id . "')";
+		VALUES (" . $bill_number . ", '" . time() . "', 0, 1, 0, 0, 0, '" . $row['total_dosage'] . "', '" . $row['total_dosage'] . "', " . $row['times_per_day'] . "," . $row['days'] . ", " . $price . ", '" . $row['materialcost'] . "', '" . $row['article'] . "', '" . $row['notes'] . "', " . $row['article_item_number'] . ", '" . $row['insurance_ID'] . "', '" . $contract['id'] . "', '" . $row['nr'] . "','" . $row['sub_store'] . "','" . $bank . "','" . $row['current_dept_nr'] . "','" . $row['current_ward_nr'] . "','" . $row['encounter_class_nr'] . "','" . $row['nhifItemCode'] . "','" . $row['nhif_approval_no'] . "','" . $row['prescriber'] . "','" . $row['meal_type'] . "','" . $user_id . "')";
 
-		//echo $this->sql;
+		//echo $this->sql;die;
 
 		if ($this->debug) {
 			echo $this->sql . "<br>";
@@ -924,9 +925,10 @@ class Bill extends Encounter {
 			"		encounter_class_nr,   " .
 			"		nhif_item_code,   " .
 			"		nhif_approval_no,   " .
+			"		doctor,   " .
 			"		User_Id)" .
 			"
-			VALUES (" . $bill_number . ", '" . time() . "', 1, 0, 0, 0, 1, 1, 1, 0, 0, " . $price . ", '" . $row['item_description'] . "', 0, " . $row['p_item_id'] . ", '" . $row['insurance_ID'] . "', '" . $contract['id'] . "', '" . $row['prescrip_nr'] . "','" . $bank . "', '" . $row['current_dept_nr'] . "', '" . $row['current_ward_nr'] . "', '" . $row['encounter_class_nr'] . "','" . $row['nhifItemCode'] . "','" . $row['nhifApprovalNumber'] . "','" . $user_id . "')";
+			VALUES (" . $bill_number . ", '" . time() . "', 1, 0, 0, 0, 1, 1, 1, 0, 0, " . $price . ", '" . $row['item_description'] . "', 0, " . $row['p_item_id'] . ", '" . $row['insurance_ID'] . "', '" . $contract['id'] . "', '" . $row['prescrip_nr'] . "','" . $bank . "', '" . $row['current_dept_nr'] . "', '" . $row['current_ward_nr'] . "', '" . $row['encounter_class_nr'] . "','" . $row['nhifItemCode'] . "','" . $row['nhifApprovalNumber'] . "','" . $row['create_id'] . "','" . $user_id . "')";
 
 			if ($this->debug) {
 				echo $this->sql;
@@ -1119,10 +1121,11 @@ class Bill extends Encounter {
 			"               encounter_class_nr, " .
 			"               nhif_item_code, " .
 			"               nhif_approval_no, " .
+			"               doctor, " .
 			"               User_Id)" .
 			"
                         VALUES (" . $bill_number . ", '" . time() . "', 0, 0, 1, 0, 1, " . $radio_amount . ", " . $radio_amount . ", 0, 0, " . $price . ",
- '" . $row['item_description'] . "', " . $row['item_id'] . ", '" . $row['insurance_ID'] . "', '" . $contract['id'] . "', " . $row['batch_nr'] . ",'" . $bank . "'," . $row['current_dept_nr'] . ", " . $row['current_ward_nr'] . ", " . $row['encounter_class_nr'] . ",'" . $row['nhif_item_code'] . "','" . $row['nhif_approval_no'] . "','" . $user_id . "')";
+ '" . $row['item_description'] . "', " . $row['item_id'] . ", '" . $row['insurance_ID'] . "', '" . $contract['id'] . "', " . $row['batch_nr'] . ",'" . $bank . "'," . $row['current_dept_nr'] . ", " . $row['current_ward_nr'] . ", " . $row['encounter_class_nr'] . ",'" . $row['nhif_item_code'] . "','" . $row['nhif_approval_no'] . "','" . $row['send_doctor'] . "','" . $user_id . "')";
 
 			if ($this->debug) {
 				echo $this->sql;
@@ -5645,7 +5648,7 @@ A:visited:hover {color: #cc0033;}
                                     ON care_encounter_prescription.article_item_number=care_tz_drugsandservices.item_id
 
                                     WHERE
-                                    care_encounter_prescription.bill_number = 0 AND care_encounter_prescription.mark_os = 0 $and_in_outpatient  AND encounter_date BETWEEN '$date_from' AND '$date_to'
+                                    care_encounter_prescription.bill_number = 0  $and_in_outpatient  AND encounter_date BETWEEN '$date_from' AND '$date_to'
 
                                     AND	care_tz_drugsandservices.purchasing_class != 'labtest'
 
@@ -5780,7 +5783,7 @@ A:visited:hover {color: #cc0033;}
                                     INNER JOIN care_encounter ON care_encounter.encounter_nr=care_encounter_prescription.encounter_nr
                                     INNER JOIN care_person On care_person.pid=care_encounter.pid
                                     INNER JOIN care_tz_drugsandservices ON care_encounter_prescription.article_item_number=care_tz_drugsandservices.item_id
-                                    WHERE care_encounter_prescription.bill_number = 0 AND care_encounter_prescription.mark_os = 0
+                                    WHERE care_encounter_prescription.bill_number = 0 
                                     AND care_tz_drugsandservices.purchasing_class != 'labtest'
                                     AND care_tz_drugsandservices.purchasing_class != 'xray' 	$and_in_outpatient
                                     AND (isnull(care_encounter_prescription.is_disabled)
@@ -5820,7 +5823,7 @@ A:visited:hover {color: #cc0033;}
                                     INNER JOIN care_encounter_prescription ON care_encounter.encounter_nr=care_encounter_prescription.encounter_nr
                                     INNER JOIN care_person On care_person.pid=care_encounter.pid
                                     INNER JOIN care_tz_drugsandservices ON care_encounter_prescription.article_item_number=care_tz_drugsandservices.item_id
-                                    WHERE care_encounter_prescription.bill_number = 0 AND care_encounter_prescription.mark_os = 0
+                                    WHERE care_encounter_prescription.bill_number = 0 
                                     AND care_tz_drugsandservices.purchasing_class != 'labtest'
                                     AND care_tz_drugsandservices.purchasing_class != 'xray'         $and_in_outpatient
                                     AND (isnull(care_encounter_prescription.is_disabled)

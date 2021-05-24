@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2019-08-27 08:28:52
+<?php /* Smarty version 2.6.22, created on 2021-05-21 20:36:42
          compiled from registration_admission/reg_search_main.tpl */ ?>
 
 <?php echo $this->_tpl_vars['sPretext']; ?>

@@ -16,7 +16,7 @@
             <a href="javascript:sendLater()"><img <?php echo createLDImgSrc($root_path, 'sendlater.gif', '0') ?> alt="<?php echo $LDSendLater ?>"></a>
             -->
             <!--<a href="<?php echo $breakfile ?>"><img <?php echo createLDImgSrc($root_path, 'cancel.gif', '0') ?> alt="<?php echo $LDClose ?>"></a>-->
-            <input type="image" <?php echo createLDImgSrc($root_path, 'abschic.gif') ?> alt="<?php echo $LDSend ?>">
+            <input type="image" id="SendLab" onclick="return disableReSend()" <?php echo createLDImgSrc($root_path, 'abschic.gif') ?> alt="<?php echo $LDSend ?>">
         </td>
     </tr>
 </table>

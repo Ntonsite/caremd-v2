@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2019-11-14 22:25:15
+<?php /* Smarty version 2.6.22, created on 2021-05-21 20:36:46
          compiled from registration_admission/reg_search_list_row.tpl */ ?>
 
 <tr  <?php if ($this->_tpl_vars['toggle']): ?> class="wardlistrow2" <?php else: ?> class="wardlistrow1" <?php endif; ?>>

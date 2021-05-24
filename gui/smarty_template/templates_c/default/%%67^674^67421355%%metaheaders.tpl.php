@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2019-03-10 20:22:37
+<?php /* Smarty version 2.6.22, created on 2021-04-02 18:48:50
          compiled from common/metaheaders.tpl */ ?>
 <meta name="Description" content="Hospital and Healthcare Integrated Information System - CARE2x">
 <meta name="Author" content="Elpidio Latorilla">

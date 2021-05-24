@@ -1,10 +1,7 @@
 
 <script type="text/javascript">
     
-    function addInput(value,unit,readonly,defaultValue,readonlyQty){
-
-
-        
+    function addInput(value,unit,readonly,defaultValue,readonlyQty){        
 
     var user="<?php echo $_SESSION['sess_user_name']?>";      
 
@@ -24,7 +21,12 @@ function delete_row(value)
 
 <script type="text/javascript">
     function confirm_chart() {
-       window.confirm("Are you sure you want to save?");
+       var confirm=window.confirm("Are you sure you want to save?");
+       if (confirm) {
+        return true;
+       }else{
+        return false;
+       }
     }
 
 </script>
@@ -39,17 +41,19 @@ function delete_row(value)
 
  // print_r($_SESSION);
  // die();
-$sqlweberp="SELECT value FROM care_config_global WHERE type='transmit_to_weberp_enabled'";
-$resultweberp=$db->Execute($sqlweberp);
-$valueweberp=$resultweberp->FetchRow();
+$sqlWeberp="SELECT value FROM care_config_global WHERE type='transmit_to_weberp_enabled'";
+$resultWeberp=$db->Execute($sqlWeberp);
+$valueWeberp=$resultWeberp->FetchRow();
 
 
 
-$sqlnurse="SELECT value FROM care_config_global WHERE type='nurse_chart_deduct_stock'";
-$resultnurse=$db->Execute($sqlnurse);
-$valuenurse=$resultnurse->FetchRow();
+$sqlNurse="SELECT value FROM care_config_global WHERE type='nurse_chart_deduct_stock'";
+$resultNurse=$db->Execute($sqlNurse);
+$valueNurse=$resultNurse->FetchRow();
 
-if ($valueweberp['value']=='1'&& $valuenurse['value']=='1') {
+
+
+if ($valueWeberp['value']=='1'&& $valueNurse['value']=='1') {
   $apiEnabled=TRUE;
   require_once $root_path . 'include/care_api_classes/class_weberp_c2x.php';
     if (!isset($weberp_obj)) {
@@ -113,6 +117,7 @@ if ($valueweberp['value']=='1'&& $valuenurse['value']=='1') {
 
             <th></th>
 
+            
     </tr>
 
     <?php
@@ -220,44 +225,7 @@ if ($valueweberp['value']=='1'&& $valuenurse['value']=='1') {
                 // }
                 ?>
             </td>
-            <td>
-              <!-- Start to show stock balance in webERP -->
-              <?php
 
-              $ItemClass='';
-              if ($apiEnabled==TRUE) {
-                //check item class
-                if ($ItemClass=$result_class->FetchRow()) {
-                  //all item should be drug_list
-                  if ($ItemClass['purchasing_class']=='drug_list') {
-                    //Let us get stock location and partcode
-                    $loccode=$row_ipd['pharmacy'];
-                    $partcode=$row['partcode'];
-
-                    $StockBalance = $weberp_obj->get_stock_balance_webERP($partcode);
-
-                    for ($i = 0; $i < sizeof($StockBalance); $i++) {
-                      if ($StockBalance[$i]['loccode']==$loccode) {
-                        $Balance = $StockBalance[$i]['quantity'];
-                        echo '<b>Bal:'.$Balance.'</b>';                       
-                      }//end $StockBalance[$i]['loccode']==$loccode
-                      
-
-                    }//end for($i = 0; $i < sizeof($StockBalance); $i++)
-
-
-
-
-                  
-                  }//end $ItemClass['purchasing_class']
-                  
-                }//end ItemClass
-
-                
-              }//end $apiEnabled
-
-              ?>
-            </td>
         </tr>
         
         <tr bgcolor="<?php echo $bgc; ?>" valign="top">
@@ -337,6 +305,19 @@ if ($valueweberp['value']=='1'&& $valuenurse['value']=='1') {
         
        
         <?php      
+
+        //nurse_chart_injection_opd
+
+        $sqlChartOPD = "SELECT value FROM care_config_global WHERE type = 'nurse_chart_injection_opd'";
+        $chartOPDResult = $db->Execute($sqlChartOPD);
+        if (@$chartOPDResult && $chartOPDResult->RecordCount()>0) :
+            $chart_opd = $chartOPDResult->FetchRow();
+            $enable_chart_opd = $chart_opd['value'];
+            
+
+
+          
+        endif;
                 
         
 
@@ -348,7 +329,7 @@ if ($valueweberp['value']=='1'&& $valuenurse['value']=='1') {
 
            
 
-        if ($row_ipd['encounter_class_nr']=="1"&&$isDrug&& !$row['is_disabled']&&$charted) {
+        if ($isDrug&& !$row['is_disabled']&&$charted) {
 
             ?>           
 
@@ -415,8 +396,49 @@ while ($rowchart=$result_chart->FetchRow()) {
 
 <?php
 
+
+
+if ($apiEnabled) :
+  $sqlDispensing = "SELECT care_encounter.pharmacy,locations.locationname FROM care_encounter INNER JOIN locations ON locations.loccode = care_encounter.pharmacy WHERE encounter_nr=".$_SESSION['sess_en'];
+  //echo $sqlDispensing;die;
+  $Dispensing = $db->Execute($sqlDispensing);
+  if (@$Dispensing) {
+    $RowDisp = $Dispensing->FetchRow();
+    $Disp = $RowDisp['pharmacy'];
+    $pharmacyName = $RowDisp['locationname']; 
+    
+  }
+  
+
+  $item = '';
+  $item = $weberp_obj->get_stock_item_from_webERP($row['partcode']);
+  //echo "<pre>";print_r($item); echo "</pre>";
+  if ($item['stockid'] == $row['partcode']) :
+    $Balance =  $weberp_obj->get_stock_balance_webERP($item['stockid']);
+
+    //echo "<pre>"; print_r($Balance); echo "</pre>";
+
+    $StkBal = 0;
+
+    for ($j=0; $j <sizeof($Balance); $j++) :
+      if ($Disp == $Balance[$j]['loccode']) :
+        $StkBal = $Balance[$j]['quantity'];
+
+
+        
+      endif;
+      
+    endfor;
+
+
+
+  endif;
+
+
+endif;
 }
-echo '<tr bgcolor="'.$bgc.'"><td></td><td><strong>TOTAL DOSE GIVEN</strong></td><td>'.$total.'</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>';
+$rem = $row['total_dosage'] - $total;
+echo '<tr bgcolor="'.$bgc.'"><td></td><td ><strong>TOTAL DOSE GIVEN </strong></td><td><strong>'.$total.'</strong></td><td colspan="2"><b>STOCK BALANCE: '.$StkBal.'</b><td style="color:red;"><b>'.$pharmacyName.'</b></td></td><td colspan="2"><strong>PRESCRIBED - GIVEN ='.$rem.'</strong></td><td></td></tr>';
 
 
 // echo $stop[$row['nr']];
@@ -457,6 +479,13 @@ echo '<tr bgcolor="'.$bgc.'"><td></td><td><strong>TOTAL DOSE GIVEN</strong></td>
                           $defaultValue='';
                           $readonlyQty='';
                           break;
+
+                      case 'ampule':
+                          $unit='enter_mg';
+                          $readonly='';
+                          $defaultValue='';
+                          $readonlyQty='';
+                          break;    
 
                       case 'tabs':
                           $unit='tablets';
@@ -516,6 +545,13 @@ echo '<tr bgcolor="'.$bgc.'"><td></td><td><strong>TOTAL DOSE GIVEN</strong></td>
                // echo $total.'<br>';
                // echo $row['total_dosage'];
 
+               /*Logic for charting
+
+
+               
+
+               */
+
                     
 
         //here we show button to add rows
@@ -554,7 +590,45 @@ echo '<tr bgcolor="'.$bgc.'"><td></td><td><strong>TOTAL DOSE GIVEN</strong></td>
       ?>
       <?php
 
-            } 
+            }elseif ($enable_chart_opd == 1 && ($sub_class == 'injections' || $sub_class == 'ampule' ) &&$row_ipd['encounter_class_nr']=="2" &&!$row['is_disabled']&&$isDrug=='drug_list'&&$stop[$row['nr']]!=$row['nr']&&$row['bill_number']<1) {
+
+
+              //start
+              echo  "<a href=\"javascript:addInput('".$row['nr']."','".$unit."','".$readonly."','".$defaultValue."','".$readonlyQty."');\" class='btn btn-info' role='button'  title='Chart this drug'>Nurse Chart</a>
+
+       </div>
+      </div>
+      
+
+      </td>";
+
+      $stopUrl = $thisfile . URL_APPEND . '&mode=stop&nr=' . $row['nr'] . '&show=insert&backpath=' . urlencode($backpath) . '&prescrServ=' . $_GET['prescrServ'] . '&externalcall=' . $externalcall . '&disablebuttons=' . $disablebuttons;
+
+    
+
+
+
+      ?>
+
+      <td><FONT SIZE=-1  FACE="Arial"><?php echo $row['article'].'<font style="font-size: 15px; color: red; font-style: italic; font-style: bold;">'.$warn_os.'</font>'; ?></td>
+      <?php
+      if ($charted) {
+          # code...
+      
+      ?>
+      
+      <td colspan="7"><a href="#" onClick="stopPrescription('<?php echo $stopUrl ?>')"><img src="<?php echo $root_path; ?>gui/img/control/default/en/en_stop.gif"  /></a></td>
+      <?php
+      }else{
+        echo '<td colspan="7"></td>';
+      }
+      ?>
+      <?php
+              //end
+
+
+              
+            }
 
      echo  "</tr>";
     ?>  
@@ -574,7 +648,6 @@ echo '<tr bgcolor="'.$bgc.'"><td></td><td><strong>TOTAL DOSE GIVEN</strong></td>
     
 
 
-    <!-- Nursing treatment sheet will be appended here -->
     
 </table>
 </form>

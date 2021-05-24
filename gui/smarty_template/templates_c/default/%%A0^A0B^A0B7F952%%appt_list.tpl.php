@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2017-07-17 12:01:45
+<?php /* Smarty version 2.6.22, created on 2021-05-22 09:00:18
          compiled from appointment/appt_list.tpl */ ?>
 
 <table width=100% border=0 cellpadding="0" cellspacing=0>

@@ -6,6 +6,9 @@
 
 
 
+
+
+
 require './roots.php';
 require $root_path . 'include/inc_environment_global.php';
 
@@ -580,7 +583,32 @@ $pid = $pobj->GetPidFromEncounter($pn);
             }
             -->
         </style>
+
+
+        <?php
+        $sqlCons = "SELECT ds.item_description
+                    FROM care_tz_drugsandservices ds 
+                    INNER JOIN care_encounter_prescription cep ON cep.article_item_number=ds.item_id 
+                    WHERE cep.encounter_nr='$pn' AND ds.item_number LIKE 'cons%' and is_disabled=''";
+
+                    //echo $sqlCons;die;
+         
+         $resultCons = $db->Execute($sqlCons);
+
+         if ($rowCons = $resultCons->FetchRow() ) {
+             $showConsultation = $rowCons['item_description'];
+         	
+         }
+
+
+ 
+        ?>
+
+
         <table width="800px" align='center' border="0" style="min-width:700px;">
+
+             <tr><td  colspan="3" align="center" valign="top" bgcolor="orange"><?php echo '<b>'. $showConsultation.'</b>';?></td></tr>
+        	
             <tr><td align="right" valign="top">
                     <table style="border:1px solid #A7A7A7;" cellpadding="1" cellspacing="0">
 
@@ -820,11 +848,25 @@ echo '</td>
             </td>
             </tr>
             </table>';
+
+            //Array ( [lang] => en [sid] => utbm764cf19s3lv39n6d90e0gv [pn] => 659666 [pday] => 28 [pmonth] => 01 [pyear] => 2021 [edit] => 1 [station] => [refreshed] => 1 )
+
+            
+   
+
+
 ?>
 
 
                             </td>
                         </tr>
+                           <?php if($row_en['nhif_scheme_id']) :?>
+                        <tr> <td ><div align="center">
+                                            <a href="../../modules/nhif/nhif_pass.php<?= URL_APPEND ?>&patient=<?= $row_en['encounter_class_nr'] ?>&lang=en&target=claimsreview&encounter_nr=<?= $pn ?>&date_from=<?= $date_from ?>&date_to=<?= $date_to ?>" title="Visit Details : Click to show data"><button type="button" class="btn btn-primary">Rieview NHIF Form</button></a>
+                                        </div>
+                                    </td>
+                        </tr>
+                    <?php endif?>
 
                     </table>
 

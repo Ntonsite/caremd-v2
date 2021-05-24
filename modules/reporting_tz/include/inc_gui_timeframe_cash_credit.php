@@ -49,9 +49,35 @@
             </select>
             <div id="dept"></div>
             <?php ?><br>
-            <input type="text" name="fileNr" placeholder="File Number"><br>
+            <input type="text" name="fileNr" placeholder="File Number"> 
+            <?php
+            $sqlTag = "SELECT  doctor FROM care_tz_billing_archive_elem WHERE ISNULL(doctor)=0  GROUP BY doctor";
+            $resultTag = $db->Execute($sqlTag);
+            echo '<select name="tag" id="tag">';
+            echo '<option value="">--SELECT TAG--</option>';
+            
+            while ($rowTag = $resultTag->FetchRow()) {
+              echo '<option value="'.$rowTag['doctor'].'">'.$rowTag['doctor'].'</option>';
+              
+            }
+
+            echo '</select>';
+
+
+            ?>          
+            
+            
+             
+          
+          <br>
             <input type="submit" name="show"  value="<?php echo $LDShow; ?>">
+
+           
         </td>
+
+        
+        
+       
 
     </tr>
 </table>	

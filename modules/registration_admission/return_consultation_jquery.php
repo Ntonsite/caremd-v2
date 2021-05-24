@@ -29,7 +29,6 @@ if (isset($_POST['id'])) {
 		 	$cons='cons0'.$_POST['id']; 
             $cons_other='cons10';
 
-		 	
 		 	$sqlConsNew="SELECT item_description FROM care_tz_drugsandservices WHERE (item_number='".$cons."' OR  item_number LIKE '".$cons_other."%') AND purchasing_class='service'";
 
 		 	$consNewResult=$db->Execute($sqlConsNew);
@@ -46,7 +45,8 @@ if (isset($_POST['id'])) {
 			
 		   }else{
 		   	$cons='cons0'.$_POST['id'];
-		   	$sqlConsReturn="SELECT item_description FROM care_tz_drugsandservices WHERE item_number LIKE '".$cons.'%'."' AND purchasing_class='service'";
+		   	$cons_other='cons10';
+		   	$sqlConsReturn="SELECT item_description FROM care_tz_drugsandservices WHERE (item_number LIKE '".$cons.'%'."' OR  item_number LIKE '".$cons_other."%') AND purchasing_class='service'";
 		 	$consReturnResult=$db->Execute($sqlConsReturn);
 		 	while ($rows=$consReturnResult->FetchRow()) {
 		 		$description=$rows['item_description'];

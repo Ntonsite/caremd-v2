@@ -368,11 +368,16 @@ function getARV(path) {
                 <td><small class="font-sm">Reporting::Minor Procedures/Dressings Report</small></td>
               </tr>
 
-
-              <tr>
-                <td><a class="report-link" href="<?php echo $root_path ?>modules/reporting_tz/blockpayment_financial_summary.php">Block payment financial summary</a></td>
-                <td><small class="font-sm"></small>Block Payment Summary</td>
+               <tr>
+                <td><a class="report-link" href="<?php echo $root_path ?>modules/reporting_tz/zero_consultations.php">Consultations with Zero Amount</a></td>
+                <td><small class="font-sm">Consultations with Zero Amount</small></td>
               </tr>
+
+
+              <!-- <tr>
+                <td><a class="report-link" href="<?php //echo $root_path ?>modules/reporting_tz/blockpayment_financial_summary.php">Block payment financial summary</a></td>
+                <td><small class="font-sm"></small>Block Payment Summary</td>
+              </tr> -->
 
 
               <tr>
