@@ -1,7 +1,7 @@
 <?php
 
 // Turn off all error reporting
-error_reporting(1);
+//error_reporting(1);
 /*
 define (__TRACE_ENABLE__, true);
 define (__DEBUG_ENABLE__, true);
