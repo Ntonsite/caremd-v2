@@ -2,7 +2,7 @@
 
 ?>
 
-<script>
+<!-- <script>
 
     function createCookie(name, value, days) {
   var expires;
@@ -18,7 +18,7 @@
 
       createCookie("PageName", "Home", "10");
 
-</script>
+</script> -->
 
 <?php
 
