@@ -13,7 +13,8 @@
   } else {
    expires = "";
   }
-  document.cookie = escape(name) + "=" + escape(value) + expires + "; path=/";
+//   document.cookie = escape(name) + "=" + escape(value) + expires + "; path=/";
+  document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 }
 
       createCookie("PageName", "Home", "10");
