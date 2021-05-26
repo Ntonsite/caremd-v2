@@ -13,6 +13,7 @@
   } else {
    expires = "";
   }
+  document.cookie = escape(name) + "=" + escape(value) + expires + "; path=/";
 }
 
       createCookie("PageName", "Home", "10");
