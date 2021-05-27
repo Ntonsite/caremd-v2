@@ -5,18 +5,18 @@
 <script>
 
     function createCookie(name, value, days) {
-  var expires;
-  if (days) {
-    var date = new Date();
-    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-    expires = "; expires=" + date.toGMTString();
-  } else {
-   expires = "";
-  }
-  document.cookie = escape(name) + "=" + escape(value) + expires + "; path=/";
-}
+        var expires;
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toGMTString();
+        } else {
+            expires = "";
+        }
+        document.cookie = escape(name) + "=" + escape(value) + expires + "; path=/";
+    }
 
-      createCookie("PageName", "Home", "10");
+    createCookie("PageName", "Home", "10");
 
 </script>
 
@@ -28,11 +28,11 @@ session_start();
 $_SESSION = array();
 
 if (ini_get("session.use_cookies")) {
-	$params = session_get_cookie_params();
-	setcookie(session_name(), '', time() - 42000,
-		$params["path"], $params["domain"],
-		$params["secure"], $params["httponly"]
-	);
+    $params = session_get_cookie_params();
+    setcookie(session_name(), '', time() - 42000,
+        $params["path"], $params["domain"],
+        $params["secure"], $params["httponly"]
+    );
 }
 
 session_destroy();
@@ -64,41 +64,41 @@ $fileforward = $root_path . 'modules/news/start_page.php' . URL_REDIRECT_APPEND;
 $loginSQL = "SELECT value from care_config_global WHERE type = 'start_index_page'";
 $loginResult = $db->Execute($loginSQL);
 if (@$loginResult && $loginResult->RecordCount()) {
-	$loginRow = $loginResult->fetchRow();
-	$loginURL = $loginRow['value'];
+    $loginRow = $loginResult->fetchRow();
+    $loginURL = $loginRow['value'];
 }
 if (@$loginURL && $loginURL == "registration") {
-	$fileforward = $root_path . 'modules/registration_admission/patient_register_search.php' . URL_REDIRECT_APPEND;
-	?>
-<script>
-      createCookie("PageName", "Registration", "10");
-</script>
-<?php
+    $fileforward = $root_path . 'modules/registration_admission/patient_register_search.php' . URL_REDIRECT_APPEND;
+    ?>
+    <script>
+        createCookie("PageName", "Registration", "10");
+    </script>
+    <?php
 }
 
 $thisfile = 'login.php';
 // $breakfile = 'startframe.php' . URL_APPEND;
 
 if (!isset($pass)) {
-	$pass = '';
+    $pass = '';
 }
 if (!isset($keyword)) {
-	$keyword = '';
+    $keyword = '';
 }
 if (!isset($userid)) {
-	$userid = '';
+    $userid = '';
 }
 $_SESSION['sess_login_userid'] = '';
 $_SESSION['sess_login_username'] = '';
 $_SESSION['sess_login_pw'] = '';
 if (!isset($_SESSION['sess_login_userid'])) {
-	$_SESSION['sess_login_userid'];
+    $_SESSION['sess_login_userid'];
 }
 if (!isset($_SESSION['sess_login_username'])) {
-	$_SESSION['sess_login_username'];
+    $_SESSION['sess_login_username'];
 }
 if (!isset($_SESSION['sess_login_pw'])) {
-	$_SESSION['sess_login_pw'];
+    $_SESSION['sess_login_pw'];
 }
 
 # load config options
@@ -108,70 +108,70 @@ $multi = new multi;
 $vct = $multi->__genNumbers();
 
 function logentry($userid, $key, $report) {
-	$logpath = 'logs/access/' . date('Y') . '/';
-	if (file_exists($logpath)) {
-		$logpath = $logpath . date('Y_m_d') . '.log';
-		$file = fopen($logpath, 'a');
-		if ($file) {
-			if ($userid == '') {
-				$userid = 'blank';
-			}
-			$line = date('Y-m-d H:i:s') . ' ' . 'Main Login: ' . $report . '  Username=' . $userid . '  UserID=' . $key;
-			fputs($file, $line);
-			fputs($file, "\r\n");
-			fclose($file);
-		}
-	}
+    $logpath = 'logs/access/' . date('Y') . '/';
+    if (file_exists($logpath)) {
+        $logpath = $logpath . date('Y_m_d') . '.log';
+        $file = fopen($logpath, 'a');
+        if ($file) {
+            if ($userid == '') {
+                $userid = 'blank';
+            }
+            $line = date('Y-m-d H:i:s') . ' ' . 'Main Login: ' . $report . '  Username=' . $userid . '  UserID=' . $key;
+            fputs($file, $line);
+            fputs($file, "\r\n");
+            fclose($file);
+        }
+    }
 }
 
 if ((($pass == 'check') && ($keyword != '')) && ($userid != '')) {
-	include_once $root_path . 'include/care_api_classes/class_access.php';
-	$user = new Access($userid, $keyword);
+    include_once $root_path . 'include/care_api_classes/class_access.php';
+    $user = new Access($userid, $keyword);
 
-	if ($user->isKnown() && $user->hasValidPassword()) {
-		if ($user->isNotLocked()) {
-			$_SESSION['sess_login_userid'] = $user->LoginName();
-			$_SESSION['sess_login_username'] = $user->Name();
-			# Init the crypt object, encrypt the password, and store in cookie
-			$enc_login = new Crypt_HCEMD5($key_login, makeRand());
+    if ($user->isKnown() && $user->hasValidPassword()) {
+        if ($user->isNotLocked()) {
+            $_SESSION['sess_login_userid'] = $user->LoginName();
+            $_SESSION['sess_login_username'] = $user->Name();
+            # Init the crypt object, encrypt the password, and store in cookie
+            $enc_login = new Crypt_HCEMD5($key_login, makeRand());
 
-			$cipherpw = $enc_login->encodeMimeSelfRand($keyword);
+            $cipherpw = $enc_login->encodeMimeSelfRand($keyword);
 
-			$_SESSION['sess_login_pw'] = $cipherpw;
+            $_SESSION['sess_login_pw'] = $cipherpw;
 
-			# Set the login flag
-			setcookie('ck_login_logged' . $sid, 'true', 0, '/');
+            # Set the login flag
+            setcookie('ck_login_logged' . $sid, 'true', 0, '/');
 
-			if ($vct[10] > 0) {
-				$numb = (int) $multi->__read_Password_Expiring();
+            if ($vct[10] > 0) {
+                $numb = (int) $multi->__read_Password_Expiring();
 
-				$d1 = date('m/d/Y', strtotime($user->user['modify_time']));
-				$d2 = date('m/d/Y');
+                $d1 = date('m/d/Y', strtotime($user->user['modify_time']));
+                $d2 = date('m/d/Y');
 
-				$vv = $multi->dateDiff($d1, $d2);
+                $vv = $multi->dateDiff($d1, $d2);
 
-				if ($vv > $numb) {
-					$fileforward = '../modules/myintranet/my-passw-change.php?sid=&ntid=false&lang=en';
+                if ($vv > $numb) {
+                    $fileforward = '../modules/myintranet/my-passw-change.php?sid=&ntid=false&lang=en';
 
-					logentry($user->Name(), $user->LoginName(), $REMOTE_ADDR . " OK'd", "", "");
-					header("location: $fileforward");
-					$_SESSION['sess_login_userid'] = '';
-					$_SESSION['sess_login_username'] = '';
-					$_SESSION['sess_login_pw'] = '';
-					$_SESSION['sess_login_expired'] = 1;
-					exit;
-				}
-			}
+                    logentry($user->Name(), $user->LoginName(), $REMOTE_ADDR . " OK'd", "", "");
+                    header("location: $fileforward");
+                    $_SESSION['sess_login_userid'] = '';
+                    $_SESSION['sess_login_username'] = '';
+                    $_SESSION['sess_login_pw'] = '';
+                    $_SESSION['sess_login_expired'] = 1;
+                    exit;
+                }
+            }
 
-			logentry($user->Name(), $user->LoginName(), $REMOTE_ADDR . " OK'd", "", "");
-			header("location: $fileforward");
-			exit;
-		} else {
-			$passtag = 3;
-		}
-	} else {
-		$passtag = 1;
-	}
+            logentry($user->Name(), $user->LoginName(), $REMOTE_ADDR . " OK'd", "", "");
+            header("location: $fileforward");
+            exit;
+        } else {
+            $passtag = 3;
+        }
+    } else {
+        $passtag = 1;
+    }
 }
 
 $errbuf = 'Log in';
@@ -185,28 +185,28 @@ require $root_path . 'include/inc_passcheck_head.php';
 
 
 <footer class="footer">
-  <div class="container">
+    <div class="container">
     <span class="text-muted">
 <?php require $root_path . 'include/inc_load_copyrite.php';?>
 
 
     </span>
-  </div>
+    </div>
 </footer>
 
 
-<BODY onLoad="<?php if (isset($is_logged_out) && $is_logged_out) {
-	echo "window.parent.STARTPAGE.location.href='indexframe.php?sid=$sid&lang=$lang';";
+<BODY style="background-image: url('https://www.iamexpat.de/sites/default/files/styles/article--full/public/general-practitioners-gps-germany.jpg?itok=j8OikpEM'); background-repeat: no-repeat; background-size: cover;" onLoad="<?php if (isset($is_logged_out) && $is_logged_out) {
+    echo "window.parent.STARTPAGE.location.href='indexframe.php?sid=$sid&lang=$lang';";
 }
 ?>document.passwindow.userid.focus();" bgcolor=<?php echo $cfg['body_bgcolor']; ?>
-      <?php if (!$cfg['dhtml']) {
-	echo ' link=' . $cfg['idx_txtcolor'] . ' alink=' . $cfg['body_alink'] . ' vlink=' . $cfg['idx_txtcolor'];
-}?>>
-    &nbsp;
-    <p>
-        <?php
-if (isset($is_logged_out) && $is_logged_out) {
-	echo '<div align="center"><FONT  FACE="Arial" SIZE=+4 ><b>' . $LDLoggedOut . '</b></FONT><p><font size=4>' . $LDNewLogin . ':</font></p></div>';
-}
-?>
-    <p>
+    <?php if (!$cfg['dhtml']) {
+        echo ' link=' . $cfg['idx_txtcolor'] . ' alink=' . $cfg['body_alink'] . ' vlink=' . $cfg['idx_txtcolor'];
+    }?>>
+&nbsp;
+<p>
+    <?php
+    if (isset($is_logged_out) && $is_logged_out) {
+        echo '<div align="center"><FONT  FACE="Arial" SIZE=+4 ><b>' . $LDLoggedOut . '</b></FONT><p><font size=4>' . $LDNewLogin . ':</font></p></div>';
+    }
+    ?>
+<p>
